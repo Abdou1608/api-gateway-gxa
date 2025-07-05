@@ -1,0 +1,114 @@
+export interface QuitModel {
+    numero: number;
+    numbor?: number;
+    lignebor?: number;
+    idente?: string;
+    contrat?: number;
+    piece?: number;
+    police?: string;
+    nature?: QitNature;
+    entite?: number;
+    cie?: number;
+    confie?: boolean;
+    gestion?: QitGestion;
+    quitopt?: boolean;
+    bloque?: boolean;
+    affecte?: boolean;
+    emission?: number;
+    encaiss?: number;
+    enreg?: Date;
+    sitcli?: QitSitCli;
+    typeff?: string;
+    dsitcli?: Date;
+    sitcie?: QitSitCie;
+    retcie?: QitRetour;
+    dsitcie?: Date;
+    numcie?: string;
+    debeffet?: Date;
+    fineffet?: Date;
+    debit?: Date;
+    rcm?: number;
+    indice?: number;
+    coeff?: string;
+    soldedu?: number;
+    soldedu1?: string;
+    totquit?: number;
+    totquit1?: string;
+    ptotale?: number;
+    ptotale1?: string;
+    pnette?: number;
+    pnette1?: string;
+    ppure?: number;
+    ppure1?: string;
+    catnat?: number;
+    catnat1?: string;
+    ristec?: number;
+    ristec1?: string;
+    frcie?: number;
+    frcie1?: string;
+    comm?: number;
+    comm1?: string;
+    commges?: number;
+    commges1?: string;
+    taxe?: number;
+    taxe1?: string;
+    taxatt?: number;
+    taxatt1?: string;
+    frgest?: number;
+    frgest1?: string;
+    netcie?: number;
+    netcie1?: string;
+    acompte?: number;
+    acompte1?: string;
+    hono?: number;
+    hono1?: string;
+    code_tva?: string;
+    taux_tva?: number;
+    tvafr?: number;
+    tvafr1?: string;
+    frprel?: number;
+    frprel1?: string;
+    frcbt?: number;
+    frcbt1?: string;
+    memo?: string;
+    prorata?: number;
+    numtiers?: number;
+    prelevok?: boolean;
+    datenc?: Date;
+    commatt?: number;
+    commatt1?: string;
+    ecart?: number;
+    ecart1?: string;
+    histo?: string;
+    coeffenc?: number;
+    libelle?: string;
+    adhesion?: number;
+    tvaht?: number;
+    tvaht1?: string;
+    tvamnt?: number;
+    tvamnt1?: string;
+    nfacture?: string;
+    basetra?: number;
+    basetra1?: string;
+    basetrb?: number;
+    basetrb1?: string;
+    basetrc?: number;
+    basetrc1?: string;
+    txtra?: number;
+    txtrb?: number;
+    txtrc?: number;
+    txdna?: number;
+    mandat?: number;
+    dispatch?: boolean;
+    quitlie?: number;
+    echprin?: boolean;
+    ext?: string;
+  }
+  
+  export enum QitNature {}
+  export enum QitGestion {}
+  export enum QitRole {}
+  export enum QitSitCie {}
+  export enum QitSitCli {}
+  export enum QitRetour {}
+  export enum Frais {}
