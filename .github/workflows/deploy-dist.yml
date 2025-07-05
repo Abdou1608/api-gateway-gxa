@@ -39,6 +39,16 @@ jobs:
         run: |
           ssh -vvv -i ~/.ssh/id_rsa -p ${{ secrets.REMOTE_PORT }} \
             ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} exit || true
+        continue-on-error: true
+        shell: bash
+      
+      - name: Save SSH debug log
+        run: |
+          ssh -vvv -i ~/.ssh/id_rsa -p ${{ secrets.REMOTE_PORT }} \
+            ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} exit 2> ssh-debug.log || true
+          cat ssh-debug.log
+        continue-on-error: true
+        shell: bash
 
       - name: Deploy dist to remote Windows server
         shell: bash
@@ -52,4 +62,3 @@ jobs:
           ssh -p ${{ secrets.REMOTE_PORT }} \
             ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} \
             'pm2 reload soap-rest-gateway || pm2 start /c/deploy/soap-rest-gateway/dist/server.js --name soap-rest-gateway'
-
