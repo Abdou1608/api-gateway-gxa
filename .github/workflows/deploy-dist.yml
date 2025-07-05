@@ -2,14 +2,13 @@ name: 🚀 Deploy dist to Windows Server
 
 on:
   push:
-    paths:
-      - 'dist/**'
-      - '.github/workflows/deploy-dist.yml'
+    branches:
+      - master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: 🧾 Checkout code
         uses: actions/checkout@v3
