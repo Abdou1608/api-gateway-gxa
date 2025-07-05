@@ -1,4 +1,3 @@
-
 name: 🚀 Deploy dist to Windows Server
 
 on:
@@ -26,6 +25,7 @@ jobs:
         run: |
           rsync -avz --delete dist/ ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:/c/soap-rest-gateway/dist/
 
-      - name: 🔁 Restart Node.js (optional)
+      - name: 🔁 Restart Node.js using PM2
         run: |
-          ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'powershell -Command "Stop-Process -Name node -Force -ErrorAction SilentlyContinue; Start-Process node C:\soap-rest-gateway\dist\server.js"'
+          ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "powershell -Command \
+            \"cd C:\\soap-rest-gateway && pm2 delete soap-api -s; pm2 start dist\\server.js --name soap-api; pm2 save\""
