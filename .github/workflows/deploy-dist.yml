@@ -1,31 +1,40 @@
-name: 🚀 Deploy dist to Windows Server
+name: Deploy dist folder to Windows Server
 
 on:
   push:
-    paths:
-      - 'dist/**'
-      - '.github/workflows/deploy-dist.yml'
+    branches: [master]
 
 jobs:
   deploy:
+    name: Deploy on Windows Server
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🧾 Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: 🔐 Setup SSH key
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '28’
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project (tsc)
+        run: npm run build
+
+      - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts
 
-      - name: 🚚 Rsync dist to Windows
+      - name: Deploy /dist to remote Windows server
         run: |
-          rsync -avz --delete dist/ ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:/c/soap-rest-gateway/dist/
+          rsync -avz -e "ssh -p ${{ secrets.REMOTE_PORT }}" ./dist/ ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:/path/to/soap-rest-gateway/dist/
 
-      - name: 🔁 Restart Node.js using PM2
+      - name: Restart app via PM2
         run: |
-          ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "powershell -Command \
-            \"cd C:\\soap-rest-gateway && pm2 delete soap-api -s; pm2 start dist\\server.js --name soap-api; pm2 save\""
+          ssh -p ${{ secrets.REMOTE_PORT }} ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "pm2 reload soap-rest-gateway"
