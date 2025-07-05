@@ -1,40 +1,6 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendSoapRequest = sendSoapRequest;
-const xml2js_1 = require("xml2js");
 const app_config_service_1 = require("./AppConfigService/app-config.service");
 const BasAction_1 = require("../Model/Model-BasAction/BasAction");
 const BasSoapClient_1 = require("../Model/Model-BasSoapClient/BasSoapClient");
@@ -47,13 +13,14 @@ const bsc = new BasSoapClient_1.BasSoapClient();
 const runBasAct = new BasAction_1.BasAction(bsc, config);
 async function sendSoapRequest(params, actionName, basSecurityContext) {
     // let SoapParser= new SoapParserService();
-    const builder = new xml2js_1.Builder({ headless: true });
-    const xml2js = await Promise.resolve().then(() => __importStar(require('xml2js')));
-    const parser = new xml2js.Parser({ explicitArray: false, ignoreAttrs: true });
+    //const builder = new Builder({ headless: true });
+    //const xml2js = await import('xml2js');
+    //const parser = new xml2js.Parser({ explicitArray: false, ignoreAttrs: true });
     // ✅ Extraction propre de SessionId
     let sid = params["datanode"];
     if (!basSecurityContext) {
         console.warn("⚠️ Aucune SessionId fournie dans les paramètres !");
+        throw new Error("Aucune Identité n'est fournie");
     }
     else {
         console.info("⚠️ SessionId et BasSec fournie dans les paramètres correctement!!" + basSecurityContext);
@@ -62,14 +29,10 @@ async function sendSoapRequest(params, actionName, basSecurityContext) {
     const an = actionName ? actionName : "";
     const result = await runBasAct.RunAction(an, params, basSecurityContext ? basSecurityContext : new BasSecurityContext_1.BasSecurityContext()).then(response => {
         console.log("✅ Inside runBasAct - actionName====", actionName);
-        if (actionName == "Xtlog_Get") {
-            sid = "xtlog";
-            console.log("✅ Inside runBasAct - actionName====", actionName);
-            return (0, soap_parser_service_1.parseSoapXmlToJson)(response, sid);
-        }
-        else {
-            return (0, soap_parser_service_1.parseSoapXmlToJson)(response, sid);
-        }
+        // if (actionName === "Xtlog_Get"){
+        // return  parseSoapXmlToJson(response,sid)
+        // }
+        return (0, soap_parser_service_1.parseSoapXmlToJson)(response, sid);
     });
     //parser.parseStringPromise(response);
     return result;

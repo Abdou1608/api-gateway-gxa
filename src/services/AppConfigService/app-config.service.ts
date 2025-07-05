@@ -11,13 +11,14 @@ export class AppConfigService {
       throw new Error("Method not implemented.");
   }
 
-  private _baseUrl: string = "http://ec2-13-38-10-3.eu-west-3.compute.amazonaws.com";
+  private _baseSOAPUrl: string =process.env.SOAP_URL ?? "http://ec2-13-38-10-3.eu-west-3.compute.amazonaws.com";
+  private _baseSOAPPort: any =process.env.SOAP_PORT ?? this.port;
 
   public set baseUrl(value: string) {
-    this._baseUrl = value;
+    this._baseSOAPUrl = value;
   }
   public get baseUrl(): string {
-    return this._baseUrl;
+    return this._baseSOAPUrl+":"+this._baseSOAPPort;
   }
 
   private _apiEndpoint: string = "/soap/";
@@ -25,7 +26,7 @@ export class AppConfigService {
     this._apiEndpoint = value;
   }
   public get apiEndpoint(): string {
-    return this._apiEndpoint;
+    return this.baseUrl+this._apiEndpoint;
   }
   private _port: number = 8080;
 

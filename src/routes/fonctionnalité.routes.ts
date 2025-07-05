@@ -17,7 +17,6 @@ import liste_des_quittances from './liste_des_quittances.routes';
 import login from './login.routes';
 import logout from './logout.routes';
 import profile from './profile.routes';
-import recherche_contrat from './recherche_contrat.routes';
 import recherche_tier from './recherche_tier.routes';
 import update_contrat from './update_contrat.routes';
 import update_tier from './update_tier.routes';
@@ -43,7 +42,6 @@ export function registerRoutes(app: express.Application) {
   app.use("/api/login", login);
   app.use("/api/logout", logout);
   app.use("/api/profile", profile);
-  app.use("/api/Contrat_Search", recherche_contrat);
   app.use("/api/Tiers_Search", recherche_tier);
   app.use("/api/Contrat_Update", update_contrat);
   app.use("/api/Tiers_Update", update_tier);

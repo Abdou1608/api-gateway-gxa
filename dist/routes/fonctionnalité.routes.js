@@ -22,10 +22,11 @@ const liste_des_quittances_routes_1 = __importDefault(require("./liste_des_quitt
 const login_routes_1 = __importDefault(require("./login.routes"));
 const logout_routes_1 = __importDefault(require("./logout.routes"));
 const profile_routes_1 = __importDefault(require("./profile.routes"));
-const recherche_contrat_routes_1 = __importDefault(require("./recherche_contrat.routes"));
 const recherche_tier_routes_1 = __importDefault(require("./recherche_tier.routes"));
 const update_contrat_routes_1 = __importDefault(require("./update_contrat.routes"));
 const update_tier_routes_1 = __importDefault(require("./update_tier.routes"));
+const project_routes_1 = __importDefault(require("./project.routes"));
+const update_pi_ce_du_contrat_routes_1 = __importDefault(require("./update_pi\u00E8ce_du_contrat.routes"));
 function registerRoutes(app) {
     app.use("/api/ajout_pièce_au_contrat", ajout_pi_ce_au_contrat_routes_1.default);
     app.use("/api/check_session", check_session_routes_1.default);
@@ -41,12 +42,12 @@ function registerRoutes(app) {
     app.use("/api/liste_des_contrats_d_un_tier", liste_des_contrats_d_un_tier_routes_1.default);
     app.use("/api/liste_des_produits", liste_des_produits_routes_1.default);
     app.use("/api/liste_des_quittances", liste_des_quittances_routes_1.default);
-    // app.use("/api/liste_des_tiers", liste_des_tiers);
+    app.use("/api/projects", project_routes_1.default);
     app.use("/api/login", login_routes_1.default);
     app.use("/api/logout", logout_routes_1.default);
     app.use("/api/profile", profile_routes_1.default);
-    app.use("/api/Contrat_Search", recherche_contrat_routes_1.default);
     app.use("/api/Tiers_Search", recherche_tier_routes_1.default);
     app.use("/api/Contrat_Update", update_contrat_routes_1.default);
     app.use("/api/Tiers_Update", update_tier_routes_1.default);
+    app.use("/api/update_pièce_contrat", update_pi_ce_du_contrat_routes_1.default);
 }

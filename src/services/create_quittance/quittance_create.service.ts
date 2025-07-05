@@ -2,17 +2,15 @@ import { BasParams } from "../../Model/BasSoapObject/BasParams";
 import { sendSoapRequest } from "../soap.service";
 
 
-export async function quittance_create(contrat: number,
-piece:number,
-bordereau:number,effet?:Date,  data? : any, BasSecurityContext?:any,) {
+export async function quittance_create(body:any) {
 
   const params=new BasParams()
-  BasSecurityContext? params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar()):null
-    params.AddInt("contrat",contrat)
-    params.AddInt("piece",piece)
-    params.AddInt("bordereau",bordereau)
-    effet ? params.AddDateTime("effet",effet) : null
-    data ? params.AddStr("data",data) : null
+  body.BasSecurityContext? params.AddStr("BasSecurityContext", body.BasSecurityContext.ToSoapVar()):null
+    params.AddInt("contrat", body.contrat)
+    params.AddInt("piece", body.piece)
+    params.AddInt("bordereau", body.bordereau)
+    body.effet ? params.AddDateTime("effet", body.effet) : null
+    body.data ? params.AddStr("data", body.data) : null
 
   /*
   `
@@ -35,6 +33,6 @@ bordereau (int>
     </soapenv:Envelope>
   `;
 */
-  const result = await sendSoapRequest(params, 'Quittance_Create',BasSecurityContext);
+  const result = await sendSoapRequest(params, 'Quittance_Create', body.BasSecurityContext);
   return result;
 }

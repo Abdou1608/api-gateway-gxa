@@ -8,16 +8,16 @@ class AppConfigService {
         throw new Error("Method not implemented.");
     }
     set baseUrl(value) {
-        this._baseUrl = value;
+        this._baseSOAPUrl = value;
     }
     get baseUrl() {
-        return this._baseUrl;
+        return this._baseSOAPUrl + ":" + this._baseSOAPPort;
     }
     set apiEndpoint(value) {
         this._apiEndpoint = value;
     }
     get apiEndpoint() {
-        return this._apiEndpoint;
+        return this.baseUrl + this._apiEndpoint;
     }
     set port(value) {
         this._port = value;
@@ -26,7 +26,8 @@ class AppConfigService {
         return this._port;
     }
     constructor() {
-        this._baseUrl = "http://ec2-51-44-11-105.eu-west-3.compute.amazonaws.com";
+        this._baseSOAPUrl = process.env.SOAP_URL ?? "http://ec2-13-38-10-3.eu-west-3.compute.amazonaws.com";
+        this._baseSOAPPort = process.env.SOAP_PORT ?? this.port;
         this._apiEndpoint = "/soap/";
         this._port = 8080;
         this.actionService = "IBasActionService";

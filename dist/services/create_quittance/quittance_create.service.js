@@ -1,9 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.quittance_create = quittance_create;
+const BasParams_1 = require("../../Model/BasSoapObject/BasParams");
 const soap_service_1 = require("../soap.service");
-async function quittance_create(contrat, piece, bordereau, data) {
-    const soapBody = { contrat, piece, bordereau, data };
+async function quittance_create(body) {
+    const params = new BasParams_1.BasParams();
+    body.BasSecurityContext ? params.AddStr("BasSecurityContext", body.BasSecurityContext.ToSoapVar()) : null;
+    params.AddInt("contrat", body.contrat);
+    params.AddInt("piece", body.piece);
+    params.AddInt("bordereau", body.bordereau);
+    body.effet ? params.AddDateTime("effet", body.effet) : null;
+    body.data ? params.AddStr("data", body.data) : null;
     /*
     `
       <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
@@ -25,6 +32,6 @@ async function quittance_create(contrat, piece, bordereau, data) {
       </soapenv:Envelope>
     `;
   */
-    const result = await (0, soap_service_1.sendSoapRequest)(soapBody, 'Quittance_Create');
+    const result = await (0, soap_service_1.sendSoapRequest)(params, 'Quittance_Create', body.BasSecurityContext);
     return result;
 }

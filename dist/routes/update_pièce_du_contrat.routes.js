@@ -2,11 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 // Routes pour la fonctionnalité : Update pièce du contrat
 const express_1 = require("express");
-const soap_service_1 = require("../services/soap.service");
+const cont_update_service_1 = require("../services/update_contrat/cont_update.service");
 const router = (0, express_1.Router)();
-router.post('/oui', async (req, res) => {
+router.put('/', async (req, res) => {
     try {
-        const response = await (0, soap_service_1.sendSoapRequest)(req.body);
+        const dossier = parseInt(req.body.dossier);
+        const piece = req.body.piece;
+        const data = req.body.data;
+        const response = await (0, cont_update_service_1.cont_piece_update)(dossier, piece, data, req.body.BasSecurityContext ?? req.body.basSecurityContext);
         res.json(response);
     }
     catch (error) {

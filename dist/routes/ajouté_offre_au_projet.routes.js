@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const soap_service_1 = require("../services/soap.service");
 const router = (0, express_1.Router)();
-router.post('/projet/new_offer', async (req, res) => {
+router.post('/new_offer', async (req, res) => {
     try {
         const response = await (0, soap_service_1.sendSoapRequest)(req.body, "ajouté_offre_au_projet");
         res.json(response);

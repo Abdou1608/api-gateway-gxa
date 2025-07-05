@@ -5,7 +5,7 @@ const router = Router();
 
 router.post('/kco-cashtransaction', async (req, res) => {
   try {
-    const result = await kco_cashtransaction(req.body);
+    const result = await kco_cashtransaction(req.body, req.body.BasSecurityContext);
     res.json(result);
   } catch (error:any) {
     res.status(500).json({ error: error.message });

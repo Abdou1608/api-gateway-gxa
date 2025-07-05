@@ -5,7 +5,7 @@ const kco_cashtransaction_service_1 = require("../services/create_reglement/kco_
 const router = (0, express_1.Router)();
 router.post('/kco-cashtransaction', async (req, res) => {
     try {
-        const result = await (0, kco_cashtransaction_service_1.kco_cashtransaction)(req.body);
+        const result = await (0, kco_cashtransaction_service_1.kco_cashtransaction)(req.body, req.body.BasSecurityContext);
         res.json(result);
     }
     catch (error) {
