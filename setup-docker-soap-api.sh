@@ -108,6 +108,6 @@ case "$1" in
     setup_systemd_service
     ;;
   *)
-    echo "Usage: $0 {build|run|restart|stop|update|dev|setup_systemd_service}"
+    echo "Usage: $0 {build|run|restart|stop|update|dev|install-service}"
     ;;
 esac
