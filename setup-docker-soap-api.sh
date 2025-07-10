@@ -4,7 +4,7 @@
 # Variables
 CONTAINER_NAME=soap-rest-gateway
 IMAGE_NAME=soap-api-image
-PROJECT_DIR=/home/ec2-user/soap-api-gateway
+PROJECT_DIR=/home/ec2-user/soap-rest-gateway
 PORT=3000
 
 # Step 1: Build Docker image
