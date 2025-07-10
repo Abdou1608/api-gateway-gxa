@@ -104,7 +104,10 @@ case "$1" in
   dev)
     run_dev_mode
     ;;
+ install-service)
+    setup_systemd_service
+    ;;
   *)
-    echo "Usage: $0 {build|run|restart|stop|update|dev}"
+    echo "Usage: $0 {build|run|restart|stop|update|dev|setup_systemd_service}"
     ;;
 esac
