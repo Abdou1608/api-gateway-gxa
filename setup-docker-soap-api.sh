@@ -3,7 +3,7 @@
 
 # Export system global variables (Linux)
 echo "🧬 Exporting system variables..."
-echo 'SOAP_URL=http://10.0.8.140' | sudo tee /etc/profile.d/soap-url.sh > /dev/null
+echo 'SOAP_URL=http://10.0.46.11' | sudo tee /etc/profile.d/soap-url.sh > /dev/null
 echo 'SOAP_PORT=8080' | sudo tee /etc/profile.d/soap-port.sh > /dev/null
 sudo chmod +x /etc/profile.d/soap-url.sh /etc/profile.d/soap-port.sh
 
