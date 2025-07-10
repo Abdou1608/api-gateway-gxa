@@ -49,6 +49,34 @@ update_code_and_restart() {
   run_container
 }
 
+# systemd service for container
+setup_systemd_service() {
+  echo "🔐 Creating systemd service for container..."
+
+  docker create --name $CONTAINER_NAME $IMAGE_NAME
+
+  SERVICE_PATH=/etc/systemd/system/docker-$CONTAINER_NAME.service
+  sudo tee $SERVICE_PATH > /dev/null <<EOF
+[Unit]
+Description=Soap REST Gateway Docker Container
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker start -a $CONTAINER_NAME
+ExecStop=/usr/bin/docker stop -t 2 $CONTAINER_NAME
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+  sudo systemctl daemon-reload
+  sudo systemctl enable docker-$CONTAINER_NAME
+
+  echo "✅ Service created and enabled: docker-$CONTAINER_NAME"
+}
+
 # Step 5: Dev mode with logs
 run_dev_mode() {
   echo "🧪 Running in development mode with nodemon and live logs..."
