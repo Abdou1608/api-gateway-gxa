@@ -7,17 +7,18 @@ class AppConfigService {
     GetURlB4WService() {
         throw new Error("Method not implemented.");
     }
-    set baseUrl(value) {
-        this._baseSOAPUrl = value;
-    }
+    //process.env.SOAP_PORT ?? this.port;
+    // public set baseUrl(value: string) {
+    //   this._baseSOAPUrl = value;
+    // }
     get baseUrl() {
-        return this._baseSOAPUrl + ":" + this._baseSOAPPort;
+        return this._baseSOAPUrl;
     }
     set apiEndpoint(value) {
         this._apiEndpoint = value;
     }
     get apiEndpoint() {
-        return this.baseUrl + this._apiEndpoint;
+        return this._apiEndpoint;
     }
     set port(value) {
         this._port = value;
@@ -27,6 +28,7 @@ class AppConfigService {
     }
     constructor() {
         this._baseSOAPUrl = process.env.SOAP_URL ?? "http://10.0.46.11";
+        //"http://ec2-13-38-10-3.eu-west-3.compute.amazonaws.com"
         this._baseSOAPPort = process.env.SOAP_PORT ?? this.port;
         this._apiEndpoint = "/soap/";
         this._port = 8080;

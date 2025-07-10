@@ -4,7 +4,7 @@ import { opensession } from '../services/login/opensession';
 const router = Router();
 
 router.post('/', async (req, res) => {
-   const logon=req.body.login
+   const logon=req.body.login ?? req.body.username
   const password=req.body.password
  const domain=req.body.domain
  console.log("Valeur Resut dans l'aPI de opensesion=="+JSON.stringify(req.body))
@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
     console.log("Valeur Resultat de opensesion=="+result)
     res.json(result);
   } catch (error:any) {
-    console.log("Erreur dans API=="+error.message)
+    console.log("Erreur dans API=="+ error.message)
     res.status(500).json({ error: error.message });
   }
 } else {

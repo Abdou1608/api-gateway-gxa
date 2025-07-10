@@ -12,13 +12,16 @@ export class AppConfigService {
   }
 
   private _baseSOAPUrl: string =process.env.SOAP_URL ?? "http://10.0.46.11";
-  private _baseSOAPPort: any =process.env.SOAP_PORT ?? this.port;
+  //"http://ec2-13-38-10-3.eu-west-3.compute.amazonaws.com"
+  
+  private _baseSOAPPort: any = process.env.SOAP_PORT ?? this.port
+  //process.env.SOAP_PORT ?? this.port;
 
-  public set baseUrl(value: string) {
-    this._baseSOAPUrl = value;
-  }
+ // public set baseUrl(value: string) {
+ //   this._baseSOAPUrl = value;
+ // }
   public get baseUrl(): string {
-    return this._baseSOAPUrl+":"+this._baseSOAPPort;
+    return this._baseSOAPUrl;
   }
 
   private _apiEndpoint: string = "/soap/";
@@ -26,7 +29,7 @@ export class AppConfigService {
     this._apiEndpoint = value;
   }
   public get apiEndpoint(): string {
-    return this.baseUrl+this._apiEndpoint;
+    return this._apiEndpoint;
   }
   private _port: number = 8080;
 

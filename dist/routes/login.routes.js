@@ -4,7 +4,7 @@ const express_1 = require("express");
 const opensession_1 = require("../services/login/opensession");
 const router = (0, express_1.Router)();
 router.post('/', async (req, res) => {
-    const logon = req.body.login;
+    const logon = req.body.login ?? req.body.username;
     const password = req.body.password;
     const domain = req.body.domain;
     console.log("Valeur Resut dans l'aPI de opensesion==" + JSON.stringify(req.body));
