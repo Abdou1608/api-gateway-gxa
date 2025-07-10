@@ -22,6 +22,7 @@ import update_contrat from './update_contrat.routes';
 import update_tier from './update_tier.routes';
 import router from './project.routes';
 import update_pièce_du_contrat from "./update_pièce_du_contrat.routes";
+import tabrouter from './tab.routes';
 
 export function registerRoutes(app: express.Application) {
   app.use("/api/ajout_pièce_au_contrat", ajout_pièce_au_contrat);
@@ -39,6 +40,7 @@ export function registerRoutes(app: express.Application) {
   app.use("/api/liste_des_produits", liste_des_produits);
   app.use("/api/liste_des_quittances", liste_des_quittances);
   app.use("/api/projects", router);
+  app.use("/api/tabs", tabrouter);
   app.use("/api/login", login);
   app.use("/api/logout", logout);
   app.use("/api/profile", profile);

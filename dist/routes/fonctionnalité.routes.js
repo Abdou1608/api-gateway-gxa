@@ -27,6 +27,7 @@ const update_contrat_routes_1 = __importDefault(require("./update_contrat.routes
 const update_tier_routes_1 = __importDefault(require("./update_tier.routes"));
 const project_routes_1 = __importDefault(require("./project.routes"));
 const update_pi_ce_du_contrat_routes_1 = __importDefault(require("./update_pi\u00E8ce_du_contrat.routes"));
+const tab_routes_1 = __importDefault(require("./tab.routes"));
 function registerRoutes(app) {
     app.use("/api/ajout_pièce_au_contrat", ajout_pi_ce_au_contrat_routes_1.default);
     app.use("/api/check_session", check_session_routes_1.default);
@@ -43,6 +44,7 @@ function registerRoutes(app) {
     app.use("/api/liste_des_produits", liste_des_produits_routes_1.default);
     app.use("/api/liste_des_quittances", liste_des_quittances_routes_1.default);
     app.use("/api/projects", project_routes_1.default);
+    app.use("/api/tabs", tab_routes_1.default);
     app.use("/api/login", login_routes_1.default);
     app.use("/api/logout", logout_routes_1.default);
     app.use("/api/profile", profile_routes_1.default);
