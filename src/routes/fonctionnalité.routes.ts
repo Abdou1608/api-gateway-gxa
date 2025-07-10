@@ -24,6 +24,7 @@ import router from './project.routes';
 import update_pièce_du_contrat from "./update_pièce_du_contrat.routes";
 import tabrouter from './tab.routes';
 
+
 export function registerRoutes(app: express.Application) {
   app.use("/api/ajout_pièce_au_contrat", ajout_pièce_au_contrat);
   app.use("/api/check_session", check_session);
