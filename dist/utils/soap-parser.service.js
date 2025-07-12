@@ -39,17 +39,22 @@ function parseSoapXmlToJson(soapXml, datanode) {
         const innerXml = parser.parseFromString(decoded, 'application/xml');
         const root = innerXml.documentElement;
         let isList = false;
+        let _dn = 0;
         if (datanode && datanode !== "") {
             const nodes = root.getElementsByTagName(datanode || 'Data' || dname || 'data');
             const node = nodes[0];
             isList = node ? node.nodeName.toLowerCase().endsWith('s') : false;
+            _dn = 1;
         }
         else {
             isList = root.tagName.toLowerCase().endsWith('s');
+            _dn = 2;
         }
         console.log("La valeur de isList est ========" + isList);
+        console.log("La valeur de _dn est ========" + _dn);
         const tagname = datanode ?? "";
-        const rawNodes = root.getElementsByTagName(tagname) ?? root.getElementsByTagName('object');
+        let rawNodes = root.getElementsByTagName('object');
+        rawNodes = rawNodes ?? root.getElementsByTagName(tagname);
         console.log("La valeur de rawNodes[0]  est ========" + rawNodes[0]);
         console.log("La Longueur de rawNodes  est ========" + rawNodes.length);
         // On vérifie explicitement la présence d'au moins un objet
