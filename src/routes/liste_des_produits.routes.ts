@@ -3,7 +3,7 @@ import { produit_listitems } from '../services/liste_des_produits/produit_listit
 
 const router = Router();
 
-router.post('/produit-listitems', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const result = await produit_listitems(req.body);
     res.json(result);

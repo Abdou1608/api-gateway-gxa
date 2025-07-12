@@ -3,7 +3,7 @@ import { kco_cashtransaction } from '../services/create_reglement/kco_cashtransa
 
 const router = Router();
 
-router.post('/kco-cashtransaction', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const result = await kco_cashtransaction(req.body, req.body.BasSecurityContext);
     res.json(result);

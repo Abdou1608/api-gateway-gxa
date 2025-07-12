@@ -3,7 +3,7 @@ import { checksession_ } from '../services/check_session/checksession_.service';
 
 const router = Router();
 
-router.post('/checksession-', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const result = await checksession_(req.body);
     res.json(result);

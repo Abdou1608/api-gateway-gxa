@@ -3,7 +3,7 @@ import { quittance_listitems } from '../services/liste_des_quittances/quittance_
 
 const router = Router();
 
-router.post('/quittance-listitems', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const result = await quittance_listitems(req.body);
     res.json(result);

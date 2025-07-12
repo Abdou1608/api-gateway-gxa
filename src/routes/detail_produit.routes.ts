@@ -3,7 +3,7 @@ import { produit_details } from '../services/detail_produit/produit_details.serv
 
 const router = Router();
 
-router.post('/produit-details', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const result = await produit_details(req.body);
     res.json(result);

@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { sendSoapRequest } from '../services/soap.service';
 const router = Router();
 
-router.post('/oui', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const response = await sendSoapRequest(req.body);
     res.json(response);

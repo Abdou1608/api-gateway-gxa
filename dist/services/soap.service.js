@@ -33,9 +33,14 @@ async function sendSoapRequest(params, actionName, basSecurityContext) {
         // return  parseSoapXmlToJson(response,sid)
         // }
         return (0, soap_parser_service_1.parseSoapXmlToJson)(response, sid);
-    });
+    }).catch(e => { return "Erreur d'extraction des données :" + e.message; });
     //parser.parseStringPromise(response);
-    return result;
+    if (JSON.stringify(result).includes("Erreur d'extraction des données :")) {
+        throw new Error(JSON.stringify(result));
+    }
+    else {
+        return result;
+    }
     /*
      //* ✅ Construction de la requête SOAP
      const soapEnvelope = `<?xml version="1.0" encoding="UTF-8"?>

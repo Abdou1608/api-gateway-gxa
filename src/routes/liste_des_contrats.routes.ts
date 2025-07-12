@@ -3,7 +3,7 @@ import { cont_search } from '../services/liste_des_contrats/cont_search.service'
 
 const router = Router();
 
-router.post('/cont-search', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const result = await cont_search(req.body);
     res.json(result);

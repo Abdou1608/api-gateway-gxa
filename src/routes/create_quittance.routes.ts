@@ -3,7 +3,7 @@ import { quittance_create } from '../services/create_quittance/quittance_create.
 
 const router = Router();
 
-router.post('/quittance-create', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const result = await quittance_create(req.body);
     res.json(result);

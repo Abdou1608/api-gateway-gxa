@@ -26,7 +26,7 @@ const parser = new XMLParser({
   
   
   if (!dataNode || !dataNode.textContent) {
-    throw new Error(datanode+' Ou <objects> introuvable dans la réponse SOAP');
+    throw new Error(datanode+' Ou <objects> introuvable dans la réponse SOAP oui Session utilisateur non valide');
   }
 
   const decoded = dataNode.textContent

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const tiers_create_service_1 = require("../services/create_tier/tiers_create.service");
 const router = (0, express_1.Router)();
-router.post('/tiers-create', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const typtiers = req.body.typtiers;
         const nature = req.body.nature;

@@ -3,7 +3,7 @@ import { cont_newpiece } from '../services/ajout_pièce_au_contrat/cont_newpiece
 
 const router = Router();
 
-router.post('/cont-newpiece', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const result = await cont_newpiece(req.body);
     res.json(result);

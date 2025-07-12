@@ -3,7 +3,7 @@ import { cont_details } from '../services/detail_contrat/cont_details.service';
 
 const router = Router();
 
-router.post('/cont-details', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const result = await cont_details(req.body);
     res.json(result);

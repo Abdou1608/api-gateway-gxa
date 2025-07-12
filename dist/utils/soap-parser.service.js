@@ -19,7 +19,7 @@ function parseSoapXmlToJson(soapXml, datanode) {
     const doc = parser.parseFromString(soapXml, 'application/xml');
     const dataNode = doc.getElementsByTagName(datanode || 'Data' || 'rows_' + datanode || 'data')[0];
     if (!dataNode || !dataNode.textContent) {
-        throw new Error(datanode + ' Ou <objects> introuvable dans la réponse SOAP');
+        throw new Error(datanode + ' Ou <objects> introuvable dans la réponse SOAP oui Session utilisateur non valide');
     }
     const decoded = dataNode.textContent
         .replace(/&lt;/g, '<')

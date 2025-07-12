@@ -3,7 +3,7 @@ import { cont_listitems } from '../services/liste_des_contrats_d_un_tier/cont_li
 
 const router = Router();
 
-router.post('/cont-listitems', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const result = await cont_listitems(req.body);
     res.json(result);

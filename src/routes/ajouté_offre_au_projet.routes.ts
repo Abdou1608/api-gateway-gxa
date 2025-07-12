@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { sendSoapRequest } from '../services/soap.service';
 const router = Router();
 
-router.post('/new_offer', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const response = await sendSoapRequest(req.body, "ajouté_offre_au_projet");
     res.json(response);

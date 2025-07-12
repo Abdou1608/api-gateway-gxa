@@ -3,7 +3,7 @@ import { tiers_create } from '../services/create_tier/tiers_create.service';
 
 const router = Router();
 
-router.post('/tiers-create', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
   const  typtiers=req.body.typtiers
 	const nature =req.body.nature
