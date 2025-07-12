@@ -22,7 +22,7 @@ const parser = new XMLParser({
   const doc = parser.parseFromString(soapXml, 'application/xml');
  
 
-  const dataNode = doc.getElementsByTagName(datanode || 'Data' || 'rows_'+datanode || 'data')[0];
+  const dataNode = doc.getElementsByTagName(datanode || 'Data' || datanode+'-rows' || 'data')[0];
   
   
   if (!dataNode || !dataNode.textContent) {

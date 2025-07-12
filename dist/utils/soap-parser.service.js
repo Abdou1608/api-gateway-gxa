@@ -17,7 +17,7 @@ const parser = new fast_xml_parser_1.XMLParser({
 function parseSoapXmlToJson(soapXml, datanode) {
     const parser = new xmldom_1.DOMParser();
     const doc = parser.parseFromString(soapXml, 'application/xml');
-    const dataNode = doc.getElementsByTagName(datanode || 'Data' || 'rows_' + datanode || 'data')[0];
+    const dataNode = doc.getElementsByTagName(datanode || 'Data' || datanode + '-rows' || 'data')[0];
     if (!dataNode || !dataNode.textContent) {
         throw new Error(datanode + ' Ou <objects> introuvable dans la réponse SOAP oui Session utilisateur non valide');
     }
