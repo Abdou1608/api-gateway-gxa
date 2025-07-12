@@ -11,7 +11,7 @@ async function tiers_search(BasSecurityContext, reference, dppname, typetiers, c
     const _typetiers = typetiers ?? "";
     params.AddString("typetiers", _typetiers);
     params.AddString("datanode", "");
-    const soapBody = { reference, dppname, typetiers, codp, datenais };
+    // const soapBody = {reference,dppname,typetiers,codp,datenais}
     const result = await (0, soap_service_1.sendSoapRequest)(params, "Tiers_Search", BasSecurityContext);
     return result;
 }

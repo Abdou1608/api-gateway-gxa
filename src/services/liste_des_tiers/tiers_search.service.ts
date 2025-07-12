@@ -12,7 +12,7 @@ dppname:string, typetiers? : string,codp ?: string, datenais?: string) {
      params.AddString("typetiers",_typetiers)
 
    params.AddString("datanode","")
-  const soapBody = {reference,dppname,typetiers,codp,datenais}
+ // const soapBody = {reference,dppname,typetiers,codp,datenais}
   const result = await sendSoapRequest(params, "Tiers_Search", BasSecurityContext);
   return result;
 }

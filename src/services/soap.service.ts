@@ -1,12 +1,9 @@
-import axios from 'axios';
-import { Builder } from 'xml2js';
 import { AppConfigService } from './AppConfigService/app-config.service';
 import { BasAction } from '../Model/Model-BasAction/BasAction';
 import { BasSoapClient } from '../Model/Model-BasSoapClient/BasSoapClient';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 
-import { Xtlog } from '../Model/xtlog.model';
-import {  new_parseSoapXmlToJson, parseSoapXmlToJson } from '../utils/soap-parser.service';
+import {  parseSoapXmlToJson } from '../utils/soap-parser.service';
 
 const clhttp = require('http')
 const config =new AppConfigService
@@ -30,7 +27,7 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
   }else{
     console.info("⚠️ SessionId et BasSec fournie dans les paramètres correctement!!"+basSecurityContext);}
 
-  //console.log("✅ Inside SENDSOAPREQUEST - SessionId:", sid);
+  console.log("✅ Inside SENDSOAPREQUEST - actionName:", actionName);
   const an= actionName ? actionName: ""
     
     const result= await runBasAct.RunAction(an, params,basSecurityContext ? basSecurityContext : new BasSecurityContext()).then( response=>{
