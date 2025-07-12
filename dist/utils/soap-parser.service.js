@@ -17,7 +17,8 @@ const parser = new fast_xml_parser_1.XMLParser({
 function parseSoapXmlToJson(soapXml, datanode) {
     const parser = new xmldom_1.DOMParser();
     const doc = parser.parseFromString(soapXml, 'application/xml');
-    const dataNode = doc.getElementsByTagName(datanode || 'Data' || datanode + '-rows' || 'data')[0];
+    const dname = datanode + '-rows';
+    const dataNode = doc.getElementsByTagName(datanode || 'Data' || dname || 'data')[0];
     if (!dataNode || !dataNode.textContent) {
         throw new Error(datanode + ' Ou <objects> introuvable dans la réponse SOAP oui Session utilisateur non valide');
     }
@@ -32,12 +33,12 @@ function parseSoapXmlToJson(soapXml, datanode) {
         .replace(/\\\\/g, '\\')
         .replace(/&gt;/g, '>')
         .replace(/&lt;/g, '<');
-    // console.log("La valeur de decoded est ========"+decoded)
+    console.log("**********La valeur de decoded est ========" + decoded);
     const innerXml = parser.parseFromString(decoded, 'application/xml');
     const root = innerXml.documentElement;
     let isList = false;
     if (datanode && datanode !== "") {
-        const nodes = root.getElementsByTagName(datanode || 'Data' || 'rows_' + datanode || 'data');
+        const nodes = root.getElementsByTagName(datanode || 'Data' || dname || 'data');
         const node = nodes[0];
         isList = node ? node.nodeName.toLowerCase().endsWith('s') : false;
     }

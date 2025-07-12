@@ -21,8 +21,8 @@ const parser = new XMLParser({
   const parser = new DOMParser();
   const doc = parser.parseFromString(soapXml, 'application/xml');
  
-
-  const dataNode = doc.getElementsByTagName(datanode || 'Data' || datanode+'-rows' || 'data')[0];
+const dname:string=datanode+'-rows'
+  const dataNode = doc.getElementsByTagName(datanode || 'Data' || dname || 'data')[0];
   
   
   if (!dataNode || !dataNode.textContent) {
@@ -40,12 +40,12 @@ const parser = new XMLParser({
     .replace(/\\\\/g, '\\')
     .replace(/&gt;/g, '>')
     .replace(/&lt;/g, '<');
-  // console.log("La valeur de decoded est ========"+decoded)
+   console.log("**********La valeur de decoded est ========"+decoded)
   const innerXml = parser.parseFromString(decoded, 'application/xml');
   const root = innerXml.documentElement;
   let isList=false
   if (datanode && datanode !== ""){
-    const nodes = root.getElementsByTagName(datanode || 'Data' || 'rows_'+datanode || 'data') ;
+    const nodes = root.getElementsByTagName(datanode || 'Data' || dname || 'data') ;
     const node = nodes[0];
     isList = node ? node.nodeName.toLowerCase().endsWith('s') : false;
     
