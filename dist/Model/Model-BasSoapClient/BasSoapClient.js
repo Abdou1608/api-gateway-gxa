@@ -81,8 +81,8 @@ class BasSoapClient {
             if (response.status !== 200) {
                 throw response.data || 'Erreur SOAP';
             }
-            console.log("From BasSoapClient response in soapRequest.....=" + response);
-            console.log("From BasSoapClient response in soapRequest+response.data.....=" + response.data);
+            // console.log("From BasSoapClient response in soapRequest.....="+response)
+            // console.log("From BasSoapClient response in soapRequest+response.data.....="+response.data)
             return response.data;
         }
         catch (error) {

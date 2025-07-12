@@ -32,7 +32,7 @@ function parseSoapXmlToJson(soapXml, datanode) {
         .replace(/\\\\/g, '\\')
         .replace(/&gt;/g, '>')
         .replace(/&lt;/g, '<');
-    console.log("La valeur de decoded est ========" + decoded);
+    // console.log("La valeur de decoded est ========"+decoded)
     const innerXml = parser.parseFromString(decoded, 'application/xml');
     const root = innerXml.documentElement;
     let isList = false;
@@ -45,15 +45,19 @@ function parseSoapXmlToJson(soapXml, datanode) {
         isList = root.tagName.toLowerCase().endsWith('s');
     }
     console.log("La valeur de isList est ========" + isList);
-    const rawNodes = root.getElementsByTagName('object');
-    console.log("La valeur de rawNodes  est ========" + rawNodes);
+    const tagname = datanode ?? "";
+    const rawNodes = root.getElementsByTagName('object') ?? root.getElementsByTagName(tagname);
     console.log("La valeur de rawNodes[0]  est ========" + rawNodes[0]);
+    console.log("La Longueur de rawNodes  est ========" + rawNodes.length);
     // On vérifie explicitement la présence d'au moins un objet
     let objectNodes = [];
     const serializer = new xmldom_2.XMLSerializer();
     if (isList || rawNodes.length > 0) {
         objectNodes = Array.from(rawNodes); // plusieurs objets
-        console.log("plusieurs objets trouvés");
+        console.log("Nombre d'objets trouvés est ----: " + rawNodes.length);
+        if (objectNodes.length === 0) {
+            throw new Error("Aucun élément <object> trouvé dans le XML et Datanode =" + datanode);
+        }
         return objectNodes.map((node) => {
             const xmlString = serializer.serializeToString(node);
             const result = parseObjectXmlToJson(xmlString);
@@ -69,9 +73,6 @@ function parseSoapXmlToJson(soapXml, datanode) {
         // return new_xmlNodeToJson(rawNodes[0]) as T
     }
     // Si aucun nœud trouvé, on retourne un tableau vide ou lance une erreur
-    if (objectNodes.length === 0) {
-        throw new Error("Aucun élément <object> trouvé dans le XML");
-    }
     /* On mappe uniquement des nœuds valides
     const parsed = objectNodes.map((node) => node.textContent? parseObjectXmlToJson(node.textContent) : null);
     console.log("RESULTA DE arseSoapXmlToJson. PARSED....."+JSON.stringify(parsed))
