@@ -10,7 +10,7 @@ async function produit_listitems(typeecran, branche, disponible, BasSecurityCont
     typeecran ? params.AddString("typeecran", typeecran) : null;
     branche ? params.AddString("branche", branche) : null;
     disponible ? params.AddBool("disponible", disponible) : null;
-    params.AddString("datanode", "prod_rows");
+    params.AddString("datanode", "");
     const result = await (0, soap_service_1.sendSoapRequest)(params, "Produit_ListItems", BasSecurityContext);
     return result;
 }
