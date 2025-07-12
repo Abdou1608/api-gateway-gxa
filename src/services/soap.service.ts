@@ -4,6 +4,7 @@ import { BasSoapClient } from '../Model/Model-BasSoapClient/BasSoapClient';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 
 import {  parseSoapXmlToJson } from '../utils/soap-parser.service';
+import { BasParam } from '../Model/BasSoapObject/BasParam';
 
 const clhttp = require('http')
 const config =new AppConfigService
@@ -12,7 +13,7 @@ const bsc = new BasSoapClient()
 const runBasAct=new BasAction(bsc, config)
 
 
-export async function sendSoapRequest(params: any, actionName?: string, basSecurityContext?:BasSecurityContext): Promise<any> {
+export async function sendSoapRequest(params: any, actionName?: string, basSecurityContext?:BasSecurityContext, _sid?:string): Promise<any> {
  // let SoapParser= new SoapParserService();
   //const builder = new Builder({ headless: true });
   //const xml2js = await import('xml2js');
@@ -20,7 +21,7 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
 //const parser = new xml2js.Parser({ explicitArray: false, ignoreAttrs: true });
 
   // ✅ Extraction propre de SessionId
-  let sid = params["datanode"];
+  let sid = _sid ?? "";
   if (!basSecurityContext) {
     console.warn("⚠️ Aucune SessionId fournie dans les paramètres !");
     throw new Error("Aucune Identité n'est fournie")

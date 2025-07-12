@@ -13,6 +13,6 @@ export async function produit_listitems(typeecran? : string,
    disponible ?  params.AddBool("disponible",disponible) :null
 
    params.AddString("datanode","prod")
-  const result = await sendSoapRequest(params, "Produit_ListItems",BasSecurityContext);
+  const result = await sendSoapRequest(params, "Produit_ListItems",BasSecurityContext,"prod");
   return result;
 }

@@ -11,13 +11,13 @@ const config = new app_config_service_1.AppConfigService;
 const SOAP_URL = config.GetURlActionService();
 const bsc = new BasSoapClient_1.BasSoapClient();
 const runBasAct = new BasAction_1.BasAction(bsc, config);
-async function sendSoapRequest(params, actionName, basSecurityContext) {
+async function sendSoapRequest(params, actionName, basSecurityContext, _sid) {
     // let SoapParser= new SoapParserService();
     //const builder = new Builder({ headless: true });
     //const xml2js = await import('xml2js');
     //const parser = new xml2js.Parser({ explicitArray: false, ignoreAttrs: true });
     // ✅ Extraction propre de SessionId
-    let sid = params["datanode"];
+    let sid = _sid ?? "";
     if (!basSecurityContext) {
         console.warn("⚠️ Aucune SessionId fournie dans les paramètres !");
         throw new Error("Aucune Identité n'est fournie");
