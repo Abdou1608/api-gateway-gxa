@@ -15,72 +15,78 @@ const parser = new fast_xml_parser_1.XMLParser({
 });
 //* Parse une réponse SOAP XML contenant un champ <Data> encodé.
 function parseSoapXmlToJson(soapXml, datanode) {
-    const parser = new xmldom_1.DOMParser();
-    const doc = parser.parseFromString(soapXml, 'application/xml');
-    const dname = datanode + '-rows';
-    const dataNode = doc.getElementsByTagName(datanode || 'Data' || dname || 'data')[0];
-    if (!dataNode || !dataNode.textContent) {
-        throw new Error(datanode + ' Ou <objects> introuvable dans la réponse SOAP oui Session utilisateur non valide');
-    }
-    const decoded = dataNode.textContent
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&amp;/g, '&')
-        .replace(/\\</g, '<')
-        .replace(/\\>/g, '>')
-        .replace(/\\\//g, '/')
-        .replace(/\\"/g, '"')
-        .replace(/\\\\/g, '\\')
-        .replace(/&gt;/g, '>')
-        .replace(/&lt;/g, '<');
-    console.log("**********La valeur de decoded est ========" + decoded);
-    const innerXml = parser.parseFromString(decoded, 'application/xml');
-    const root = innerXml.documentElement;
-    let isList = false;
-    if (datanode && datanode !== "") {
-        const nodes = root.getElementsByTagName(datanode || 'Data' || dname || 'data');
-        const node = nodes[0];
-        isList = node ? node.nodeName.toLowerCase().endsWith('s') : false;
-    }
-    else {
-        isList = root.tagName.toLowerCase().endsWith('s');
-    }
-    console.log("La valeur de isList est ========" + isList);
-    const tagname = datanode ?? "";
-    const rawNodes = root.getElementsByTagName('object') ?? root.getElementsByTagName(tagname);
-    console.log("La valeur de rawNodes[0]  est ========" + rawNodes[0]);
-    console.log("La Longueur de rawNodes  est ========" + rawNodes.length);
-    // On vérifie explicitement la présence d'au moins un objet
-    let objectNodes = [];
-    const serializer = new xmldom_2.XMLSerializer();
-    if (isList || rawNodes.length > 0) {
-        objectNodes = Array.from(rawNodes); // plusieurs objets
-        console.log("Nombre d'objets trouvés est ----: " + rawNodes.length);
-        if (objectNodes.length === 0) {
-            throw new Error("Aucun élément <object> trouvé dans le XML et Datanode =" + datanode);
+    try {
+        const parser = new xmldom_1.DOMParser();
+        const doc = parser.parseFromString(soapXml, 'application/xml');
+        const dname = datanode ? datanode + '-rows' : "";
+        console.log("La valeur de  dname est ========" + dname);
+        const dataNode = doc.getElementsByTagName(datanode || 'Data' || dname || 'data')[0];
+        if (!dataNode || !dataNode.textContent) {
+            throw new Error(dname + ' Ou <objects> introuvable dans la réponse SOAP oui Session utilisateur non valide');
         }
-        return objectNodes.map((node) => {
-            const xmlString = serializer.serializeToString(node);
-            const result = parseObjectXmlToJson(xmlString);
-            return result;
-        });
+        const decoded = dataNode.textContent
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&')
+            .replace(/\\</g, '<')
+            .replace(/\\>/g, '>')
+            .replace(/\\\//g, '/')
+            .replace(/\\"/g, '"')
+            .replace(/\\\\/g, '\\')
+            .replace(/&gt;/g, '>')
+            .replace(/&lt;/g, '<');
+        console.log("**********La valeur de decoded est ========" + decoded);
+        const innerXml = parser.parseFromString(decoded, 'application/xml');
+        const root = innerXml.documentElement;
+        let isList = false;
+        if (datanode && datanode !== "") {
+            const nodes = root.getElementsByTagName(datanode || 'Data' || dname || 'data');
+            const node = nodes[0];
+            isList = node ? node.nodeName.toLowerCase().endsWith('s') : false;
+        }
+        else {
+            isList = root.tagName.toLowerCase().endsWith('s');
+        }
+        console.log("La valeur de isList est ========" + isList);
+        const tagname = datanode ?? "";
+        const rawNodes = root.getElementsByTagName('object') ?? root.getElementsByTagName(tagname);
+        console.log("La valeur de rawNodes[0]  est ========" + rawNodes[0]);
+        console.log("La Longueur de rawNodes  est ========" + rawNodes.length);
+        // On vérifie explicitement la présence d'au moins un objet
+        let objectNodes = [];
+        const serializer = new xmldom_2.XMLSerializer();
+        if (isList || rawNodes.length > 0) {
+            objectNodes = Array.from(rawNodes); // plusieurs objets
+            console.log("Nombre d'objets trouvés est ----: " + rawNodes.length);
+            if (objectNodes.length === 0) {
+                throw new Error("Aucun élément <object> trouvé dans le XML et Datanode =" + datanode);
+            }
+            return objectNodes.map((node) => {
+                const xmlString = serializer.serializeToString(node);
+                const result = parseObjectXmlToJson(xmlString);
+                return result;
+            });
+        }
+        else {
+            // objectNodes.push(rawNodes[0]); // un seul objet
+            console.log("La valeur de rawNodes[0].textcontent  est ========" + rawNodes[0].textContent);
+            const xmlString = serializer.serializeToString(rawNodes[0]);
+            const result = xmlString ?? "";
+            return parseObjectXmlToJson(result);
+            // return new_xmlNodeToJson(rawNodes[0]) as T
+        }
+        // Si aucun nœud trouvé, on retourne un tableau vide ou lance une erreur
+        /* On mappe uniquement des nœuds valides
+        const parsed = objectNodes.map((node) => node.textContent? parseObjectXmlToJson(node.textContent) : null);
+        console.log("RESULTA DE arseSoapXmlToJson. PARSED....."+JSON.stringify(parsed))
+        const result = parsed.length > 1 ? parsed : parsed[0];
+      // console.log("RESULTA DE arseSoapXmlToJson. result....."+JSON.stringify(result))
+        return result as T;
+        */
     }
-    else {
-        // objectNodes.push(rawNodes[0]); // un seul objet
-        console.log("La valeur de rawNodes[0].textcontent  est ========" + rawNodes[0].textContent);
-        const xmlString = serializer.serializeToString(rawNodes[0]);
-        const result = xmlString ?? "";
-        return parseObjectXmlToJson(result);
-        // return new_xmlNodeToJson(rawNodes[0]) as T
+    catch (error) {
+        throw new Error(error.message);
     }
-    // Si aucun nœud trouvé, on retourne un tableau vide ou lance une erreur
-    /* On mappe uniquement des nœuds valides
-    const parsed = objectNodes.map((node) => node.textContent? parseObjectXmlToJson(node.textContent) : null);
-    console.log("RESULTA DE arseSoapXmlToJson. PARSED....."+JSON.stringify(parsed))
-    const result = parsed.length > 1 ? parsed : parsed[0];
-  // console.log("RESULTA DE arseSoapXmlToJson. result....."+JSON.stringify(result))
-    return result as T;
-    */
 }
 function parseObjectXmlToJson(xml) {
     const parser = new fast_xml_parser_1.XMLParser({

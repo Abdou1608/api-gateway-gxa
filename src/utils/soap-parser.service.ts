@@ -18,15 +18,17 @@ const parser = new XMLParser({
  //* Parse une réponse SOAP XML contenant un champ <Data> encodé.
  
  export function parseSoapXmlToJson<T = any | any[]>(soapXml: string, datanode?:string): T | T[]{
+  try {
   const parser = new DOMParser();
   const doc = parser.parseFromString(soapXml, 'application/xml');
  
-const dname:string=datanode+'-rows'
+const dname:string=datanode ? datanode+'-rows':""
+console.log("La valeur de  dname est ========"+ dname)
   const dataNode = doc.getElementsByTagName(datanode || 'Data' || dname || 'data')[0];
   
   
   if (!dataNode || !dataNode.textContent) {
-    throw new Error(datanode+' Ou <objects> introuvable dans la réponse SOAP oui Session utilisateur non valide');
+    throw new Error(dname+' Ou <objects> introuvable dans la réponse SOAP oui Session utilisateur non valide');
   }
 
   const decoded = dataNode.textContent
@@ -94,6 +96,9 @@ const dname:string=datanode+'-rows'
 // console.log("RESULTA DE arseSoapXmlToJson. result....."+JSON.stringify(result))
   return result as T;
   */
+} catch (error:any) {
+  throw new Error(error.message)
+}
 }
 interface ParsedJson {
   [key: string]: string | number | boolean | null;

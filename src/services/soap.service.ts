@@ -29,6 +29,7 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
     console.info("⚠️ SessionId et BasSec fournie dans les paramètres correctement!!"+basSecurityContext);}
 
   console.log("✅ Inside SENDSOAPREQUEST - actionName:", actionName);
+  console.log("✅ Inside SENDSOAPREQUEST - sid:", sid);
   const an= actionName ? actionName: ""
     
     const result= await runBasAct.RunAction(an, params,basSecurityContext ? basSecurityContext : new BasSecurityContext()).then( response=>{
