@@ -20,7 +20,7 @@ function parseSoapXmlToJson(soapXml, datanode) {
         const doc = parser.parseFromString(soapXml, 'application/xml');
         const dname = datanode ? datanode + '-rows' : "";
         console.log("La valeur de  dname est ========" + dname);
-        const dataNode = doc.getElementsByTagName(datanode || 'Data' || dname || 'data')[0];
+        const dataNode = doc.getElementsByTagName(datanode || 'Data' || 'data')[0];
         if (!dataNode || !dataNode.textContent) {
             throw new Error(dname + ' Ou <objects> introuvable dans la réponse SOAP oui Session utilisateur non valide');
         }
@@ -49,7 +49,7 @@ function parseSoapXmlToJson(soapXml, datanode) {
         }
         console.log("La valeur de isList est ========" + isList);
         const tagname = datanode ?? "";
-        const rawNodes = root.getElementsByTagName('object') ?? root.getElementsByTagName(tagname);
+        const rawNodes = root.getElementsByTagName(tagname) ?? root.getElementsByTagName('object');
         console.log("La valeur de rawNodes[0]  est ========" + rawNodes[0]);
         console.log("La Longueur de rawNodes  est ========" + rawNodes.length);
         // On vérifie explicitement la présence d'au moins un objet
