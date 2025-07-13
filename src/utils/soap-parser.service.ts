@@ -413,7 +413,7 @@ export function parseProdSoapResponse(xmlString: string): Produit[] {
   console.log(":===============================================================================================================================")
   console.log(":===============================================================================================================================")
 
-  //console.log('xmlString dans parseSoapResponse=.....'+ xmlString)
+ // console.log('xmlString dans parseSoapResponse=.....'+ xmlString)
   const _xmlContent = xmlString
   .replace(/\\</g, '<')
   .replace(/\\>/g, '>')
@@ -423,10 +423,17 @@ export function parseProdSoapResponse(xmlString: string): Produit[] {
   .replace('&gt;', '>')
   .replace('&lt;', '<')
   .replace(/&gt;/g, '>')
-  .replace(/&lt;/g, '<');
-       
+  .replace(/&lt;/g, '<')
+  .replace(/&amp;/g, '&');  
+  console.log('_xmlContent dans parseSoapResponse=.....'+ _xmlContent)  
   const rawContentMatch = _xmlContent.match(/<prods[^>]*>([\s\S]*?)<\/prods>/);
-  if (!rawContentMatch) return produits;
+  console.log("rawContentMatch ========"+rawContentMatch)
+
+  if (!rawContentMatch){
+    //console.log("_xmlContent ========"+_xmlContent)
+    throw new Error('rawContentMatch est inexistant dans la réponse SOAP');
+  
+  };
 const xmlContent = rawContentMatch[0]
   
 
