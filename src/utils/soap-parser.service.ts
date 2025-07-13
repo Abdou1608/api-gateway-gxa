@@ -1,6 +1,7 @@
 import { XMLParser } from 'fast-xml-parser';
 import { DOMParser } from 'xmldom';
 import { DOMImplementation, XMLSerializer } from 'xmldom';
+import { Produit } from '../Model/produit.model';
 export interface XmlParsedObject {
   [key: string]: string | number | boolean | null | XmlParsedObject | XmlParsedObject[];
 }
@@ -18,21 +19,11 @@ const parser = new XMLParser({
  //* Parse une réponse SOAP XML contenant un champ <Data> encodé.
  
  export function parseSoapXmlToJson<T = any | any[]>(soapXml: string, datanode?:string): T | T[]{
-  const decoded = soapXml
-  .replace(/&lt;/g, '<')
-  .replace(/&gt;/g, '>')
-  .replace(/&amp;/g, '&')
-  .replace(/\\</g, '<')
-  .replace(/\\>/g, '>')
-  .replace(/\\\//g, '/')
-  .replace(/\\"/g, '"')
-  .replace(/\\\\/g, '\\')
-  .replace(/&gt;/g, '>')
-  .replace(/&lt;/g, '<');
+ 
   try {
   const parser = new DOMParser();
   const serializer = new XMLSerializer();
-  const doc = parser.parseFromString(decoded, 'application/xml');
+  const doc = parser.parseFromString(soapXml, 'application/xml');
  // console.log("La valeur de  soapXml est ========"+ soapXml)
 const dname:string=datanode ? datanode+'-rows':""
 console.log("La valeur de  dname est ========"+ dname)
@@ -42,18 +33,10 @@ console.log("La valeur de  dname est ========"+ dname)
   if (!dataNode || !dataNode.textContent) {
      dataNode = doc.querySelector('Data') ??  doc.getElementsByTagName(dname)[0];
      if (!dataNode ) {
-      const match = decoded.match(/<prods[^>]*>[\s\S]*?<\/prods>/);
-    if (match){
-      const wrappedXml = match[0];
-      const xmlDoc = parser.parseFromString(wrappedXml, 'text/xml');
-      dataNode=xmlDoc.documentElement
-      console.log('Match if ok and  wrappedXml ===='+wrappedXml)
-      //.getElementsByTagName(dataNode)[0]
-     }else{
-      console.log(' dataNode introuvable dans la réponse SOAP')
-      throw new Error('dataNode est inexistant dans la réponse SOAP oui Session utilisateur non valide');
-    
-     } } if(!dataNode.textContent){
+      console.log(' Ou <Data> introuvable dans la réponse SOAP')
+      //return parseProdSoapResponse()
+    throw new Error('dataNode est inexistant dans la réponse SOAP oui Session utilisateur non valide');
+     } else if(!dataNode.textContent){
       console.log('dataNode.textContent est inexistant dans la réponse SOAP')
       console.log('Le contenue de dataNode est-----'+ serializer.serializeToString(dataNode))
     
@@ -62,9 +45,19 @@ console.log("La valeur de  dname est ========"+ dname)
      }
     }
 
-  
-  // console.log("**********La valeur de decoded est ========"+decoded)
-  const innerXml = parser.parseFromString(dataNode.textContent, 'application/xml');
+  const decoded = dataNode.textContent
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/\\</g, '<')
+    .replace(/\\>/g, '>')
+    .replace(/\\\//g, '/')
+    .replace(/\\"/g, '"')
+    .replace(/\\\\/g, '\\')
+    .replace(/&gt;/g, '>')
+    .replace(/&lt;/g, '<');
+   console.log("**********La valeur de decoded est ========"+decoded)
+  const innerXml = parser.parseFromString(decoded, 'application/xml');
   const root = innerXml.documentElement;
   let isList=false
   let _dn=0
@@ -414,5 +407,73 @@ export function new_parseObjectXmlToJson(xml: string): new_ParsedJson {
 
   return output;
 }
+export function parseProdSoapResponse(xmlString: string): Produit[] {
+  const produits: Produit[] = [];
+  console.log(":===============================================================================================================================")
+  console.log(":===============================================================================================================================")
+  console.log(":===============================================================================================================================")
+
+  //console.log('xmlString dans parseSoapResponse=.....'+ xmlString)
+  const _xmlContent = xmlString
+  .replace(/\\</g, '<')
+  .replace(/\\>/g, '>')
+  .replace(/\\\//g, '/')
+  .replace(/\\"/g, '"')
+  .replace(/\\\\/g, '\\')
+  .replace('&gt;', '>')
+  .replace('&lt;', '<')
+  .replace(/&gt;/g, '>')
+  .replace(/&lt;/g, '<');
+       
+  const rawContentMatch = _xmlContent.match(/<prods[^>]*>([\s\S]*?)<\/prods>/);
+  if (!rawContentMatch) return produits;
+const xmlContent = rawContentMatch[0]
+  
+
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
+
+  const prodElements = xmlDoc.getElementsByTagName('prod');
+
+console.log(":===============================================================================================================================")
+
+console.log('£££££prodElements.length  =.....'+prodElements.length)
+  for (let i = 0; i < prodElements.length; i++) {
+    const prod = prodElements[i];
+
+    const getTagValue = (tagName: string): any => {
+      const el = prod.getElementsByTagName(tagName)[0];
+      return el?.textContent?.trim() ?? '';
+    };
+
+
+    const produit: Produit = {
+      codeprod: getTagValue('b_codeprod'),
+      branche: getTagValue('b_branche'),
+      branc: getTagValue('b_branc'),
+      libelle: getTagValue('b_libelle'),
+      cieprin: getTagValue('b_cieprin'),
+      pronopol: getTagValue('b_pronopol'),
+      pronoave: getTagValue('b_pronoave'),
+      groupe: getTagValue('b_groupe'),
+      tartype: getTagValue('b_tartype'),
+      tardev: getTagValue('b_tardev'),
+      tarcle: getTagValue('b_tarcle'),
+      tararro: getTagValue('b_tararro'),
+      tauxatt: getTagValue('b_tauxatt'),
+      nondispo: getTagValue('b_nondispo'),
+      majcrm: getTagValue('b_majcrm'),
+      catalog: getTagValue('b_catalog'),
+      ole: getTagValue('b_ole'),
+      typarro: getTagValue('b_typarro'),
+      fvahom: getTagValue('b_fvahom'),
+    };
+console.log('Produit extrait et reconstituee  =.....'+produit.codeprod)
+    produits.push(produit);
+  }
+
+  return produits;
+}
+
 
 

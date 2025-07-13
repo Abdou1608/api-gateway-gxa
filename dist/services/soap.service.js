@@ -33,7 +33,12 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid) {
         // if (actionName === "Xtlog_Get"){
         // return  parseSoapXmlToJson(response,sid)
         // }
-        return (0, soap_parser_service_1.parseSoapXmlToJson)(response, sid);
+        if (sid == "prod") {
+            return (0, soap_parser_service_1.parseProdSoapResponse)(response);
+        }
+        else {
+            return (0, soap_parser_service_1.parseSoapXmlToJson)(response, sid);
+        }
     }).catch(e => { return "Erreur d'extraction des données :" + e.message; });
     //parser.parseStringPromise(response);
     if (JSON.stringify(result).includes("Erreur d'extraction des données :")) {

@@ -3,7 +3,7 @@ import { BasAction } from '../Model/Model-BasAction/BasAction';
 import { BasSoapClient } from '../Model/Model-BasSoapClient/BasSoapClient';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 
-import {  parseSoapXmlToJson } from '../utils/soap-parser.service';
+import {  parseProdSoapResponse, parseSoapXmlToJson } from '../utils/soap-parser.service';
 import { BasParam } from '../Model/BasSoapObject/BasParam';
 
 const clhttp = require('http')
@@ -37,8 +37,11 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
      // if (actionName === "Xtlog_Get"){
     // return  parseSoapXmlToJson(response,sid)
    // }
-return parseSoapXmlToJson(response,sid)
-
+   if (sid=="prod"){
+    return parseProdSoapResponse(response)
+   }else{
+    return parseSoapXmlToJson(response,sid)
+   }
      
     }).catch(e => {return "Erreur d'extraction des données :"+e.message})
    
