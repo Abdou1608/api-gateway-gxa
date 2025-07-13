@@ -15,10 +15,21 @@ const parser = new fast_xml_parser_1.XMLParser({
 });
 //* Parse une réponse SOAP XML contenant un champ <Data> encodé.
 function parseSoapXmlToJson(soapXml, datanode) {
+    const decoded = soapXml
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/\\</g, '<')
+        .replace(/\\>/g, '>')
+        .replace(/\\\//g, '/')
+        .replace(/\\"/g, '"')
+        .replace(/\\\\/g, '\\')
+        .replace(/&gt;/g, '>')
+        .replace(/&lt;/g, '<');
     try {
         const parser = new xmldom_1.DOMParser();
         const serializer = new xmldom_2.XMLSerializer();
-        const doc = parser.parseFromString(soapXml, 'application/xml');
+        const doc = parser.parseFromString(decoded, 'application/xml');
         // console.log("La valeur de  soapXml est ========"+ soapXml)
         const dname = datanode ? datanode + '-rows' : "";
         console.log("La valeur de  dname est ========" + dname);
@@ -26,28 +37,27 @@ function parseSoapXmlToJson(soapXml, datanode) {
         if (!dataNode || !dataNode.textContent) {
             dataNode = doc.querySelector('Data') ?? doc.getElementsByTagName(dname)[0];
             if (!dataNode) {
-                console.log(' Ou <Data> introuvable dans la réponse SOAP');
-                throw new Error('dataNode est inexistant dans la réponse SOAP oui Session utilisateur non valide');
+                const match = decoded.match(/<prods[^>]*>[\s\S]*?<\/prods>/);
+                if (match) {
+                    const wrappedXml = match[0];
+                    const xmlDoc = parser.parseFromString(wrappedXml, 'text/xml');
+                    dataNode = xmlDoc.documentElement;
+                    console.log('Match if ok and  wrappedXml ====' + wrappedXml);
+                    //.getElementsByTagName(dataNode)[0]
+                }
+                else {
+                    console.log(' dataNode introuvable dans la réponse SOAP');
+                    throw new Error('dataNode est inexistant dans la réponse SOAP oui Session utilisateur non valide');
+                }
             }
-            else if (!dataNode.textContent) {
+            if (!dataNode.textContent) {
                 console.log('dataNode.textContent est inexistant dans la réponse SOAP');
                 console.log('Le contenue de dataNode est-----' + serializer.serializeToString(dataNode));
                 throw new Error(dname + ' dataNode.textContent introuvable dans la réponse SOAP oui Session utilisateur non valide');
             }
         }
-        const decoded = dataNode.textContent
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>')
-            .replace(/&amp;/g, '&')
-            .replace(/\\</g, '<')
-            .replace(/\\>/g, '>')
-            .replace(/\\\//g, '/')
-            .replace(/\\"/g, '"')
-            .replace(/\\\\/g, '\\')
-            .replace(/&gt;/g, '>')
-            .replace(/&lt;/g, '<');
-        console.log("**********La valeur de decoded est ========" + decoded);
-        const innerXml = parser.parseFromString(decoded, 'application/xml');
+        // console.log("**********La valeur de decoded est ========"+decoded)
+        const innerXml = parser.parseFromString(dataNode.textContent, 'application/xml');
         const root = innerXml.documentElement;
         let isList = false;
         let _dn = 0;
