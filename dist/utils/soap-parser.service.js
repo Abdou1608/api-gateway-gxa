@@ -17,16 +17,22 @@ const parser = new fast_xml_parser_1.XMLParser({
 function parseSoapXmlToJson(soapXml, datanode) {
     try {
         const parser = new xmldom_1.DOMParser();
+        const serializer = new xmldom_2.XMLSerializer();
         const doc = parser.parseFromString(soapXml, 'application/xml');
         // console.log("La valeur de  soapXml est ========"+ soapXml)
         const dname = datanode ? datanode + '-rows' : "";
         console.log("La valeur de  dname est ========" + dname);
         let dataNode = doc.getElementsByTagName(datanode || 'Data' || 'data')[0];
         if (!dataNode || !dataNode.textContent) {
-            dataNode = doc.getElementsByTagName(dname)[0];
-            if (!dataNode || !dataNode.textContent) {
-                console.log(dname + ' Ou <Data> introuvable dans la réponse SOAP');
-                throw new Error(dname + ' Ou <objects> introuvable dans la réponse SOAP oui Session utilisateur non valide');
+            dataNode = doc.querySelector('Data') ?? doc.getElementsByTagName(dname)[0];
+            if (!dataNode) {
+                console.log(' Ou <Data> introuvable dans la réponse SOAP');
+                throw new Error('dataNode est inexistant dans la réponse SOAP oui Session utilisateur non valide');
+            }
+            else if (!dataNode.textContent) {
+                console.log('dataNode.textContent est inexistant dans la réponse SOAP');
+                console.log('Le contenue de dataNode est-----' + serializer.serializeToString(dataNode));
+                throw new Error(dname + ' dataNode.textContent introuvable dans la réponse SOAP oui Session utilisateur non valide');
             }
         }
         const decoded = dataNode.textContent
@@ -64,7 +70,6 @@ function parseSoapXmlToJson(soapXml, datanode) {
         console.log("La Longueur de rawNodes  est ========" + rawNodes.length);
         // On vérifie explicitement la présence d'au moins un objet
         let objectNodes = [];
-        const serializer = new xmldom_2.XMLSerializer();
         if (isList || rawNodes.length > 0) {
             objectNodes = Array.from(rawNodes); // plusieurs objets
             console.log("Nombre d'objets trouvés est ----: " + rawNodes.length);
