@@ -426,7 +426,7 @@ export function parseProdSoapResponse(xmlString: string): Produit[] {
   .replace(/&lt;/g, '<')
   .replace(/&amp;/g, '&');  
   console.log('_xmlContent dans parseSoapResponse=.....'+ _xmlContent)  
-  const rawContentMatch = _xmlContent.match(/<prods[^>]*>([\s\S]*?)<\/prods>/);
+  const rawContentMatch = _xmlContent.match(/<prod-rows[^>]*>([\s\S]*?)<\/prod-rows>/);
   console.log("rawContentMatch ========"+rawContentMatch)
 
   if (!rawContentMatch){
