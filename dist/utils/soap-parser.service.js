@@ -18,16 +18,14 @@ function parseSoapXmlToJson(soapXml, datanode) {
     try {
         const parser = new xmldom_1.DOMParser();
         const doc = parser.parseFromString(soapXml, 'application/xml');
-        console.log("La valeur de  soapXml est ========" + soapXml);
+        // console.log("La valeur de  soapXml est ========"+ soapXml)
         const dname = datanode ? datanode + '-rows' : "";
         console.log("La valeur de  dname est ========" + dname);
         let dataNode = doc.getElementsByTagName(datanode || 'Data' || 'data')[0];
         if (!dataNode || !dataNode.textContent) {
             dataNode = doc.getElementsByTagName(dname)[0];
             if (!dataNode || !dataNode.textContent) {
-                dataNode = doc.getElementsByName(dname)[0];
-            }
-            if (!dataNode || !dataNode.textContent) {
+                console.log(dname + ' Ou <Data> introuvable dans la réponse SOAP');
                 throw new Error(dname + ' Ou <objects> introuvable dans la réponse SOAP oui Session utilisateur non valide');
             }
         }
