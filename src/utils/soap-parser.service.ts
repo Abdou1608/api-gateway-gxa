@@ -21,15 +21,20 @@ const parser = new XMLParser({
   try {
   const parser = new DOMParser();
   const doc = parser.parseFromString(soapXml, 'application/xml');
- 
+  console.log("La valeur de  doc.textContent est ========"+ doc.textContent)
 const dname:string=datanode ? datanode+'-rows':""
 console.log("La valeur de  dname est ========"+ dname)
-  const dataNode = doc.getElementsByTagName(datanode || 'Data' || 'data')[0];
+  let dataNode = doc.getElementsByTagName(datanode || 'Data' || 'data')[0];
   
   
   if (!dataNode || !dataNode.textContent) {
+     dataNode = doc.getElementsByTagName(dname)[0];
+     if (!dataNode || !dataNode.textContent) {
+      dataNode = doc.getElementsByName(dname)[0];
+     }
+     if (!dataNode || !dataNode.textContent) {
     throw new Error(dname+' Ou <objects> introuvable dans la réponse SOAP oui Session utilisateur non valide');
-  }
+     }}
 
   const decoded = dataNode.textContent
     .replace(/&lt;/g, '<')
