@@ -1,11 +1,12 @@
 import { BasParams } from "../../Model/BasSoapObject/BasParams";
+import { BasSecurityContext } from "../../Model/BasSoapObject/BasSecurityContext";
 import { sendSoapRequest } from "../soap.service";
 
 
-export async function produit_details(code : string,
+export async function produit_details(code : string,BasSecurityContext:BasSecurityContext,
 	options? : boolean,
 	basecouvs?: boolean,
-	clauses? : boolean,BasSecurityContext?:any,) {
+	clauses? : boolean) {
 
   const params=new BasParams()
   params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())

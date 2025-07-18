@@ -1,11 +1,24 @@
 import { Router } from 'express';
 import { cont_search } from '../services/liste_des_contrats/cont_search.service';
+import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
+import { api_liste_des_contratsValidator } from '../validators/api_liste_des_contratsValidator';
+import { validateBody } from '../middleware/zodValidator';
+
+
 
 const router = Router();
 
-router.post('/', async (req, res) => {
+router.post('/', validateBody(api_liste_des_contratsValidator), async (req, res) => {
   try {
-    const result = await cont_search(req.body);
+    const _BasSecurityContext= new BasSecurityContext()
+    _BasSecurityContext.IsAuthenticated=true
+    _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
+  const reference=req.body.reference ?? ""
+    const detailorigine=req.body.detailorigine
+    const origine= req.body.origine 
+    const codefic=req.body.codefic ?? ""
+    const nomchamp=req.body.nomchamp ??""
+    const result = await cont_search(reference,detailorigine,origine,codefic,nomchamp,_BasSecurityContext);
     res.json(result);
   } catch (error:any) {
     res.status(500).json({ error: error.message });
@@ -13,3 +26,4 @@ router.post('/', async (req, res) => {
 });
 
 export default router;
+// Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend

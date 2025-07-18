@@ -2,8 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const opensession_1 = require("../services/login/opensession");
+const api_loginValidator_1 = require("../validators/api_loginValidator");
+const zodValidator_1 = require("../middleware/zodValidator");
 const router = (0, express_1.Router)();
-router.post('/', async (req, res) => {
+router.post('/', (0, zodValidator_1.validateBody)(api_loginValidator_1.api_loginValidator), async (req, res) => {
     const logon = req.body.login ?? req.body.username;
     const password = req.body.password;
     const domain = req.body.domain;
@@ -26,3 +28,4 @@ router.post('/', async (req, res) => {
     }
 });
 exports.default = router;
+// Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend

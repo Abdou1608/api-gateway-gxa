@@ -18,3 +18,4 @@ router.post('/', async (req, res) => {
     }
 });
 exports.default = router;
+// Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend

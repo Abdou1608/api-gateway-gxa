@@ -1,9 +1,13 @@
 import { Router } from 'express';
 import { tiers_create } from '../services/create_tier/tiers_create.service';
+//import { api_create_tierValidator } from '../validators/';
+import { validateBody } from '../middleware/zodValidator';
+
+
 
 const router = Router();
 
-router.post('/', async (req, res) => {
+router.post('/',  async (req, res) => {
   try {
   const  typtiers=req.body.typtiers
 	const nature =req.body.nature
@@ -18,3 +22,4 @@ const	data =req.body.data
 });
 
 export default router;
+// Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend

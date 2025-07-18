@@ -35,13 +35,16 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const ProjectService = __importStar(require("../services/project.service"));
+const Validators = __importStar(require("../validators"));
+const zodValidator_1 = require("../middleware/zodValidator");
 const router = (0, express_1.Router)();
-router.post('/project_listitems', ProjectService.Project_ListItemsHandler);
-router.post('/Project_OfferListItems', ProjectService.Project_OfferListItemsHandler);
-router.post('/project_detail', ProjectService.Project_DetailHandler);
-router.post('/project_create', ProjectService.Project_CreateHandler);
-router.post('/project_update', ProjectService.Project_updateHandler);
-router.post('/project_addoffer', ProjectService.Project_AddOfferHandler);
-router.post('/project_deleteoffer', ProjectService.Project_DeleteOfferHandler);
-router.post('/project_validateoffer', ProjectService.Project_ValidateOfferHandler);
+router.post('/project_listitems', (0, zodValidator_1.validateBody)(Validators.api_projects_project_listitemsValidator), ProjectService.Project_ListItemsHandler);
+router.post('/Project_OfferListItems', (0, zodValidator_1.validateBody)(Validators.api_projects_project_offerlistitemsValidator), ProjectService.Project_OfferListItemsHandler);
+router.post('/project_detail', (0, zodValidator_1.validateBody)(Validators.api_projects_project_detailValidator), ProjectService.Project_DetailHandler);
+router.post('/project_create', (0, zodValidator_1.validateBody)(Validators.api_projects_project_createValidator), ProjectService.Project_CreateHandler);
+router.post('/project_update', (0, zodValidator_1.validateBody)(Validators.api_projects_project_updateValidator), ProjectService.Project_updateHandler);
+router.post('/project_addoffer', (0, zodValidator_1.validateBody)(Validators.api_projects_project_addofferValidator), ProjectService.Project_AddOfferHandler);
+router.post('/project_deleteoffer', (0, zodValidator_1.validateBody)(Validators.api_projects_project_deleteofferValidator), ProjectService.Project_DeleteOfferHandler);
+router.post('/project_validateoffer', (0, zodValidator_1.validateBody)(Validators.api_projects_project_validateofferValidator), ProjectService.Project_ValidateOfferHandler);
 exports.default = router;
+// Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend

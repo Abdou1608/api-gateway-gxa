@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.produit_details = produit_details;
 const BasParams_1 = require("../../Model/BasSoapObject/BasParams");
 const soap_service_1 = require("../soap.service");
-async function produit_details(code, options, basecouvs, clauses, BasSecurityContext) {
+async function produit_details(code, BasSecurityContext, options, basecouvs, clauses) {
     const params = new BasParams_1.BasParams();
     params.AddStr("BasSecurityContext", BasSecurityContext.ToSoapVar());
     params.AddString("code", code);

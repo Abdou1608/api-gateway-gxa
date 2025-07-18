@@ -1,10 +1,14 @@
 import { Router } from 'express';
 import { tiers_details } from '../services/detail_tier/tiers_details.service';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
+import { api_detail_tierValidator } from '../validators/api_detail_tierValidator';
+import { validateBody } from '../middleware/zodValidator';
+
+
 
 const router = Router();
 
-router.post('/', async (req, res) => {
+router.post('/', validateBody(api_detail_tierValidator), async (req, res) => {
   
   try {
     const _BasSecurityContext= new BasSecurityContext()
@@ -21,3 +25,4 @@ router.post('/', async (req, res) => {
 });
 
 export default router;
+// Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend

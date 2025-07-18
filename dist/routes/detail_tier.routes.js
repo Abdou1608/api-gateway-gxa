@@ -3,8 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const tiers_details_service_1 = require("../services/detail_tier/tiers_details.service");
 const BasSecurityContext_1 = require("../Model/BasSoapObject/BasSecurityContext");
+const api_detail_tierValidator_1 = require("../validators/api_detail_tierValidator");
+const zodValidator_1 = require("../middleware/zodValidator");
 const router = (0, express_1.Router)();
-router.post('/', async (req, res) => {
+router.post('/', (0, zodValidator_1.validateBody)(api_detail_tierValidator_1.api_detail_tierValidator), async (req, res) => {
     try {
         const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         _BasSecurityContext.IsAuthenticated = true;
@@ -20,3 +22,4 @@ router.post('/', async (req, res) => {
     }
 });
 exports.default = router;
+// Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend

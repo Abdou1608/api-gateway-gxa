@@ -1,5 +1,5 @@
 import express from 'express';
-import ajout_pièce_au_contrat from './ajout_pièce_au_contrat.routes';
+import ajout_piece_au_contrat from './ajout_piece_au_contrat.routes';
 import check_session from './check_session.routes';
 import create_contrat from './create_contrat.routes';
 import create_quittance from './create_quittance.routes';
@@ -21,12 +21,21 @@ import recherche_tier from './recherche_tier.routes';
 import update_contrat from './update_contrat.routes';
 import update_tier from './update_tier.routes';
 import router from './project.routes';
-import update_pièce_du_contrat from "./update_pièce_du_contrat.routes";
+import update_piece_au_contrat from './update_piece_du_contrat.routes';
 import tabrouter from './tab.routes';
+import swaggerUi from "swagger-ui-express";
+import YAML from "yamljs";
+
+
+
+
+
 
 
 export function registerRoutes(app: express.Application) {
-  app.use("/api/ajout_pièce_au_contrat", ajout_pièce_au_contrat);
+  const swaggerDocument = YAML.load("./openapi.fr.ex.custom.yaml");
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  app.use("/api/ajout_pièce_au_contrat", ajout_piece_au_contrat);
   app.use("/api/check_session", check_session);
   app.use("/api/create_contrat", create_contrat);
   app.use("/api/create_quittance", create_quittance);
@@ -48,5 +57,5 @@ export function registerRoutes(app: express.Application) {
   app.use("/api/Tiers_Search", recherche_tier);
   app.use("/api/Contrat_Update", update_contrat);
   app.use("/api/Tiers_Update", update_tier);
-  app.use("/api/update_pièce_contrat",update_pièce_du_contrat)
+  app.use("/api/update_pièce_contrat",update_piece_au_contrat)
 }

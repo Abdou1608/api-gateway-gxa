@@ -13,7 +13,6 @@ export async function cont_create(dossier:number,
     produit ? params.AddString("produit",produit) : null
     effet ? params.AddDateTime("effet",effet) : null
     data ? params.AddStr("data",data) : null
-
   const result = await sendSoapRequest(params, "Cont_Create", BasSecurityContext);
   return result;
 }

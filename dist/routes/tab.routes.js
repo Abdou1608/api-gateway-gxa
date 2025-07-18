@@ -40,3 +40,4 @@ tabrouter.post('/Tab_ListItems', Tabservice.Tab_ListItems);
 tabrouter.post('/Tab_ListValues', Tabservice.Tab_ListValues);
 tabrouter.post('/Tab_GetValue', Tabservice.Tab_GetValue);
 exports.default = tabrouter;
+// Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend

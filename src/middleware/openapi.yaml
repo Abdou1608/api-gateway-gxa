@@ -1,0 +1,861 @@
+openapi: 3.0.3
+info:
+  title: SOAP REST Gateway API
+  version: 1.0.0
+  description: Documentation automatique générée à partir des interfaces TypeScript
+paths:
+  /ajout_pièce_au_contrat:
+    post:
+      summary: Créer ajout_pièce_au_contrat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ajout_pièce_au_contratInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /check_session:
+    post:
+      summary: Créer check_session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/check_sessionInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /contrat_update:
+    post:
+      summary: Créer contrat_update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/contrat_updateInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /create_contrat:
+    post:
+      summary: Créer create_contrat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_contratInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /create_quittance:
+    post:
+      summary: Créer create_quittance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_quittanceInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /create_reglement:
+    post:
+      summary: Créer create_reglement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_reglementInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /detail_contrat:
+    post:
+      summary: Créer detail_contrat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/detail_contratInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /detail_produit:
+    post:
+      summary: Créer detail_produit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/detail_produitInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /detail_quittance:
+    post:
+      summary: Créer detail_quittance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/detail_quittanceInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /detail_tier:
+    post:
+      summary: Créer detail_tier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/detail_tierInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /liste_des_contrats:
+    post:
+      summary: Créer liste_des_contrats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/liste_des_contratsInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /liste_des_contrats_d_un_tier:
+    post:
+      summary: Créer liste_des_contrats_d_un_tier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/liste_des_contrats_d_un_tierInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /liste_des_produits:
+    post:
+      summary: Créer liste_des_produits
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/liste_des_produitsInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /liste_des_quittances:
+    post:
+      summary: Créer liste_des_quittances
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/liste_des_quittancesInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /login:
+    post:
+      summary: Créer login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/loginInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /logout:
+    post:
+      summary: Créer logout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/logoutInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /profile:
+    post:
+      summary: Créer profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/profileInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /projects_project_addoffer:
+    post:
+      summary: Créer projects_project_addoffer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/projects_project_addofferInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /projects_project_create:
+    post:
+      summary: Créer projects_project_create
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/projects_project_createInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /projects_project_deleteoffer:
+    post:
+      summary: Créer projects_project_deleteoffer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/projects_project_deleteofferInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /projects_project_detail:
+    post:
+      summary: Créer projects_project_detail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/projects_project_detailInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /projects_project_listitems:
+    post:
+      summary: Créer projects_project_listitems
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/projects_project_listitemsInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /projects_project_offerlistitems:
+    post:
+      summary: Créer projects_project_offerlistitems
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/projects_project_offerlistitemsInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /projects_project_update:
+    post:
+      summary: Créer projects_project_update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/projects_project_updateInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /projects_project_validateoffer:
+    post:
+      summary: Créer projects_project_validateoffer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/projects_project_validateofferInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /tiers_search:
+    post:
+      summary: Créer tiers_search
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/tiers_searchInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+  /update_pièce_contrat:
+    post:
+      summary: Créer update_pièce_contrat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update_pièce_contratInput'
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+components:
+  schemas:
+    ajout_pièce_au_contratInput:
+      type: object
+      properties:
+        contrat:
+          type: number
+        produit:
+          type: string
+        Effet:
+          type: string
+      required:
+      - contrat
+      - produit
+      - Effet
+    check_sessionInput:
+      type: object
+      properties:
+        BasSecurityContext:
+          type: string
+      required:
+      - BasSecurityContext
+    contrat_updateInput:
+      type: object
+      properties:
+        contrat:
+          type: number
+        piece:
+          type: string
+        data:
+          type: string
+      required:
+      - contrat
+      - data
+    create_contratInput:
+      type: object
+      properties:
+        dossier:
+          type: number
+        produit:
+          type: string
+        Effet:
+          type: string
+      required:
+      - dossier
+      - produit
+      - Effet
+    create_quittanceInput:
+      type: object
+      properties:
+        contrat:
+          type: number
+        piece:
+          type: number
+        bordereau:
+          type: number
+        data:
+          type: string
+      required:
+      - contrat
+      - piece
+      - bordereau
+      - data
+    create_reglementInput:
+      type: object
+      properties:
+        typeoperation:
+          type: string
+        typeenc:
+          type: string
+        targetkind:
+          type: string
+        targetqintid:
+          type: string
+        montant:
+          type: number
+        devise:
+          type: string
+        date:
+          type: string
+        dateff:
+          type: string
+        reference:
+          type: string
+        tierspayeur:
+          type: string
+      required:
+      - typeoperation
+      - typeenc
+      - targetkind
+      - montant
+      - devise
+    detail_contratInput:
+      type: object
+      properties:
+        contrat:
+          type: number
+        Allpieces:
+          type: boolean
+        DetailAdh:
+          type: boolean
+        RISA:
+          type: string
+        RIMM:
+          type: string
+        RVEH:
+          type: string
+        RDIV:
+          type: string
+        RDPP:
+          type: string
+        Garanties:
+          type: boolean
+        Extensions:
+          type: boolean
+        infosCieProd:
+          type: boolean
+      required:
+      - contrat
+      - Allpieces
+      - DetailAdh
+      - Garanties
+      - Extensions
+      - infosCieProd
+    detail_produitInput:
+      type: object
+      properties:
+        code:
+          type: string
+        clauses:
+          type: boolean
+      required:
+      - code
+    detail_quittanceInput:
+      type: object
+      properties:
+        quittance:
+          type: number
+        details:
+          type: boolean
+        garanties:
+          type: boolean
+        addinfospqg:
+          type: boolean
+        intervenants:
+          type: boolean
+        addinfosqint:
+          type: boolean
+      required:
+      - quittance
+    detail_tierInput:
+      type: object
+      properties:
+        Dossier:
+          type: number
+        Composition:
+          type: boolean
+        ListeEntites:
+          type: string
+        Extensions:
+          type: boolean
+      required:
+      - Dossier
+    liste_des_contratsInput:
+      type: object
+      properties:
+        reference:
+          type: string
+        detailorigine:
+          type: boolean
+      required:
+      - reference
+    liste_des_contrats_d_un_tierInput:
+      type: object
+      properties:
+        dossier:
+          type: number
+        IncludeAll:
+          type: boolean
+      required:
+      - dossier
+      - IncludeAll
+    liste_des_produitsInput:
+      type: object
+      properties: {}
+    liste_des_quittancesInput:
+      type: object
+      properties:
+        contrat:
+          type: number
+    loginInput:
+      type: object
+      properties:
+        logon:
+          type: string
+        password:
+          type: string
+        Domain:
+          type: string
+      required:
+      - logon
+      - password
+      - Domain
+    logoutInput:
+      type: object
+      properties:
+        BasSecurityContext:
+          type: string
+      required:
+      - BasSecurityContext
+    profileInput:
+      type: object
+      properties:
+        domain:
+          type: string
+        email:
+          type: string
+        login:
+          type: string
+        dossier:
+          type: string
+      required:
+      - domain
+      - email
+      - login
+    projects_project_addofferInput:
+      type: object
+      properties:
+        idproj:
+          type: number
+        produit:
+          type: string
+        user:
+          type: string
+        resutXML:
+          type: boolean
+      required:
+      - idproj
+      - produit
+    projects_project_createInput:
+      type: object
+      properties:
+        dossier:
+          type: number
+        contrat:
+          type: number
+        produit:
+          type: string
+        username:
+          type: string
+        libelle:
+          type: string
+        resutXML:
+          type: boolean
+      required:
+      - dossier
+      - contrat
+      - produit
+    projects_project_deleteofferInput:
+      type: object
+      properties:
+        idproj:
+          type: number
+        idoffer:
+          type: number
+      required:
+      - idproj
+      - idoffer
+    projects_project_detailInput:
+      type: object
+      properties:
+        dproj:
+          type: number
+      required:
+      - dproj
+    projects_project_listitemsInput:
+      type: object
+      properties:
+        dossier:
+          type: number
+      required:
+      - dossier
+    projects_project_offerlistitemsInput:
+      type: object
+      properties:
+        idproj:
+          type: number
+      required:
+      - idproj
+    projects_project_updateInput:
+      type: object
+      properties:
+        idproj:
+          type: number
+        username:
+          type: string
+        libelle:
+          type: string
+        resutXML:
+          type: boolean
+      required:
+      - idproj
+    projects_project_validateofferInput:
+      type: object
+      properties:
+        idproj:
+          type: number
+        idoffer:
+          type: number
+        effet:
+          type: string
+        Avenant:
+          type: boolean
+      required:
+      - idproj
+      - idoffer
+    tiers_searchInput:
+      type: object
+      properties:
+        reference:
+          type: string
+        typetiers:
+          type: number
+        codp:
+          type: string
+        datenais:
+          type: string
+        detailorigine:
+          type: boolean
+      required:
+      - reference
+    update_pièce_contratInput:
+      type: object
+      properties:
+        contrat:
+          type: number
+        produit:
+          type: string
+        Effet:
+          type: string
+      required:
+      - contrat
+      - produit
+      - Effet
+    ValidationErrorDetail:
+      type: object
+      properties:
+        champ:
+          type: string
+          description: Nom du champ en erreur
+        message:
+          type: string
+          description: Raison de l’erreur
+      required:
+      - champ
+      - message
+    ValidationErrorResponse:
+      type: object
+      properties:
+        erreur:
+          type: string
+          example: Le corps de la requête est invalide.
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationErrorDetail'
+      required:
+      - erreur
+      - details

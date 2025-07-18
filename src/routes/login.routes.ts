@@ -1,9 +1,13 @@
 import { Router } from 'express';
 import { opensession } from '../services/login/opensession';
+import { api_loginValidator } from '../validators/api_loginValidator';
+import { validateBody } from '../middleware/zodValidator';
+
+
 
 const router = Router();
 
-router.post('/', async (req, res) => {
+router.post('/', validateBody(api_loginValidator), async (req, res) => {
    const logon=req.body.login ?? req.body.username
   const password=req.body.password
  const domain=req.body.domain
@@ -26,3 +30,4 @@ router.post('/', async (req, res) => {
 });
 
 export default router;
+// Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend

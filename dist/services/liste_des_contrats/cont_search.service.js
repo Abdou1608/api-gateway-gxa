@@ -1,9 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cont_search = cont_search;
+const BasParams_1 = require("../../Model/BasSoapObject/BasParams");
 const soap_service_1 = require("../soap.service");
 async function cont_search(reference, detailorigine, origine, codefic, nomchamp, BasSecurityContext) {
     const soapBody = { reference, detailorigine, origine, codefic, nomchamp, BasSecurityContext };
+    const params = new BasParams_1.BasParams();
+    params.AddStr("BasSecurityContext", BasSecurityContext.ToSoapVar());
+    params.AddString("reference", reference);
+    // params.AddBool("composition",composition ?? false) 
+    params.AddBool("detailorigine", detailorigine);
+    params.AddString("origine", origine);
+    params.AddString("codefic", codefic);
+    params.AddString("nomchamp", nomchamp);
+    //params.AddString("ListeEntites","CLI, SAL,DPP")
+    params.AddString("datanode", "Tiers");
     /*
     `
       <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
@@ -21,6 +32,6 @@ async function cont_search(reference, detailorigine, origine, codefic, nomchamp,
       </soapenv:Envelope>
     `;
   */
-    const result = await (0, soap_service_1.sendSoapRequest)(soapBody, "Cont_Search", BasSecurityContext);
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_Search", BasSecurityContext);
     return result;
 }

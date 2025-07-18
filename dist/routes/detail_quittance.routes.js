@@ -2,10 +2,19 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const quittance_details_service_1 = require("../services/detail_quittance/quittance_details.service");
+const BasSecurityContext_1 = require("../Model/BasSoapObject/BasSecurityContext");
+const api_detail_quittanceValidator_1 = require("../validators/api_detail_quittanceValidator");
+const zodValidator_1 = require("../middleware/zodValidator");
 const router = (0, express_1.Router)();
-router.post('/', async (req, res) => {
+router.post('/', (0, zodValidator_1.validateBody)(api_detail_quittanceValidator_1.api_detail_quittanceValidator), async (req, res) => {
     try {
-        const result = await (0, quittance_details_service_1.quittance_details)(req.body);
+        const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
+        _BasSecurityContext.IsAuthenticated = true;
+        _BasSecurityContext.SessionId = req.body.BasSecurityContext?._SessionId;
+        const quittance = req.body.quittance;
+        const details = req.body.details ?? true;
+        const basecouvs = req.body.basecouvs ?? false;
+        const result = await (0, quittance_details_service_1.quittance_details)(quittance, details, _BasSecurityContext);
         res.json(result);
     }
     catch (error) {
@@ -13,3 +22,4 @@ router.post('/', async (req, res) => {
     }
 });
 exports.default = router;
+// Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend

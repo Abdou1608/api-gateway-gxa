@@ -13,7 +13,7 @@ extensions?:boolean) {
    params.AddBool("extensions",extensions ?? false) 
    params.AddString("ListeEntites","CLI, SAL,DPP")
    params.AddString("datanode","Tiers")
-console.log("BasSecurityContext in tiers_detail service ===="+JSON.stringify( BasSecurityContext))
+//console.log("BasSecurityContext in tiers_detail service ===="+JSON.stringify( BasSecurityContext))
   const result = await sendSoapRequest(params, "Tiers_Details",BasSecurityContext);
   return result;
 }

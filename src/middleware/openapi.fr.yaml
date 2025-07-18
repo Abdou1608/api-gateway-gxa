@@ -1,0 +1,1130 @@
+openapi: 3.0.3
+info:
+  title: SOAP REST Gateway API
+  version: 1.0.0
+  description: Documentation automatique générée à partir des interfaces TypeScript
+paths:
+  /ajout_pièce_au_contrat:
+    post:
+      summary: Créer ajout_pièce_au_contrat (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ajout_pièce_au_contratInput'
+            example: &id001
+              contrat: 1
+              produit: exemple_produit
+              Effet: exemple_Effet
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource ajout_pièce_au_contrat via une requête
+        POST.
+
+        Entrée : ajout_pièce_au_contratInput.'
+  /check_session:
+    post:
+      summary: Créer check_session (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/check_sessionInput'
+            example: &id002
+              BasSecurityContext: exemple_BasSecurityContext
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource check_session via une requête POST.
+
+        Entrée : check_sessionInput.'
+  /contrat_update:
+    post:
+      summary: Créer contrat_update (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/contrat_updateInput'
+            example: &id003
+              contrat: 19
+              piece: exemple_piece
+              data: exemple_data
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource contrat_update via une requête POST.
+
+        Entrée : contrat_updateInput.'
+  /create_contrat:
+    post:
+      summary: Créer create_contrat (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_contratInput'
+            example: &id004
+              dossier: 6
+              produit: exemple_produit
+              Effet: exemple_Effet
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource create_contrat via une requête POST.
+
+        Entrée : create_contratInput.'
+  /create_quittance:
+    post:
+      summary: Créer create_quittance (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_quittanceInput'
+            example: &id005
+              contrat: 32
+              piece: 4
+              bordereau: 2
+              data: exemple_data
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource create_quittance via une requête POST.
+
+        Entrée : create_quittanceInput.'
+  /create_reglement:
+    post:
+      summary: Créer create_reglement (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_reglementInput'
+            example: &id006
+              typeoperation: exemple_typeoperation
+              typeenc: exemple_typeenc
+              targetkind: exemple_targetkind
+              targetqintid: exemple_targetqintid
+              montant: 44
+              devise: exemple_devise
+              date: exemple_date
+              dateff: exemple_dateff
+              reference: exemple_reference
+              tierspayeur: exemple_tierspayeur
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource create_reglement via une requête POST.
+
+        Entrée : create_reglementInput.'
+  /detail_contrat:
+    post:
+      summary: Créer detail_contrat (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/detail_contratInput'
+            example: &id007
+              contrat: 48
+              Allpieces: true
+              DetailAdh: true
+              RISA: exemple_RISA
+              RIMM: exemple_RIMM
+              RVEH: exemple_RVEH
+              RDIV: exemple_RDIV
+              RDPP: exemple_RDPP
+              Garanties: true
+              Extensions: true
+              infosCieProd: true
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource detail_contrat via une requête POST.
+
+        Entrée : detail_contratInput.'
+  /detail_produit:
+    post:
+      summary: Créer detail_produit (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/detail_produitInput'
+            example: &id008
+              code: exemple_code
+              clauses: true
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource detail_produit via une requête POST.
+
+        Entrée : detail_produitInput.'
+  /detail_quittance:
+    post:
+      summary: Créer detail_quittance (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/detail_quittanceInput'
+            example: &id009
+              quittance: 1
+              details: true
+              garanties: true
+              addinfospqg: true
+              intervenants: true
+              addinfosqint: true
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource detail_quittance via une requête POST.
+
+        Entrée : detail_quittanceInput.'
+  /detail_tier:
+    post:
+      summary: Créer detail_tier (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/detail_tierInput'
+            example: &id010
+              Dossier: 31
+              Composition: true
+              ListeEntites: exemple_ListeEntites
+              Extensions: true
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource detail_tier via une requête POST.
+
+        Entrée : detail_tierInput.'
+  /liste_des_contrats:
+    post:
+      summary: Créer liste_des_contrats (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/liste_des_contratsInput'
+            example: &id011
+              reference: exemple_reference
+              detailorigine: true
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource liste_des_contrats via une requête
+        POST.
+
+        Entrée : liste_des_contratsInput.'
+  /liste_des_contrats_d_un_tier:
+    post:
+      summary: Créer liste_des_contrats_d_un_tier (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/liste_des_contrats_d_un_tierInput'
+            example: &id012
+              dossier: 36
+              IncludeAll: true
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource liste_des_contrats_d_un_tier via une
+        requête POST.
+
+        Entrée : liste_des_contrats_d_un_tierInput.'
+  /liste_des_produits:
+    post:
+      summary: Créer liste_des_produits (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/liste_des_produitsInput'
+            example: &id013 {}
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource liste_des_produits via une requête
+        POST.
+
+        Entrée : liste_des_produitsInput.'
+  /liste_des_quittances:
+    post:
+      summary: Créer liste_des_quittances (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/liste_des_quittancesInput'
+            example: &id014
+              contrat: 78
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource liste_des_quittances via une requête
+        POST.
+
+        Entrée : liste_des_quittancesInput.'
+  /login:
+    post:
+      summary: Créer login (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/loginInput'
+            example: &id015
+              logon: exemple_logon
+              password: exemple_password
+              Domain: exemple_Domain
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource login via une requête POST.
+
+        Entrée : loginInput.'
+  /logout:
+    post:
+      summary: Créer logout (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/logoutInput'
+            example: &id016
+              BasSecurityContext: exemple_BasSecurityContext
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource logout via une requête POST.
+
+        Entrée : logoutInput.'
+  /profile:
+    post:
+      summary: Créer profile (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/profileInput'
+            example: &id017
+              domain: exemple_domain
+              email: exemple_email
+              login: exemple_login
+              dossier: exemple_dossier
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource profile via une requête POST.
+
+        Entrée : profileInput.'
+  /projects_project_addoffer:
+    post:
+      summary: Créer projects_project_addoffer (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/projects_project_addofferInput'
+            example: &id018
+              idproj: 58
+              produit: exemple_produit
+              user: exemple_user
+              resutXML: true
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource projects_project_addoffer via une
+        requête POST.
+
+        Entrée : projects_project_addofferInput.'
+  /projects_project_create:
+    post:
+      summary: Créer projects_project_create (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/projects_project_createInput'
+            example: &id019
+              dossier: 7
+              contrat: 36
+              produit: exemple_produit
+              username: exemple_username
+              libelle: exemple_libelle
+              resutXML: true
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource projects_project_create via une requête
+        POST.
+
+        Entrée : projects_project_createInput.'
+  /projects_project_deleteoffer:
+    post:
+      summary: Créer projects_project_deleteoffer (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/projects_project_deleteofferInput'
+            example: &id020
+              idproj: 61
+              idoffer: 18
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource projects_project_deleteoffer via une
+        requête POST.
+
+        Entrée : projects_project_deleteofferInput.'
+  /projects_project_detail:
+    post:
+      summary: Créer projects_project_detail (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/projects_project_detailInput'
+            example: &id021
+              dproj: 68
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource projects_project_detail via une requête
+        POST.
+
+        Entrée : projects_project_detailInput.'
+  /projects_project_listitems:
+    post:
+      summary: Créer projects_project_listitems (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/projects_project_listitemsInput'
+            example: &id022
+              dossier: 65
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource projects_project_listitems via une
+        requête POST.
+
+        Entrée : projects_project_listitemsInput.'
+  /projects_project_offerlistitems:
+    post:
+      summary: Créer projects_project_offerlistitems (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/projects_project_offerlistitemsInput'
+            example: &id023
+              idproj: 3
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource projects_project_offerlistitems via
+        une requête POST.
+
+        Entrée : projects_project_offerlistitemsInput.'
+  /projects_project_update:
+    post:
+      summary: Créer projects_project_update (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/projects_project_updateInput'
+            example: &id024
+              idproj: 65
+              username: exemple_username
+              libelle: exemple_libelle
+              resutXML: true
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource projects_project_update via une requête
+        POST.
+
+        Entrée : projects_project_updateInput.'
+  /projects_project_validateoffer:
+    post:
+      summary: Créer projects_project_validateoffer (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/projects_project_validateofferInput'
+            example: &id025
+              idproj: 38
+              idoffer: 16
+              effet: exemple_effet
+              Avenant: true
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource projects_project_validateoffer via
+        une requête POST.
+
+        Entrée : projects_project_validateofferInput.'
+  /tiers_search:
+    post:
+      summary: Créer tiers_search (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/tiers_searchInput'
+            example: &id026
+              reference: exemple_reference
+              typetiers: 100
+              codp: exemple_codp
+              datenais: exemple_datenais
+              detailorigine: true
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource tiers_search via une requête POST.
+
+        Entrée : tiers_searchInput.'
+  /update_pièce_contrat:
+    post:
+      summary: Créer update_pièce_contrat (FR)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update_pièce_contratInput'
+            example: &id027
+              contrat: 72
+              produit: exemple_produit
+              Effet: exemple_Effet
+      responses:
+        '200':
+          description: Succès
+        '400':
+          description: Erreur de validation des entrées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      description: 'Crée une nouvelle ressource update_pièce_contrat via une requête
+        POST.
+
+        Entrée : update_pièce_contratInput.'
+components:
+  schemas:
+    ajout_pièce_au_contratInput:
+      type: object
+      properties:
+        contrat:
+          type: number
+        produit:
+          type: string
+        Effet:
+          type: string
+      required:
+      - contrat
+      - produit
+      - Effet
+      description: Corps JSON attendu pour l'API ajout_pièce_au_contrat
+      example: *id001
+    check_sessionInput:
+      type: object
+      properties:
+        BasSecurityContext:
+          type: string
+      required:
+      - BasSecurityContext
+      description: Corps JSON attendu pour l'API check_session
+      example: *id002
+    contrat_updateInput:
+      type: object
+      properties:
+        contrat:
+          type: number
+        piece:
+          type: string
+        data:
+          type: string
+      required:
+      - contrat
+      - data
+      description: Corps JSON attendu pour l'API contrat_update
+      example: *id003
+    create_contratInput:
+      type: object
+      properties:
+        dossier:
+          type: number
+        produit:
+          type: string
+        Effet:
+          type: string
+      required:
+      - dossier
+      - produit
+      - Effet
+      description: Corps JSON attendu pour l'API create_contrat
+      example: *id004
+    create_quittanceInput:
+      type: object
+      properties:
+        contrat:
+          type: number
+        piece:
+          type: number
+        bordereau:
+          type: number
+        data:
+          type: string
+      required:
+      - contrat
+      - piece
+      - bordereau
+      - data
+      description: Corps JSON attendu pour l'API create_quittance
+      example: *id005
+    create_reglementInput:
+      type: object
+      properties:
+        typeoperation:
+          type: string
+        typeenc:
+          type: string
+        targetkind:
+          type: string
+        targetqintid:
+          type: string
+        montant:
+          type: number
+        devise:
+          type: string
+        date:
+          type: string
+        dateff:
+          type: string
+        reference:
+          type: string
+        tierspayeur:
+          type: string
+      required:
+      - typeoperation
+      - typeenc
+      - targetkind
+      - montant
+      - devise
+      description: Corps JSON attendu pour l'API create_reglement
+      example: *id006
+    detail_contratInput:
+      type: object
+      properties:
+        contrat:
+          type: number
+        Allpieces:
+          type: boolean
+        DetailAdh:
+          type: boolean
+        RISA:
+          type: string
+        RIMM:
+          type: string
+        RVEH:
+          type: string
+        RDIV:
+          type: string
+        RDPP:
+          type: string
+        Garanties:
+          type: boolean
+        Extensions:
+          type: boolean
+        infosCieProd:
+          type: boolean
+      required:
+      - contrat
+      - Allpieces
+      - DetailAdh
+      - Garanties
+      - Extensions
+      - infosCieProd
+      description: Corps JSON attendu pour l'API detail_contrat
+      example: *id007
+    detail_produitInput:
+      type: object
+      properties:
+        code:
+          type: string
+        clauses:
+          type: boolean
+      required:
+      - code
+      description: Corps JSON attendu pour l'API detail_produit
+      example: *id008
+    detail_quittanceInput:
+      type: object
+      properties:
+        quittance:
+          type: number
+        details:
+          type: boolean
+        garanties:
+          type: boolean
+        addinfospqg:
+          type: boolean
+        intervenants:
+          type: boolean
+        addinfosqint:
+          type: boolean
+      required:
+      - quittance
+      description: Corps JSON attendu pour l'API detail_quittance
+      example: *id009
+    detail_tierInput:
+      type: object
+      properties:
+        Dossier:
+          type: number
+        Composition:
+          type: boolean
+        ListeEntites:
+          type: string
+        Extensions:
+          type: boolean
+      required:
+      - Dossier
+      description: Corps JSON attendu pour l'API detail_tier
+      example: *id010
+    liste_des_contratsInput:
+      type: object
+      properties:
+        reference:
+          type: string
+        detailorigine:
+          type: boolean
+      required:
+      - reference
+      description: Corps JSON attendu pour l'API liste_des_contrats
+      example: *id011
+    liste_des_contrats_d_un_tierInput:
+      type: object
+      properties:
+        dossier:
+          type: number
+        IncludeAll:
+          type: boolean
+      required:
+      - dossier
+      - IncludeAll
+      description: Corps JSON attendu pour l'API liste_des_contrats_d_un_tier
+      example: *id012
+    liste_des_produitsInput:
+      type: object
+      properties: {}
+      description: Corps JSON attendu pour l'API liste_des_produits
+      example: *id013
+    liste_des_quittancesInput:
+      type: object
+      properties:
+        contrat:
+          type: number
+      description: Corps JSON attendu pour l'API liste_des_quittances
+      example: *id014
+    loginInput:
+      type: object
+      properties:
+        logon:
+          type: string
+        password:
+          type: string
+        Domain:
+          type: string
+      required:
+      - logon
+      - password
+      - Domain
+      description: Corps JSON attendu pour l'API login
+      example: *id015
+    logoutInput:
+      type: object
+      properties:
+        BasSecurityContext:
+          type: string
+      required:
+      - BasSecurityContext
+      description: Corps JSON attendu pour l'API logout
+      example: *id016
+    profileInput:
+      type: object
+      properties:
+        domain:
+          type: string
+        email:
+          type: string
+        login:
+          type: string
+        dossier:
+          type: string
+      required:
+      - domain
+      - email
+      - login
+      description: Corps JSON attendu pour l'API profile
+      example: *id017
+    projects_project_addofferInput:
+      type: object
+      properties:
+        idproj:
+          type: number
+        produit:
+          type: string
+        user:
+          type: string
+        resutXML:
+          type: boolean
+      required:
+      - idproj
+      - produit
+      description: Corps JSON attendu pour l'API projects_project_addoffer
+      example: *id018
+    projects_project_createInput:
+      type: object
+      properties:
+        dossier:
+          type: number
+        contrat:
+          type: number
+        produit:
+          type: string
+        username:
+          type: string
+        libelle:
+          type: string
+        resutXML:
+          type: boolean
+      required:
+      - dossier
+      - contrat
+      - produit
+      description: Corps JSON attendu pour l'API projects_project_create
+      example: *id019
+    projects_project_deleteofferInput:
+      type: object
+      properties:
+        idproj:
+          type: number
+        idoffer:
+          type: number
+      required:
+      - idproj
+      - idoffer
+      description: Corps JSON attendu pour l'API projects_project_deleteoffer
+      example: *id020
+    projects_project_detailInput:
+      type: object
+      properties:
+        dproj:
+          type: number
+      required:
+      - dproj
+      description: Corps JSON attendu pour l'API projects_project_detail
+      example: *id021
+    projects_project_listitemsInput:
+      type: object
+      properties:
+        dossier:
+          type: number
+      required:
+      - dossier
+      description: Corps JSON attendu pour l'API projects_project_listitems
+      example: *id022
+    projects_project_offerlistitemsInput:
+      type: object
+      properties:
+        idproj:
+          type: number
+      required:
+      - idproj
+      description: Corps JSON attendu pour l'API projects_project_offerlistitems
+      example: *id023
+    projects_project_updateInput:
+      type: object
+      properties:
+        idproj:
+          type: number
+        username:
+          type: string
+        libelle:
+          type: string
+        resutXML:
+          type: boolean
+      required:
+      - idproj
+      description: Corps JSON attendu pour l'API projects_project_update
+      example: *id024
+    projects_project_validateofferInput:
+      type: object
+      properties:
+        idproj:
+          type: number
+        idoffer:
+          type: number
+        effet:
+          type: string
+        Avenant:
+          type: boolean
+      required:
+      - idproj
+      - idoffer
+      description: Corps JSON attendu pour l'API projects_project_validateoffer
+      example: *id025
+    tiers_searchInput:
+      type: object
+      properties:
+        reference:
+          type: string
+        typetiers:
+          type: number
+        codp:
+          type: string
+        datenais:
+          type: string
+        detailorigine:
+          type: boolean
+      required:
+      - reference
+      description: Corps JSON attendu pour l'API tiers_search
+      example: *id026
+    update_pièce_contratInput:
+      type: object
+      properties:
+        contrat:
+          type: number
+        produit:
+          type: string
+        Effet:
+          type: string
+      required:
+      - contrat
+      - produit
+      - Effet
+      description: Corps JSON attendu pour l'API update_pièce_contrat
+      example: *id027
+    ValidationErrorDetail:
+      type: object
+      properties:
+        champ:
+          type: string
+          description: Nom du champ en erreur
+        message:
+          type: string
+          description: Raison de l’erreur
+      required:
+      - champ
+      - message
+      description: Détail d'une erreur de validation sur un champ.
+    ValidationErrorResponse:
+      type: object
+      properties:
+        erreur:
+          type: string
+          example: Le corps de la requête est invalide.
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationErrorDetail'
+      required:
+      - erreur
+      - details
+      description: Réponse retournée en cas d'erreur de validation.

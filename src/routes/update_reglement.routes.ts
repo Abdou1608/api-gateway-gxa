@@ -1,9 +1,14 @@
 // Routes pour la fonctionnalité : Update Reglement
 import { Router } from 'express';
 import { sendSoapRequest } from '../services/soap.service';
+//import { api_update_reglementValidator } from '../validators/api_update_reglementValidator';
+import { validateBody } from '../middleware/zodValidator';
+
+
 const router = Router();
 
-router.put('/', async (req, res) => {
+router.put('/', 
+ async (req, res) => {
   try {
     //const response = req.body;
    // res.json(response);
@@ -15,3 +20,4 @@ router.put('/', async (req, res) => {
 });
 
 export default router;
+// Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend

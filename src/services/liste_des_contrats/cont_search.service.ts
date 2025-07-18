@@ -1,10 +1,22 @@
+import { BasParams } from "../../Model/BasSoapObject/BasParams";
+import { BasSecurityContext } from "../../Model/BasSoapObject/BasSecurityContext";
 import { sendSoapRequest } from "../soap.service";
 
 
-export async function cont_search(reference?:string,detailorigine?:boolean,
- origine?:any,
-codefic?:string,nomchamp?: string, BasSecurityContext?:any) {
+export async function cont_search(reference:string,detailorigine:boolean,
+ origine:any,
+codefic:string,nomchamp: string, BasSecurityContext:BasSecurityContext) {
   const soapBody={reference,detailorigine,origine,codefic,nomchamp, BasSecurityContext};
+  const params=new BasParams()
+  params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())
+   params.AddString("reference",reference)
+  // params.AddBool("composition",composition ?? false) 
+  params.AddBool("detailorigine",detailorigine)
+   params.AddString("origine",origine) 
+   params.AddString("codefic",codefic) 
+   params.AddString("nomchamp",nomchamp) 
+   //params.AddString("ListeEntites","CLI, SAL,DPP")
+   params.AddString("datanode","Tiers")
   /*
   `
     <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
@@ -22,6 +34,6 @@ codefic?:string,nomchamp?: string, BasSecurityContext?:any) {
     </soapenv:Envelope>
   `;
 */
-  const result = await sendSoapRequest(soapBody,"Cont_Search",BasSecurityContext);
+  const result = await sendSoapRequest(params,"Cont_Search",BasSecurityContext);
   return result;
 }
