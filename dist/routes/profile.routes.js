@@ -3,8 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const xtlog_search_service_1 = require("../services/profile/xtlog_search.service");
 const BasSecurityContext_1 = require("../Model/BasSoapObject/BasSecurityContext");
+const api_profileValidator_1 = require("../validators/api_profileValidator");
+const zodValidator_1 = require("../middleware/zodValidator");
 const router = (0, express_1.Router)();
-router.post('/', async (req, res) => {
+router.post('/', (0, zodValidator_1.validateBody)(api_profileValidator_1.api_profileValidator), async (req, res) => {
     try {
         const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         _BasSecurityContext.IsAuthenticated = true;
