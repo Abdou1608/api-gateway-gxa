@@ -9,7 +9,7 @@ import { validateBody } from '../middleware/zodValidator';
 
 const router = Router();
 
-router.post('/', validateBody(api_profileValidator), async (req, res) => {
+router.post('/', async (req, res) => {
   try {
   const _BasSecurityContext= new BasSecurityContext()
   _BasSecurityContext.IsAuthenticated=true
