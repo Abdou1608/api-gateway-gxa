@@ -25,7 +25,7 @@ function parseSoapXmlToJson(soapXml, datanode) {
         console.log("La valeur de  dname est ========" + dname);
         let dataNode = doc.getElementsByTagName(datanode || 'Data' || 'data')[0];
         if (!dataNode || !dataNode.textContent) {
-            dataNode = doc.querySelector('Data') ?? doc.getElementsByTagName(dname)[0];
+            dataNode = doc.getElementsByTagName(dname)[0];
             if (!dataNode) {
                 console.log(' Ou <Data> introuvable dans la réponse SOAP');
                 //return parseProdSoapResponse()
