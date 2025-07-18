@@ -1,5 +1,5 @@
 export interface api_login {
-  username: string;
+  login: string;
   password: string;
   domain: string;
 }
