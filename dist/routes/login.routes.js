@@ -12,7 +12,7 @@ router.post('/', (0, zodValidator_1.validateBody)(api_loginValidator_1.api_login
     console.log("Valeur Resut dans l'aPI de opensesion==" + JSON.stringify(req.body));
     console.log("Valeur Resut dans l'aPI de opensesion pour username==" + logon);
     console.log("Valeur Resut dans l'aPI de opensesion pour password==" + password);
-    if (logon && (password || domain)) {
+    if (logon && password && domain) {
         try {
             const result = await (0, opensession_1.opensession)(logon, password, domain);
             console.log("Valeur Resultat de opensesion==" + result);

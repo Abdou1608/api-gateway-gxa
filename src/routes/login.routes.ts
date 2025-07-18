@@ -14,7 +14,7 @@ router.post('/', validateBody(api_loginValidator), async (req, res) => {
  console.log("Valeur Resut dans l'aPI de opensesion=="+JSON.stringify(req.body))
  console.log("Valeur Resut dans l'aPI de opensesion pour username=="+logon)
  console.log("Valeur Resut dans l'aPI de opensesion pour password=="+password)
- if(logon && (password || domain)){
+ if(logon && password && domain){
   try {
     const result = await opensession(logon,password,domain);
    

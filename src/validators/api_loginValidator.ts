@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const api_loginValidator = z.object({
-  username: z.string().min(1, "champ requis"),
-  password: z.string().min(1, "champ requis"),
-  domain: z.string().min(1, "champ requis"),
+  username: z.string().min(1, "champ username est requis"),
+  password: z.string().min(1, "champ password est requis"),
+  domain: z.string().min(1, "champ domain est requis"),
 });
