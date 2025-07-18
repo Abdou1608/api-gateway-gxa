@@ -7,4 +7,7 @@ export const api_projects_project_validateofferValidator = z.object({
   défaut: z.any(),
   Avenant: z.boolean().optional(),
   optionnel: z.any(),
+  BasSecurityContext:z.object({
+    _SessionId:z.string().min(1, "champ SessionId est requis"),
+     })
 });

@@ -8,4 +8,7 @@ exports.api_tiers_searchValidator = zod_1.z.object({
     codp: zod_1.z.string().optional().refine(v => v === undefined || v.length > 0, { message: "doit être non vide si présent" }),
     datenais: zod_1.z.string().optional().refine(v => v === undefined || v.length > 0, { message: "doit être non vide si présent" }),
     detailorigine: zod_1.z.boolean().optional(),
+    BasSecurityContext: zod_1.z.object({
+        _SessionId: zod_1.z.string().min(1, "champ SessionId est requis"),
+    })
 });

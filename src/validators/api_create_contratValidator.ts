@@ -6,4 +6,8 @@ export const api_create_contratValidator = z.object({
   Effet: z.preprocess(val => (typeof val === "string" || val instanceof Date) ? new Date(val) : val, z.date()),
   défaut: z.any(),
   pièce: z.any(),
+  data: z.any(),
+  BasSecurityContext:z.object({
+    _SessionId:z.string().min(1, "champ SessionId est requis"),
+     })
 });

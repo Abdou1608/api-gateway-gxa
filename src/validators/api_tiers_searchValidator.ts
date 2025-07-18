@@ -12,5 +12,9 @@ export const api_tiers_searchValidator = z.object({
     { message: "doit être non vide si présent" }
   ),
   detailorigine: z.boolean().optional(),
+
+  BasSecurityContext:z.object({
+    _SessionId:z.string().min(1, "champ SessionId est requis"),
+     })
 });
 

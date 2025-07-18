@@ -7,5 +7,9 @@ export const api_detail_quittanceValidator = z.object({
   addinfospqg: z.boolean().optional(),
   intervenants: z.boolean().optional(),
   addinfosqint: z.boolean().optional(),
+
+  BasSecurityContext:z.object({
+    _SessionId:z.string().min(1, "champ SessionId est requis"),
+     })
 });
 

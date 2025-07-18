@@ -5,7 +5,8 @@ const zod_1 = require("zod");
 exports.api_liste_des_contratsValidator = zod_1.z.object({
     reference: zod_1.z.string().min(1, "champ requis"),
     detailorigine: zod_1.z.boolean().optional(),
-    False: zod_1.z.any(),
-    true: zod_1.z.any(),
     nomchamp: zod_1.z.any(),
+    BasSecurityContext: zod_1.z.object({
+        _SessionId: zod_1.z.string().min(1, "champ SessionId est requis"),
+    })
 });

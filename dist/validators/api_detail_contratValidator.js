@@ -18,4 +18,7 @@ exports.api_detail_contratValidator = zod_1.z.object({
     infosCieProd: zod_1.z.boolean(),
     CIE: zod_1.z.any(),
     pièce: zod_1.z.any(),
+    BasSecurityContext: zod_1.z.object({
+        _SessionId: zod_1.z.string().min(1, "champ SessionId est requis"),
+    })
 });

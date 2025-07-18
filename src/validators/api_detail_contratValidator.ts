@@ -16,4 +16,7 @@ export const api_detail_contratValidator = z.object({
   infosCieProd: z.boolean(),
   CIE: z.any(),
   pièce: z.any(),
+  BasSecurityContext:z.object({
+    _SessionId:z.string().min(1, "champ SessionId est requis"),
+     })
 });

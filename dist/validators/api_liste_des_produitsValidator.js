@@ -8,4 +8,7 @@ exports.api_liste_des_produitsValidator = zod_1.z.object({
     cie: zod_1.z.number().optional(),
     entite: zod_1.z.number().optional(),
     disponible: zod_1.z.boolean().optional(),
+    BasSecurityContext: zod_1.z.object({
+        _SessionId: zod_1.z.string().min(1, "champ SessionId est requis"),
+    })
 });

@@ -14,4 +14,8 @@ exports.api_create_reglementValidator = zod_1.z.object({
     dateff: zod_1.z.preprocess(val => (typeof val === "string" || val instanceof Date) ? new Date(val) : val, zod_1.z.date()).optional(),
     reference: zod_1.z.string().optional().refine(v => v === undefined || v.length > 0, "doit être non vide si présent"),
     tierspayeur: zod_1.z.string().optional().refine(v => v === undefined || v.length > 0, "doit être non vide si présent"),
+    data: zod_1.z.any(),
+    BasSecurityContext: zod_1.z.object({
+        _SessionId: zod_1.z.string().min(1, "champ SessionId est requis"),
+    })
 });
