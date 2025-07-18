@@ -7,7 +7,7 @@ export const api_profileValidator = z.object({
   dossier: z.string().optional().refine(v => v === undefined || v.length > 0, "champ dossier doit être non vide si présent"),
   BasSecurityContext:z.object({
     _SessionId:z.string().min(1, "champ SessionId est requis"),
-    _IsAuthenticated:z.boolean().default(true).optional().refine(v => v === undefined , "Champ Isauthenticated doit être non vide si présent"),
+    _IsAuthenticated:z.any().optional().refine(v => v === undefined , "Champ Isauthenticated doit être non vide si présent"),
   })
 
 });
