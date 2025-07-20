@@ -383,10 +383,11 @@ function parseProdSoapResponse(xmlString) {
         .replace(/&amp;/g, '&');
     console.log('_xmlContent dans parseSoapResponse=.....' + _xmlContent);
     const rawContentMatch = _xmlContent.match(/<prod-rows[^>]*>([\s\S]*?)<\/prod-rows>/);
-    console.log("rawContentMatch ========" + rawContentMatch);
+    //console.log("rawContentMatch ========"+rawContentMatch)
     if (!rawContentMatch) {
         //console.log("_xmlContent ========"+_xmlContent)
-        throw new Error('rawContentMatch est inexistant dans la réponse SOAP');
+        return produits;
+        //throw new Error('rawContentMatch est inexistant dans la réponse SOAP');
     }
     ;
     const xmlContent = rawContentMatch[0];
