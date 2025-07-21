@@ -30,6 +30,9 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid) {
     const an = actionName ? actionName : "";
     const result = await runBasAct.RunAction(an, params, basSecurityContext ? basSecurityContext : new BasSecurityContext_1.BasSecurityContext()).then(response => {
         console.log("✅ Inside runBasAct - actionName====", actionName);
+        if (sid == "produit" || actionName == "Produit_Details") {
+            console.log("✅ Inside runBasAct - reponse du SOAP avant parser====", response);
+        }
         if (actionName === "Xtlog_Get") {
             return (0, soap_parser_service_1.parseSoapXmlToJson)(response, sid);
         }

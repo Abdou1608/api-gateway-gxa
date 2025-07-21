@@ -12,10 +12,10 @@ export async function produit_details(code : string,BasSecurityContext:BasSecuri
   params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())
    params.AddString("code",code)
   // params.AddBool("composition",composition ?? false) 
-  options? params.AddBool("options",options):null
+   params.AddBool("options",options ?? true)
 params.AddBool("basecouvs",basecouvs ?? false) 
-   params.AddBool("clauses",clauses ?? false)
-
-  const result = await sendSoapRequest(params,"Produit_Details",BasSecurityContext);
+   params.AddBool("clauses",clauses ?? true)
+console.log("Paramettres du Detail du produit requis==="+JSON.stringify(params))
+  const result = await sendSoapRequest(params,"Produit_Details",BasSecurityContext,"produit");
   return result;
 }

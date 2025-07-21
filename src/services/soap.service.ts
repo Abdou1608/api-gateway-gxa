@@ -34,6 +34,9 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
     
     const result= await runBasAct.RunAction(an, params,basSecurityContext ? basSecurityContext : new BasSecurityContext()).then( response=>{
       console.log("✅ Inside runBasAct - actionName====", actionName);
+      if (sid=="produit" || actionName=="Produit_Details"){
+        console.log("✅ Inside runBasAct - reponse du SOAP avant parser====", response);
+        }
       if (actionName === "Xtlog_Get"){
     return  parseSoapXmlToJson(response,sid)
     }
