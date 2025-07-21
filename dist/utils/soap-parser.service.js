@@ -5,9 +5,11 @@ exports.parseObjectXmlToJson = parseObjectXmlToJson;
 exports.new_parseSoapXmlToJson = new_parseSoapXmlToJson;
 exports.new_parseObjectXmlToJson = new_parseObjectXmlToJson;
 exports.parseProdSoapResponse = parseProdSoapResponse;
+exports.parse_Produit_SoapXml = parse_Produit_SoapXml;
 const fast_xml_parser_1 = require("fast-xml-parser");
 const xmldom_1 = require("xmldom");
 const xmldom_2 = require("xmldom");
+const xml2js_1 = require("xml2js");
 const parser = new fast_xml_parser_1.XMLParser({
     ignoreAttributes: false,
     attributeNamePrefix: '',
@@ -364,7 +366,7 @@ function new_parseObjectXmlToJson(xml) {
     }
     return output;
 }
-function parseProdSoapResponse(xmlString) {
+async function parseProdSoapResponse(xmlString) {
     const produits = [];
     console.log(":===============================================================================================================================");
     console.log(":===============================================================================================================================");
@@ -383,18 +385,20 @@ function parseProdSoapResponse(xmlString) {
         .replace(/&amp;/g, '&');
     console.log('_xmlContent dans parseSoapResponse=.....' + _xmlContent);
     const rawContentMatch = _xmlContent.match(/<prod-rows[^>]*>([\s\S]*?)<\/prod-rows>/);
-    const detail_rawContentMatch = _xmlContent.match(/<produit[^>]*>([\s\S]*?)<\/produit>/);
+    //const detail_rawContentMatch = _xmlContent.match(/<produit[^>]*>([\s\S]*?)<\/produit>/);
     //console.log("rawContentMatch ========"+rawContentMatch)
-    if (!rawContentMatch && !detail_rawContentMatch) {
-        console.log("_xmlContent ========" + _xmlContent);
+    if (rawContentMatch) {
+        // console.log("_xmlContent ========"+_xmlContent)
         //return produits
-        throw new Error('rawContentMatch et detail_rawContentMatch sont inexistant dans la réponse SOAP');
-    }
-    else if (!rawContentMatch && detail_rawContentMatch) {
-        return parseprod_content(detail_rawContentMatch[0], produits);
-    }
-    else if (rawContentMatch && !detail_rawContentMatch) {
+        //throw new Error('rawContentMatch et detail_rawContentMatch sont inexistant dans la réponse SOAP');
         return parseprod_content(rawContentMatch[0], produits);
+    }
+    else if (_xmlContent) {
+        return await parse_Produit_SoapXml(_xmlContent);
+        // parseprod_content(detail_rawContentMatch[0],produits)
+    }
+    else {
+        throw new Error('rawContentMatch et detail_rawContentMatch sont inexistant dans la réponse SOAP');
     }
     ;
 }
@@ -443,4 +447,52 @@ function get_prod(prod) {
         typarro: getTagValue('b_typarro'),
         fvahom: getTagValue('b_fvahom'),
     };
+}
+async function parse_Produit_SoapXml(xml) {
+    try {
+        const parsed = await (0, xml2js_1.parseStringPromise)(xml, {
+            explicitArray: false,
+            mergeAttrs: true,
+            tagNameProcessors: [name => name.replace('SOAP-ENV:', '').replace('NS1:', '').replace('NS2:', '')],
+        });
+        const dataXml = parsed.Envelope?.Body?.BasActionResult?.Data;
+        if (!dataXml)
+            throw new Error('No <Data> field found in SOAP response');
+        const embeddedXml = typeof dataXml === 'string' ? dataXml.trim() : dataXml._?.trim();
+        if (!embeddedXml)
+            throw new Error('No embedded XML in <Data> field');
+        const innerParsed = await (0, xml2js_1.parseStringPromise)(embeddedXml, {
+            explicitArray: false,
+            mergeAttrs: true,
+        });
+        const params = innerParsed.produit?.object?.param;
+        if (!params || !Array.isArray(params))
+            throw new Error('No <param> tags found in embedded XML');
+        const result = {};
+        for (const param of params) {
+            if (param.is_null === 'true') {
+                result[param.name] = null;
+            }
+            else if (param.bool_val !== undefined) {
+                result[param.name] = param.bool_val === 'true';
+            }
+            else if (param.int_val !== undefined) {
+                result[param.name] = parseInt(param.int_val, 10);
+            }
+            else if (param.float_val !== undefined) {
+                result[param.name] = parseFloat(param.float_val);
+            }
+            else if (typeof param._ === 'string') {
+                result[param.name] = param._.trim();
+            }
+            else {
+                result[param.name] = '';
+            }
+        }
+        return result;
+    }
+    catch (error) {
+        console.error('SOAP XML parsing failed:', error);
+        throw new Error('Invalid SOAP response or unexpected structure');
+    }
 }

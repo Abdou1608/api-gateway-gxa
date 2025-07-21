@@ -5,7 +5,17 @@ import { Produit } from '../Model/produit.model';
 export interface XmlParsedObject {
   [key: string]: string | number | boolean | null | XmlParsedObject | XmlParsedObject[];
 }
+import { parseStringPromise } from 'xml2js';
 
+interface Param {
+  name: string;
+  type?: string;
+  int_val?: string;
+  bool_val?: string;
+  float_val?: string;
+  is_null?: string;
+  _: string;
+}
 type Constructor<T> = new (...args: any[]) => T;
 
 const parser = new XMLParser({
@@ -408,7 +418,7 @@ export function new_parseObjectXmlToJson(xml: string): new_ParsedJson {
 
   return output;
 }
-export function parseProdSoapResponse(xmlString: string): any {
+export async function parseProdSoapResponse(xmlString: string): Promise<any> {
   const produits: Produit[] = [];
   console.log(":===============================================================================================================================")
   console.log(":===============================================================================================================================")
@@ -428,18 +438,20 @@ export function parseProdSoapResponse(xmlString: string): any {
   .replace(/&amp;/g, '&');  
   console.log('_xmlContent dans parseSoapResponse=.....'+ _xmlContent)  
   const rawContentMatch = _xmlContent.match(/<prod-rows[^>]*>([\s\S]*?)<\/prod-rows>/);
- const detail_rawContentMatch = _xmlContent.match(/<produit[^>]*>([\s\S]*?)<\/produit>/);
+ //const detail_rawContentMatch = _xmlContent.match(/<produit[^>]*>([\s\S]*?)<\/produit>/);
   //console.log("rawContentMatch ========"+rawContentMatch)
 
-  if (!rawContentMatch && !detail_rawContentMatch){
-    console.log("_xmlContent ========"+_xmlContent)
+  if (rawContentMatch ){
+   // console.log("_xmlContent ========"+_xmlContent)
     //return produits
-throw new Error('rawContentMatch et detail_rawContentMatch sont inexistant dans la réponse SOAP');
-  
-  }else if(!rawContentMatch && detail_rawContentMatch){
-    return parseprod_content(detail_rawContentMatch[0],produits)
-  }else if(rawContentMatch && !detail_rawContentMatch){
-    return parseprod_content(rawContentMatch[0],produits)
+//throw new Error('rawContentMatch et detail_rawContentMatch sont inexistant dans la réponse SOAP');
+  return parseprod_content(rawContentMatch[0],produits)
+  }else if(_xmlContent){
+    return await parse_Produit_SoapXml(_xmlContent)
+    // parseprod_content(detail_rawContentMatch[0],produits)
+  }else {
+    throw new Error('rawContentMatch et detail_rawContentMatch sont inexistant dans la réponse SOAP');
+
 
   };
   
@@ -499,6 +511,52 @@ function get_prod(prod:Element){
   };
 
 }
+export async function parse_Produit_SoapXml(xml: string): Promise<Produit> {
+  try {
+    const parsed = await parseStringPromise(xml, {
+      explicitArray: false,
+      mergeAttrs: true,
+      tagNameProcessors: [name => name.replace('SOAP-ENV:', '').replace('NS1:', '').replace('NS2:', '')],
+    });
+
+    const dataXml = parsed.Envelope?.Body?.BasActionResult?.Data;
+    if (!dataXml) throw new Error('No <Data> field found in SOAP response');
+
+    const embeddedXml = typeof dataXml === 'string' ? dataXml.trim() : dataXml._?.trim();
+    if (!embeddedXml) throw new Error('No embedded XML in <Data> field');
+
+    const innerParsed = await parseStringPromise(embeddedXml, {
+      explicitArray: false,
+      mergeAttrs: true,
+    });
+
+    const params: Param[] = innerParsed.produit?.object?.param;
+    if (!params || !Array.isArray(params)) throw new Error('No <param> tags found in embedded XML');
+
+    const result: Record<string, any> = {};
+    for (const param of params) {
+      if (param.is_null === 'true') {
+        result[param.name] = null;
+      } else if (param.bool_val !== undefined) {
+        result[param.name] = param.bool_val === 'true';
+      } else if (param.int_val !== undefined) {
+        result[param.name] = parseInt(param.int_val, 10);
+      } else if (param.float_val !== undefined) {
+        result[param.name] = parseFloat(param.float_val);
+      } else if (typeof param._ === 'string') {
+        result[param.name] = param._.trim();
+      } else {
+        result[param.name] = '';
+      }
+    }
+
+    return result as Produit;
+  } catch (error) {
+    console.error('SOAP XML parsing failed:', error);
+    throw new Error('Invalid SOAP response or unexpected structure');
+  }
+}
+
 
 
 

@@ -27,11 +27,11 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid) {
         // console.log("✅ Inside SENDSOAPREQUEST - actionName:", actionName);
         console.log("✅ Inside SENDSOAPREQUEST - sid:", sid);
         const an = actionName ? actionName : "";
-        const result = await runBasAct.RunAction(an, params, basSecurityContext ? basSecurityContext : new BasSecurityContext_1.BasSecurityContext()).then(response => {
+        const result = await runBasAct.RunAction(an, params, basSecurityContext ? basSecurityContext : new BasSecurityContext_1.BasSecurityContext()).then(async (response) => {
             //  console.log("✅ Inside runBasAct - actionName====", actionName);
             if (sid == "produit" || actionName == "Produit_Details") {
                 console.log("✅ Inside runBasAct - reponse du SOAP avant parser====", response);
-                return (0, soap_parser_service_1.parseProdSoapResponse)(response);
+                return await (0, soap_parser_service_1.parseProdSoapResponse)(response);
             }
             //  if (actionName === "Xtlog_Get"){
             //  return  parseSoapXmlToJson(response,sid)
