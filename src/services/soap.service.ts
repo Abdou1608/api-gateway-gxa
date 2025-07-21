@@ -23,24 +23,25 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
   // ✅ Extraction propre de SessionId
   let sid = _sid ?? "";
   if (!basSecurityContext) {
-    console.warn("⚠️ Aucune SessionId fournie dans les paramètres !");
+   // console.warn("⚠️ Aucune SessionId fournie dans les paramètres !");
     throw new Error("Aucune Identité n'est fournie")
   }else{
-    console.info("⚠️ SessionId et BasSec fournie dans les paramètres correctement!!"+basSecurityContext);}
+   // console.info("⚠️ SessionId et BasSec fournie dans les paramètres correctement!!"+basSecurityContext);}
 
-  console.log("✅ Inside SENDSOAPREQUEST - actionName:", actionName);
+ // console.log("✅ Inside SENDSOAPREQUEST - actionName:", actionName);
   console.log("✅ Inside SENDSOAPREQUEST - sid:", sid);
   const an= actionName ? actionName: ""
     
     const result= await runBasAct.RunAction(an, params,basSecurityContext ? basSecurityContext : new BasSecurityContext()).then( response=>{
-      console.log("✅ Inside runBasAct - actionName====", actionName);
+    //  console.log("✅ Inside runBasAct - actionName====", actionName);
       if (sid=="produit" || actionName=="Produit_Details"){
         console.log("✅ Inside runBasAct - reponse du SOAP avant parser====", response);
-        }
-      if (actionName === "Xtlog_Get"){
-    return  parseSoapXmlToJson(response,sid)
-    }
-   if (sid=="prod"){
+        return parseProdSoapResponse(response) 
+      }
+    //  if (actionName === "Xtlog_Get"){
+  //  return  parseSoapXmlToJson(response,sid)
+   // }
+   else if (sid=="prod"){
     return parseProdSoapResponse(response)
    }else{
     return parseSoapXmlToJson(response,sid)
@@ -99,4 +100,4 @@ if (JSON.stringify( result).includes("Erreur d'extraction des données :")) {
 
   return result
   */
-}
+}}

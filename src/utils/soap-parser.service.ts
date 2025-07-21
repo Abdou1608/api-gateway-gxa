@@ -24,7 +24,7 @@ const parser = new XMLParser({
   const parser = new DOMParser();
   const serializer = new XMLSerializer();
   const doc = parser.parseFromString(soapXml, 'application/xml');
-  console.log("La valeur de  soapXml est ========"+ soapXml)
+  //console.log("La valeur de  soapXml est ========"+ soapXml)
 const dname:string=datanode ? datanode+'-rows':""
 console.log("La valeur de  dname est ========"+ dname)
   let dataNode = doc.getElementsByTagName(datanode || 'Data' || 'data')[0];
@@ -32,6 +32,7 @@ console.log("La valeur de  dname est ========"+ dname)
   
   if (!dataNode || !dataNode.textContent) {
      dataNode =  doc.getElementsByTagName(dname)[0];
+     
      if (!dataNode ) {
       console.log(' Ou <Data> introuvable dans la réponse SOAP')
       //return parseProdSoapResponse()

@@ -20,7 +20,7 @@ function parseSoapXmlToJson(soapXml, datanode) {
         const parser = new xmldom_1.DOMParser();
         const serializer = new xmldom_2.XMLSerializer();
         const doc = parser.parseFromString(soapXml, 'application/xml');
-        console.log("La valeur de  soapXml est ========" + soapXml);
+        //console.log("La valeur de  soapXml est ========"+ soapXml)
         const dname = datanode ? datanode + '-rows' : "";
         console.log("La valeur de  dname est ========" + dname);
         let dataNode = doc.getElementsByTagName(datanode || 'Data' || 'data')[0];
