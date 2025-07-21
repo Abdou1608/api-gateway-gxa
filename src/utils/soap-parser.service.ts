@@ -408,7 +408,7 @@ export function new_parseObjectXmlToJson(xml: string): new_ParsedJson {
 
   return output;
 }
-export function parseProdSoapResponse(xmlString: string): Produit[] {
+export function parseProdSoapResponse(xmlString: string): any {
   const produits: Produit[] = [];
   console.log(":===============================================================================================================================")
   console.log(":===============================================================================================================================")
@@ -428,60 +428,76 @@ export function parseProdSoapResponse(xmlString: string): Produit[] {
   .replace(/&amp;/g, '&');  
   console.log('_xmlContent dans parseSoapResponse=.....'+ _xmlContent)  
   const rawContentMatch = _xmlContent.match(/<prod-rows[^>]*>([\s\S]*?)<\/prod-rows>/);
+ const detail_rawContentMatch = _xmlContent.match(/<produit[^>]*>([\s\S]*?)<\/produit>/);
   //console.log("rawContentMatch ========"+rawContentMatch)
 
-  if (!rawContentMatch ){
-    //console.log("_xmlContent ========"+_xmlContent)
-    return produits
-//throw new Error('rawContentMatch est inexistant dans la réponse SOAP');
+  if (!rawContentMatch && !detail_rawContentMatch){
+    console.log("_xmlContent ========"+_xmlContent)
+    //return produits
+throw new Error('rawContentMatch et detail_rawContentMatch sont inexistant dans la réponse SOAP');
   
+  }else if(!rawContentMatch && detail_rawContentMatch){
+    return parseprod_content(detail_rawContentMatch[0],produits)
+  }else if(rawContentMatch && !detail_rawContentMatch){
+    return parseprod_content(rawContentMatch[0],produits)
+
   };
-const xmlContent = rawContentMatch[0]
   
 
+}
+
+ function parseprod_content(content:string, produits:any){
+
   const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
+  const xmlDoc = parser.parseFromString(content, 'text/xml');
 
   const prodElements = xmlDoc.getElementsByTagName('prod');
 
 console.log(":===============================================================================================================================")
 
 console.log('£££££prodElements.length  =.....'+prodElements.length)
+
+
   for (let i = 0; i < prodElements.length; i++) {
     const prod = prodElements[i];
-
-    const getTagValue = (tagName: string): any => {
-      const el = prod.getElementsByTagName(tagName)[0];
-      return el?.textContent?.trim() ?? '';
-    };
-
-
-    const produit: Produit = {
-      codeprod: getTagValue('b_codeprod'),
-      branche: getTagValue('b_branche'),
-      branc: getTagValue('b_branc'),
-      libelle: getTagValue('b_libelle'),
-      cieprin: getTagValue('b_cieprin'),
-      pronopol: getTagValue('b_pronopol'),
-      pronoave: getTagValue('b_pronoave'),
-      groupe: getTagValue('b_groupe'),
-      tartype: getTagValue('b_tartype'),
-      tardev: getTagValue('b_tardev'),
-      tarcle: getTagValue('b_tarcle'),
-      tararro: getTagValue('b_tararro'),
-      tauxatt: getTagValue('b_tauxatt'),
-      nondispo: getTagValue('b_nondispo'),
-      majcrm: getTagValue('b_majcrm'),
-      catalog: getTagValue('b_catalog'),
-      ole: getTagValue('b_ole'),
-      typarro: getTagValue('b_typarro'),
-      fvahom: getTagValue('b_fvahom'),
-    };
+    const produit: Produit = get_prod(prod)
 console.log('Produit extrait et reconstituee  =.....'+produit.codeprod)
     produits.push(produit);
   }
+if(produits.length > 1){
+   return produits as Produit[];
+}else {
+  return produits[0] as Produit
+}
+ 
+}
+function get_prod(prod:Element){
+  const getTagValue = (tagName: string): any => {
+    const el = prod.getElementsByTagName(tagName)[0];
+    return el?.textContent?.trim() ?? '';
+  };
+  return {
+    codeprod: getTagValue('b_codeprod'),
+    branche: getTagValue('b_branche'),
+    branc: getTagValue('b_branc'),
+    libelle: getTagValue('b_libelle'),
+    cieprin: getTagValue('b_cieprin'),
+    pronopol: getTagValue('b_pronopol'),
+    pronoave: getTagValue('b_pronoave'),
+    groupe: getTagValue('b_groupe'),
+    tartype: getTagValue('b_tartype'),
+    tardev: getTagValue('b_tardev'),
+    tarcle: getTagValue('b_tarcle'),
+    tararro: getTagValue('b_tararro'),
+    tauxatt: getTagValue('b_tauxatt'),
+    nondispo: getTagValue('b_nondispo'),
+    majcrm: getTagValue('b_majcrm'),
+    catalog: getTagValue('b_catalog'),
+    ole: getTagValue('b_ole'),
+    typarro: getTagValue('b_typarro'),
+    fvahom: getTagValue('b_fvahom'),
+  };
 
-  return produits;
 }
 
 

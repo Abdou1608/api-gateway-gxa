@@ -383,48 +383,64 @@ function parseProdSoapResponse(xmlString) {
         .replace(/&amp;/g, '&');
     console.log('_xmlContent dans parseSoapResponse=.....' + _xmlContent);
     const rawContentMatch = _xmlContent.match(/<prod-rows[^>]*>([\s\S]*?)<\/prod-rows>/);
+    const detail_rawContentMatch = _xmlContent.match(/<produit[^>]*>([\s\S]*?)<\/produit>/);
     //console.log("rawContentMatch ========"+rawContentMatch)
-    if (!rawContentMatch) {
-        //console.log("_xmlContent ========"+_xmlContent)
-        return produits;
-        //throw new Error('rawContentMatch est inexistant dans la réponse SOAP');
+    if (!rawContentMatch && !detail_rawContentMatch) {
+        console.log("_xmlContent ========" + _xmlContent);
+        //return produits
+        throw new Error('rawContentMatch et detail_rawContentMatch sont inexistant dans la réponse SOAP');
+    }
+    else if (!rawContentMatch && detail_rawContentMatch) {
+        return parseprod_content(detail_rawContentMatch[0], produits);
+    }
+    else if (rawContentMatch && !detail_rawContentMatch) {
+        return parseprod_content(rawContentMatch[0], produits);
     }
     ;
-    const xmlContent = rawContentMatch[0];
+}
+function parseprod_content(content, produits) {
     const parser = new xmldom_1.DOMParser();
-    const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
+    const xmlDoc = parser.parseFromString(content, 'text/xml');
     const prodElements = xmlDoc.getElementsByTagName('prod');
     console.log(":===============================================================================================================================");
     console.log('£££££prodElements.length  =.....' + prodElements.length);
     for (let i = 0; i < prodElements.length; i++) {
         const prod = prodElements[i];
-        const getTagValue = (tagName) => {
-            const el = prod.getElementsByTagName(tagName)[0];
-            return el?.textContent?.trim() ?? '';
-        };
-        const produit = {
-            codeprod: getTagValue('b_codeprod'),
-            branche: getTagValue('b_branche'),
-            branc: getTagValue('b_branc'),
-            libelle: getTagValue('b_libelle'),
-            cieprin: getTagValue('b_cieprin'),
-            pronopol: getTagValue('b_pronopol'),
-            pronoave: getTagValue('b_pronoave'),
-            groupe: getTagValue('b_groupe'),
-            tartype: getTagValue('b_tartype'),
-            tardev: getTagValue('b_tardev'),
-            tarcle: getTagValue('b_tarcle'),
-            tararro: getTagValue('b_tararro'),
-            tauxatt: getTagValue('b_tauxatt'),
-            nondispo: getTagValue('b_nondispo'),
-            majcrm: getTagValue('b_majcrm'),
-            catalog: getTagValue('b_catalog'),
-            ole: getTagValue('b_ole'),
-            typarro: getTagValue('b_typarro'),
-            fvahom: getTagValue('b_fvahom'),
-        };
+        const produit = get_prod(prod);
         console.log('Produit extrait et reconstituee  =.....' + produit.codeprod);
         produits.push(produit);
     }
-    return produits;
+    if (produits.length > 1) {
+        return produits;
+    }
+    else {
+        return produits[0];
+    }
+}
+function get_prod(prod) {
+    const getTagValue = (tagName) => {
+        const el = prod.getElementsByTagName(tagName)[0];
+        return el?.textContent?.trim() ?? '';
+    };
+    return {
+        codeprod: getTagValue('b_codeprod'),
+        branche: getTagValue('b_branche'),
+        branc: getTagValue('b_branc'),
+        libelle: getTagValue('b_libelle'),
+        cieprin: getTagValue('b_cieprin'),
+        pronopol: getTagValue('b_pronopol'),
+        pronoave: getTagValue('b_pronoave'),
+        groupe: getTagValue('b_groupe'),
+        tartype: getTagValue('b_tartype'),
+        tardev: getTagValue('b_tardev'),
+        tarcle: getTagValue('b_tarcle'),
+        tararro: getTagValue('b_tararro'),
+        tauxatt: getTagValue('b_tauxatt'),
+        nondispo: getTagValue('b_nondispo'),
+        majcrm: getTagValue('b_majcrm'),
+        catalog: getTagValue('b_catalog'),
+        ole: getTagValue('b_ole'),
+        typarro: getTagValue('b_typarro'),
+        fvahom: getTagValue('b_fvahom'),
+    };
 }
