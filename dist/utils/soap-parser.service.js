@@ -394,7 +394,7 @@ async function parseProdSoapResponse(xmlString) {
         return parseprod_content(rawContentMatch[0], produits);
     }
     else if (_xmlContent) {
-        return await parse_Produit_SoapXml(_xmlContent);
+        return await parse_Produit_SoapXml(xmlString);
         // parseprod_content(detail_rawContentMatch[0],produits)
     }
     else {
@@ -456,25 +456,43 @@ async function parse_Produit_SoapXml(xml) {
             tagNameProcessors: [name => name.replace(/^.*:/, '')],
         });
         const dataXml = parsed.Envelope?.Body?.BasActionResult?.Data;
-        if (!dataXml)
-            throw new Error('No <Data> field found in SOAP response');
         let embeddedXml = '';
         if (typeof dataXml === 'string') {
             embeddedXml = dataXml.trim();
         }
-        else if (typeof dataXml === 'object' && dataXml._) {
+        else if (typeof dataXml === 'object' && typeof dataXml._ === 'string') {
             embeddedXml = dataXml._.trim();
         }
         else {
+            const firstKey = Object.keys(dataXml || {}).find(k => typeof dataXml[k] === 'string');
+            if (firstKey)
+                embeddedXml = dataXml[firstKey].trim();
+        }
+        if (!embeddedXml) {
             throw new Error('No embedded XML in <Data> field');
         }
-        if (!embeddedXml.startsWith('<?xml')) {
-            throw new Error('Embedded XML missing or malformed');
+        let innerParsed;
+        try {
+            innerParsed = await (0, xml2js_1.parseStringPromise)(embeddedXml, {
+                explicitArray: false,
+                mergeAttrs: true,
+            });
         }
-        const innerParsed = await (0, xml2js_1.parseStringPromise)(embeddedXml, {
-            explicitArray: false,
-            mergeAttrs: true,
-        });
+        catch (innerError) {
+            console.warn('Failed to parse embedded XML strictly. Attempting fallback...');
+            // Fallback: remove problematic characters/entities manually
+            const cleaned = embeddedXml
+                .replace(/&gt;/g, '>')
+                .replace(/&lt;/g, '<')
+                .replace(/&amp;/g, '&')
+                .replace(/\r|\n|\t/g, '')
+                .replace(/="/g, '=\"')
+                .replace(/"\s*</g, '"<');
+            innerParsed = await (0, xml2js_1.parseStringPromise)(cleaned, {
+                explicitArray: false,
+                mergeAttrs: true,
+            });
+        }
         const params = innerParsed?.produit?.object?.param;
         if (!params || (Array.isArray(params) && params.length === 0)) {
             throw new Error('No <param> tags found in embedded XML');
