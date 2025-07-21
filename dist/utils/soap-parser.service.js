@@ -453,23 +453,35 @@ async function parse_Produit_SoapXml(xml) {
         const parsed = await (0, xml2js_1.parseStringPromise)(xml, {
             explicitArray: false,
             mergeAttrs: true,
-            tagNameProcessors: [name => name.replace('SOAP-ENV:', '').replace('NS1:', '').replace('NS2:', '')],
+            tagNameProcessors: [name => name.replace(/^.*:/, '')],
         });
         const dataXml = parsed.Envelope?.Body?.BasActionResult?.Data;
         if (!dataXml)
             throw new Error('No <Data> field found in SOAP response');
-        const embeddedXml = typeof dataXml === 'string' ? dataXml.trim() : dataXml._?.trim();
-        if (!embeddedXml)
+        let embeddedXml = '';
+        if (typeof dataXml === 'string') {
+            embeddedXml = dataXml.trim();
+        }
+        else if (typeof dataXml === 'object' && dataXml._) {
+            embeddedXml = dataXml._.trim();
+        }
+        else {
             throw new Error('No embedded XML in <Data> field');
+        }
+        if (!embeddedXml.startsWith('<?xml')) {
+            throw new Error('Embedded XML missing or malformed');
+        }
         const innerParsed = await (0, xml2js_1.parseStringPromise)(embeddedXml, {
             explicitArray: false,
             mergeAttrs: true,
         });
-        const params = innerParsed.produit?.object?.param;
-        if (!params || !Array.isArray(params))
+        const params = innerParsed?.produit?.object?.param;
+        if (!params || (Array.isArray(params) && params.length === 0)) {
             throw new Error('No <param> tags found in embedded XML');
+        }
         const result = {};
-        for (const param of params) {
+        const paramArray = Array.isArray(params) ? params : [params];
+        for (const param of paramArray) {
             if (param.is_null === 'true') {
                 result[param.name] = null;
             }
