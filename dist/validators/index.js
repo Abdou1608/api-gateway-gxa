@@ -18,6 +18,7 @@ __exportStar(require("./api_ajout_piece_au_contratValidator"), exports);
 __exportStar(require("./api_check_sessionValidator"), exports);
 __exportStar(require("./api_contrat_updateValidator"), exports);
 __exportStar(require("./api_create_contratValidator"), exports);
+__exportStar(require("./api_create_tierValidator"), exports);
 __exportStar(require("./api_create_quittanceValidator"), exports);
 __exportStar(require("./api_create_reglementValidator"), exports);
 __exportStar(require("./api_detail_contratValidator"), exports);

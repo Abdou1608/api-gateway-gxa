@@ -2,6 +2,7 @@ export * from "./api_ajout_piece_au_contratValidator";
 export * from "./api_check_sessionValidator";
 export * from "./api_contrat_updateValidator";
 export * from "./api_create_contratValidator";
+export * from "./api_create_tierValidator";
 export * from "./api_create_quittanceValidator";
 export * from "./api_create_reglementValidator";
 export * from "./api_detail_contratValidator";

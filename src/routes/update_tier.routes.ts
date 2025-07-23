@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { tiers_update } from '../services/update_tier/tiers_update.service';
 //import { api_update_tierValidator } from '../validators/api_update_tierValidator';
 import { validateBody } from '../middleware/zodValidator';
+import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 
 
 
@@ -10,7 +11,13 @@ const router = Router();
 router.put('/',  async (req, res) => {
   const dossier = JSON.parse(req.body.dossier)
   try {
-    const result = await tiers_update(dossier,req.body);
+    const _BasSecurityContext= new BasSecurityContext()
+    _BasSecurityContext.IsAuthenticated=true
+    _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
+const	numtiers=req.body.numtiers?? null
+const	numdpp=req.body.numdpp?? null
+const	data =req.body.data
+    const result = await tiers_update(dossier,data,_BasSecurityContext);
     res.json(result);
   } catch (error:any) {
     res.status(500).json({ error: error.message });
