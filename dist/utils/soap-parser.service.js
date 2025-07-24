@@ -23,7 +23,13 @@ function parseSoapXmlToJson(soapXml, datanode) {
         const serializer = new xmldom_2.XMLSerializer();
         const doc = parser.parseFromString(soapXml, 'application/xml');
         //console.log("La valeur de  soapXml est ========"+ soapXml)
-        const dname = datanode ? datanode + '-rows' : "";
+        let dname = datanode ? datanode + '-rows' : "";
+        if (datanode == "tab") {
+            dname = "tab-rows";
+        }
+        if (datanode == "tabs") {
+            dname = "tabs";
+        }
         console.log("La valeur de  dname est ========" + dname);
         let dataNode = doc.getElementsByTagName(datanode || 'Data' || 'data')[0];
         if (!dataNode || !dataNode.textContent) {

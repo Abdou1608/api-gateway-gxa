@@ -35,7 +35,14 @@ const parser = new XMLParser({
   const serializer = new XMLSerializer();
   const doc = parser.parseFromString(soapXml, 'application/xml');
   //console.log("La valeur de  soapXml est ========"+ soapXml)
-const dname:string=datanode ? datanode+'-rows':""
+  let dname:string=datanode ? datanode+'-rows':""
+  if (datanode =="tab"){
+    dname="tab-rows"
+  }
+  if (datanode =="tabs"){
+    dname="tabs"
+  }
+
 console.log("La valeur de  dname est ========"+ dname)
   let dataNode = doc.getElementsByTagName(datanode || 'Data' || 'data')[0];
   
