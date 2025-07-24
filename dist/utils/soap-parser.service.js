@@ -37,15 +37,15 @@ function parseSoapXmlToJson(soapXml, datanode) {
             if (!dataNode) {
                 console.log(' Ou <Data> introuvable dans la réponse SOAP');
                 //return parseProdSoapResponse()
-                throw new Error('dataNode est inexistant dans la réponse SOAP oui Session utilisateur non valide');
+                // throw new Error('dataNode est inexistant dans la réponse SOAP oui Session utilisateur non valide');
             }
             else if (!dataNode.textContent) {
                 console.log('dataNode.textContent est inexistant dans la réponse SOAP');
                 console.log('Le contenue de dataNode est-----' + serializer.serializeToString(dataNode));
-                throw new Error(dname + ' dataNode.textContent introuvable dans la réponse SOAP oui Session utilisateur non valide');
+                // throw new Error(dname+' dataNode.textContent introuvable dans la réponse SOAP oui Session utilisateur non valide');
             }
         }
-        const decoded = dataNode.textContent
+        const decoded = soapXml
             .replace(/&lt;/g, '<')
             .replace(/&gt;/g, '>')
             .replace(/&amp;/g, '&')
