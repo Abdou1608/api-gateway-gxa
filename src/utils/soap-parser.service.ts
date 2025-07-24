@@ -34,7 +34,7 @@ const parser = new XMLParser({
   const parser = new DOMParser();
   const serializer = new XMLSerializer();
   const doc = parser.parseFromString(soapXml, 'application/xml');
-  //console.log("La valeur de  soapXml est ========"+ soapXml)
+  console.log("La valeur de  soapXml est ========"+ soapXml)
   let dname:string=datanode ? datanode+'-rows':""
   if (datanode =="tab"){
     dname="tab-rows"
