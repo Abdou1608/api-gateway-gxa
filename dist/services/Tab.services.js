@@ -17,7 +17,7 @@ async function Tab_ListValues(req, res) {
         params.AddString("tabcode", req.body.tabcode);
         params.AddString("datanode", "tabs");
         // const soapBody = {reference,dppname,typetiers,codp,datenais}
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Tab_ListValues", basSecurityContext);
+        const result = await (0, soap_service_1.sendSoapRequest)(params, "Tab_ListValues", basSecurityContext, "tabs");
         res.json(result);
     }
     catch (error) {
@@ -36,7 +36,7 @@ async function Tab_ListItems(req, res) {
         }
         params.AddString("datanode", "tabs");
         // const soapBody = {reference,dppname,typetiers,codp,datenais}
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Tab_ListItems", basSecurityContext);
+        const result = await (0, soap_service_1.sendSoapRequest)(params, "Tab_ListItems", basSecurityContext, "tab");
         res.json(result);
     }
     catch (error) {

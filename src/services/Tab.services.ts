@@ -14,7 +14,7 @@ export async function Tab_ListValues(req: Request, res: Response) {
    params.AddString("tabcode",req.body.tabcode)
    params.AddString("datanode","tabs")
  // const soapBody = {reference,dppname,typetiers,codp,datenais}
-  const result = await sendSoapRequest(params, "Tab_ListValues", basSecurityContext);
+  const result = await sendSoapRequest(params, "Tab_ListValues", basSecurityContext,"tabs");
   res.json(result);
 } catch (error) {
   res.status(500).json({ error: 'SOAP Error', details: error });
@@ -32,7 +32,7 @@ export async function Tab_ListItems(req: Request, res: Response) {
   params.AddString("filtre",req.body.filtre ) }
    params.AddString("datanode","tabs")
  // const soapBody = {reference,dppname,typetiers,codp,datenais}
-  const result = await sendSoapRequest(params, "Tab_ListItems", basSecurityContext);
+  const result = await sendSoapRequest(params, "Tab_ListItems", basSecurityContext,"tab");
   res.json(result);
 } catch (error) {
   res.status(500).json({ error: 'SOAP Error', details: error });
