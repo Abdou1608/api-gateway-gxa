@@ -3,7 +3,7 @@ import { BasAction } from '../Model/Model-BasAction/BasAction';
 import { BasSoapClient } from '../Model/Model-BasSoapClient/BasSoapClient';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 
-import {  parseProdSoapResponse, parseSoapXmlToJson } from '../utils/soap-parser.service';
+import {  parseProdSoapResponse, parseSoapXmlToJson, parseTabRowsXml } from '../utils/soap-parser.service';
 import { BasParam } from '../Model/BasSoapObject/BasParam';
 
 const clhttp = require('http')
@@ -43,6 +43,9 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
    // }
    else if (sid=="prod"){
     return parseProdSoapResponse(response)
+   }
+   else if (sid==="tab"){
+    return parseTabRowsXml(response)
    }else{
     return parseSoapXmlToJson(response,sid)
    }

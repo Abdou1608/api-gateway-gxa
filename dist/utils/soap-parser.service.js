@@ -6,6 +6,7 @@ exports.new_parseSoapXmlToJson = new_parseSoapXmlToJson;
 exports.new_parseObjectXmlToJson = new_parseObjectXmlToJson;
 exports.parseProdSoapResponse = parseProdSoapResponse;
 exports.parse_Produit_SoapXml = parse_Produit_SoapXml;
+exports.parseTabRowsXml = parseTabRowsXml;
 const fast_xml_parser_1 = require("fast-xml-parser");
 const xmldom_1 = require("xmldom");
 const xmldom_2 = require("xmldom");
@@ -31,7 +32,7 @@ function parseSoapXmlToJson(soapXml, datanode) {
             dname = "tabs";
         }
         console.log("La valeur de  dname est ========" + dname);
-        let dataNode = doc.getElementsByTagName(datanode || 'Data' || 'data')[0];
+        let dataNode = doc.getElementsByTagName(datanode || 'Data' || 'data' || dname)[0];
         if (!dataNode || !dataNode.textContent) {
             dataNode = doc.getElementsByTagName(dname)[0];
             if (!dataNode) {
@@ -56,14 +57,15 @@ function parseSoapXmlToJson(soapXml, datanode) {
             .replace(/\\\\/g, '\\')
             .replace(/&gt;/g, '>')
             .replace(/&lt;/g, '<');
-        console.log("**********La valeur de decoded est ========" + decoded);
+        // console.log("**********La valeur de decoded est ========"+decoded)
         const innerXml = parser.parseFromString(decoded, 'application/xml');
         const root = innerXml.documentElement;
         let isList = false;
         let _dn = 0;
         if (datanode && datanode !== "") {
-            const nodes = root.getElementsByTagName(datanode || 'Data' || dname || 'data');
+            const nodes = root.getElementsByTagName(dname || datanode || 'Data');
             const node = nodes[0];
+            console.log("node.nodeName est :=======" + node.nodeName);
             isList = node ? node.nodeName.toLowerCase().endsWith('s') : false;
             _dn = 1;
         }
@@ -73,22 +75,36 @@ function parseSoapXmlToJson(soapXml, datanode) {
         }
         console.log("La valeur de isList est ========" + isList);
         console.log("La valeur de _dn est ========" + _dn);
-        const tagname = datanode ?? "";
-        let rawNodes = root.getElementsByTagName('object');
-        rawNodes = rawNodes ?? root.getElementsByTagName(tagname);
+        const tagname = datanode ? datanode : "";
+        console.log("La valeur de tagname  est ========" + tagname);
+        let rawNodes;
+        const rawnode = root.getElementsByTagName('object');
+        const _rawnode = root.getElementsByTagName(tagname);
+        const __rawnode = root.getElementsByTagName(tagname + "-rows");
+        const ___rawnode = root.getElementsByTagName("Data");
+        rawNodes = rawnode.length > 0 ? rawnode : __rawnode;
+        rawNodes = rawNodes.length > 0 ? rawNodes : _rawnode;
+        rawNodes = rawNodes.length > 0 ? rawNodes : ___rawnode;
+        console.log("La valeur de rawNodes[0].textcontent  est ========" + rawNodes[0].textcontent);
         console.log("La valeur de rawNodes[0]  est ========" + rawNodes[0]);
         console.log("La Longueur de rawNodes  est ========" + rawNodes.length);
         // On vérifie explicitement la présence d'au moins un objet
         let objectNodes = [];
         if (isList || rawNodes.length > 0) {
             objectNodes = Array.from(rawNodes); // plusieurs objets
-            console.log("Nombre d'objets trouvés est ----: " + rawNodes.length);
+            console.log("Nombre d'objets trouvés est ----: " + objectNodes.length);
             if (objectNodes.length === 0) {
                 throw new Error("Aucun élément <object> trouvé dans le XML et Datanode =" + datanode);
             }
             return objectNodes.map((node) => {
-                const xmlString = serializer.serializeToString(node);
+                console.log("le node trouvés");
+                console.log("la longueur du le node trouvés est " + node);
+                console.log("le node trouvés est " + node.DOCUMENT_NODE.toString());
+                const _serialiser = new xmldom_2.XMLSerializer();
+                const xmlString = _serialiser.serializeToString(node);
                 const result = parseObjectXmlToJson(xmlString);
+                console.log("le node trouvés ds xmlString est ----: " + xmlString);
+                console.log("le resultat de  est parseObjectXmlToJson----: " + JSON.stringify(result));
                 return result;
             });
         }
@@ -114,6 +130,7 @@ function parseSoapXmlToJson(soapXml, datanode) {
     }
 }
 function parseObjectXmlToJson(xml) {
+    console.log("Lancement du 1er parseObjectXmlToJson avec ===" + xml);
     const parser = new fast_xml_parser_1.XMLParser({
         ignoreAttributes: false,
         attributeNamePrefix: '@_',
@@ -123,6 +140,7 @@ function parseObjectXmlToJson(xml) {
     });
     const result = parser.parse(xml);
     if (!result || !result.object || !result.object.param) {
+        console.log("Erreur dans if (!result || !result.object || !result.object.param)");
         throw new Error("XML invalide ou aucun <param> trouvé.");
     }
     const paramNodes = Array.isArray(result.object.param)
@@ -151,6 +169,9 @@ function parseObjectXmlToJson(xml) {
     }
     // if (result.object['@_typename'] && result.object['@_typename'] !== "object" && result.object['@_typename'] !== "Object") {
     output.typename = result.object['@_typename'];
+    output.type = result.object['@_type'];
+    output.align = result.object['@_align'];
+    output.size = result.object['@_size'];
     //  } else if(result.object['@_typename'] === "object" || result.object['@_typename'] === "Object"){
     //    output.typename = result.object['tagName'] ??  result.object['@_tagName'] ?? result.object['tag'] ?? result.object.tag}
     return output;
@@ -449,7 +470,6 @@ function get_prod(prod) {
         nondispo: getTagValue('b_nondispo'),
         majcrm: getTagValue('b_majcrm'),
         catalog: getTagValue('b_catalog'),
-        ole: getTagValue('b_ole'),
         typarro: getTagValue('b_typarro'),
         fvahom: getTagValue('b_fvahom'),
     };
@@ -532,3 +552,75 @@ async function parse_Produit_SoapXml(xml) {
         throw new Error('Invalid SOAP response or unexpected structure');
     }
 }
+async function parseTabRowsXml(xml) {
+    try {
+        console.log("debut parseTabRowsXml ,,,,,::::!!!");
+        const decoded = xml
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&')
+            .replace(/\\</g, '<')
+            .replace(/\\>/g, '>')
+            .replace(/\\\//g, '/')
+            .replace(/\\"/g, '"')
+            .replace(/\\\\/g, '\\')
+            .replace(/&gt;/g, '>')
+            .replace(/&lt;/g, '<');
+        //console.log(decoded)
+        const parsed = await (0, xml2js_1.parseStringPromise)(decoded, {
+            explicitArray: false,
+            tagNameProcessors: [name => name.replace(/^.*:/, '')],
+            mergeAttrs: true,
+            trim: true,
+        });
+        const BasActionResult = parsed.Envelope?.Body?.BasActionResult;
+        // Le champ Data est déjà un objet JS contenant 'tab-rows'
+        const data = BasActionResult?.Data;
+        // selon le log, le chemin est Data['tab-rows'].tab (tableau)
+        const tabs = data?.['tab-rows']?.tab;
+        if (!tabs)
+            throw new Error("No <tab> array found in <tab-rows>");
+        // Toujours transformer en tableau (s'il n'y a qu'un seul <tab>)
+        const tabArray = Array.isArray(tabs) ? tabs : [tabs];
+        // Retourne le format souhaité :
+        return tabArray.map((tab) => ({
+            value: tab._ ?? "", // le texte du tab (clé ou label)
+            type: tab.type ?? "",
+            align: tab.align ?? "",
+            size: tab.size ? Number(tab.size) : undefined,
+        }));
+    }
+    catch (error) {
+        console.log(error.message);
+        throw new Error(error.message);
+    }
+}
+function extractDataXml(BasActionResult) {
+    const data = BasActionResult?.Data;
+    console.log("data, { depth: 10 }"); // DEBUG
+    console.dir(data, { depth: 10 }); // DEBUG
+    if (!data)
+        return undefined;
+    // 1. Direct string
+    if (typeof data === "string")
+        return data.trim();
+    // 2. Object with _ property
+    if (typeof data._ === "string")
+        return data._.trim();
+    // 3. Array with object(s)
+    if (Array.isArray(data)) {
+        for (const d of data) {
+            if (typeof d === "string" && d.trim())
+                return d.trim();
+            if (typeof d._ === "string" && d._.trim())
+                return d._.trim();
+        }
+    }
+    // 4. Object with $ and _
+    if (typeof data === "object" && data._)
+        return (data._ + '').trim();
+    return undefined;
+}
+// Exemple d'utilisation :
+// const arr = await parseTabRowsXml(VOTRE_XML);
+// console.log(arr);

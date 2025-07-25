@@ -5,6 +5,8 @@ import { sendSoapRequest } from '../soap.service';
 export async function produit_listitems(typeecran? : string,
 	branche? : string,
 	disponible? : boolean, BasSecurityContext?:BasSecurityContext) {
+    try {
+      
   const soapBody = {typeecran,branche,disponible,BasSecurityContext}
   const params=new BasParams()
   BasSecurityContext ? params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar()) :null
@@ -15,4 +17,7 @@ export async function produit_listitems(typeecran? : string,
    params.AddString("datanode","prod")
   const result = await sendSoapRequest(params, "Produit_ListItems",BasSecurityContext,"prod");
   return result;
+} catch (error:any) {
+  throw new Error("erreur d'acces aux données, veuillex vous reconnecter et reessayer")
+} 
 }

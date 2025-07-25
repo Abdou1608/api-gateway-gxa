@@ -12,6 +12,7 @@ export class AppConfigService {
   }
 
   private _baseSOAPUrl: string =process.env.SOAP_URL ?? "http://10.0.46.11";
+  //http://10.0.46.11
   //"http://ec2-13-38-10-3.eu-west-3.compute.amazonaws.com"
   
   private _baseSOAPPort: any = process.env.SOAP_PORT ?? this.port

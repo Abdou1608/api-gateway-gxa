@@ -4,13 +4,18 @@ exports.produit_listitems = produit_listitems;
 const BasParams_1 = require("../../Model/BasSoapObject/BasParams");
 const soap_service_1 = require("../soap.service");
 async function produit_listitems(typeecran, branche, disponible, BasSecurityContext) {
-    const soapBody = { typeecran, branche, disponible, BasSecurityContext };
-    const params = new BasParams_1.BasParams();
-    BasSecurityContext ? params.AddStr("BasSecurityContext", BasSecurityContext.ToSoapVar()) : null;
-    typeecran ? params.AddString("typeecran", typeecran) : null;
-    branche ? params.AddString("branche", branche) : null;
-    disponible ? params.AddBool("disponible", disponible) : null;
-    params.AddString("datanode", "prod");
-    const result = await (0, soap_service_1.sendSoapRequest)(params, "Produit_ListItems", BasSecurityContext, "prod");
-    return result;
+    try {
+        const soapBody = { typeecran, branche, disponible, BasSecurityContext };
+        const params = new BasParams_1.BasParams();
+        BasSecurityContext ? params.AddStr("BasSecurityContext", BasSecurityContext.ToSoapVar()) : null;
+        typeecran ? params.AddString("typeecran", typeecran) : null;
+        branche ? params.AddString("branche", branche) : null;
+        disponible ? params.AddBool("disponible", disponible) : null;
+        params.AddString("datanode", "prod");
+        const result = await (0, soap_service_1.sendSoapRequest)(params, "Produit_ListItems", BasSecurityContext, "prod");
+        return result;
+    }
+    catch (error) {
+        throw new Error("erreur d'acces aux données, veuillex vous reconnecter et reessayer");
+    }
 }

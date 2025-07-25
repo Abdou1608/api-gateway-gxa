@@ -28,6 +28,7 @@ class AppConfigService {
     }
     constructor() {
         this._baseSOAPUrl = process.env.SOAP_URL ?? "http://10.0.46.11";
+        //http://10.0.46.11
         //"http://ec2-13-38-10-3.eu-west-3.compute.amazonaws.com"
         this._baseSOAPPort = process.env.SOAP_PORT ?? this.port;
         this._apiEndpoint = "/soap/";
