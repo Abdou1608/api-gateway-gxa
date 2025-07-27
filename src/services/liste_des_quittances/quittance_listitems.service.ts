@@ -6,8 +6,9 @@ export async function quittance_listitems(dossier:number,
 contrat: number,BasSecurityContext:BasSecurityContext,) {
   const params=new BasParams()
 params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())
+params.AddInt("contrat",contrat)
  params.AddInt("dossier",dossier)
-  params.AddInt("contrat",contrat)
+ 
 //   disponible ?  params.AddBool("disponible",disponible) :null
 
    params.AddString("datanode","quit")

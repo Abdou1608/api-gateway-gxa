@@ -15,6 +15,7 @@ router.post('/', validateBody(api_liste_des_quittancesValidator), async (req, re
   _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
  const dossier =req.body.dossier
  const contrat=req.body.contrat 
+ //console.log("dossier==="+dossier)
 
     const result = await quittance_listitems(dossier,contrat,_BasSecurityContext);
     res.json(result);

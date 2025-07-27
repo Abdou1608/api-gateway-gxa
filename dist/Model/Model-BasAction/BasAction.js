@@ -46,6 +46,7 @@ class BasAction {
         let body = "<ns1:RunAction>" + basSecurityContext.ToSoapVar() + `<name xsi:type=\"xsd:string\">${actionName}</name>`;
         body += basParams.ToSoapVar();
         body += '</ns1:RunAction>';
+        console.log("Body de la requete est:=====" + body);
         let response = await this.BasSoapCLient.soapRequest(this.appConfigService.GetURlActionService(), body);
         if (BasSoapFault_1.BasSoapFault.IsBasError(response))
             BasSoapFault_1.BasSoapFault.ThrowError(response);

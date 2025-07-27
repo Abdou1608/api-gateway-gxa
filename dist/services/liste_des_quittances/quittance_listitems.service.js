@@ -6,8 +6,8 @@ const soap_service_1 = require("../soap.service");
 async function quittance_listitems(dossier, contrat, BasSecurityContext) {
     const params = new BasParams_1.BasParams();
     params.AddStr("BasSecurityContext", BasSecurityContext.ToSoapVar());
-    params.AddInt("dossier", dossier);
     params.AddInt("contrat", contrat);
+    params.AddInt("dossier", dossier);
     //   disponible ?  params.AddBool("disponible",disponible) :null
     params.AddString("datanode", "quit");
     const result = await (0, soap_service_1.sendSoapRequest)(params, "Quittance_ListItems", BasSecurityContext);
