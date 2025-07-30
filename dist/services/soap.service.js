@@ -11,7 +11,7 @@ const config = new app_config_service_1.AppConfigService;
 const SOAP_URL = config.GetURlActionService();
 const bsc = new BasSoapClient_1.BasSoapClient();
 const runBasAct = new BasAction_1.BasAction(bsc, config);
-async function sendSoapRequest(params, actionName, basSecurityContext, _sid) {
+async function sendSoapRequest(params, actionName, basSecurityContext, _sid, data) {
     // let SoapParser= new SoapParserService();
     //const builder = new Builder({ headless: true });
     //const xml2js = await import('xml2js');

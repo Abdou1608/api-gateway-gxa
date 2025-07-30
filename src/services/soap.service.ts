@@ -13,7 +13,7 @@ const bsc = new BasSoapClient()
 const runBasAct=new BasAction(bsc, config)
 
 
-export async function sendSoapRequest(params: any, actionName?: string, basSecurityContext?:BasSecurityContext, _sid?:string): Promise<any> {
+export async function sendSoapRequest(params: any, actionName?: string, basSecurityContext?:BasSecurityContext, _sid?:string, data?:any): Promise<any> {
  // let SoapParser= new SoapParserService();
   //const builder = new Builder({ headless: true });
   //const xml2js = await import('xml2js');
