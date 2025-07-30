@@ -31,6 +31,9 @@ function parseSoapXmlToJson(soapXml, datanode) {
         if (datanode == "tabs") {
             dname = "tabs";
         }
+        if (datanode == "risks" || "Risks") {
+            dname = "risks";
+        }
         console.log("La valeur de  dname est ========" + dname);
         let dataNode = doc.getElementsByTagName(datanode || 'Data' || 'data' || dname)[0];
         if (!dataNode || !dataNode.textContent) {

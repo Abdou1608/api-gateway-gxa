@@ -42,6 +42,8 @@ const parser = new XMLParser({
   }
   if (datanode =="tabs"){
     dname="tabs"
+  }if (datanode =="risks" || "Risks"){
+    dname="risks"
   }
 
 console.log("La valeur de  dname est ========"+ dname)
