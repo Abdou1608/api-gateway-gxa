@@ -36,8 +36,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const Riskservice = __importStar(require("../services/Risque.services"));
 const riskrouter = (0, express_1.Router)();
-riskrouter.post('/Risk_ListItems', Riskservice.Risk_ListItems);
-riskrouter.post('/Risk_Create', Riskservice.Risk_Create);
-riskrouter.post('/Risk_Update', Riskservice.Risk_Update);
+riskrouter.post('/risk_listitems', Riskservice.Risk_ListItems);
+riskrouter.post('/risk_create', Riskservice.Risk_Create);
+riskrouter.post('/risk_update', Riskservice.Risk_Update);
 exports.default = riskrouter;
 // Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend
