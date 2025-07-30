@@ -25,6 +25,7 @@ import update_piece_au_contrat from './update_piece_du_contrat.routes';
 import tabrouter from './tab.routes';
 import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
+import riskrouter from './risque.routes';
 
 
 
@@ -51,6 +52,7 @@ export function registerRoutes(app: express.Application) {
   app.use("/api/liste_des_quittances", liste_des_quittances);
   app.use("/api/projects", router);
   app.use("/api/tabs", tabrouter);
+  app.use("/api/risk", riskrouter);
   app.use("/api/login", login);
   app.use("/api/logout", logout);
   app.use("/api/profile", profile);

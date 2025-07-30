@@ -30,6 +30,7 @@ const update_piece_du_contrat_routes_1 = __importDefault(require("./update_piece
 const tab_routes_1 = __importDefault(require("./tab.routes"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const yamljs_1 = __importDefault(require("yamljs"));
+const risque_routes_1 = __importDefault(require("./risque.routes"));
 function registerRoutes(app) {
     const swaggerDocument = yamljs_1.default.load("./openapi.fr.ex.custom.yaml");
     app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocument));
@@ -49,6 +50,7 @@ function registerRoutes(app) {
     app.use("/api/liste_des_quittances", liste_des_quittances_routes_1.default);
     app.use("/api/projects", project_routes_1.default);
     app.use("/api/tabs", tab_routes_1.default);
+    app.use("/api/risk", risque_routes_1.default);
     app.use("/api/login", login_routes_1.default);
     app.use("/api/logout", logout_routes_1.default);
     app.use("/api/profile", profile_routes_1.default);
