@@ -57,5 +57,5 @@ function registerRoutes(app) {
     app.use("/api/Tiers_Search", recherche_tier_routes_1.default);
     app.use("/api/Contrat_Update", update_contrat_routes_1.default);
     app.use("/api/Tiers_Update", update_tier_routes_1.default);
-    app.use("/api/update_pièce_contrat", update_piece_du_contrat_routes_1.default);
+    app.use("/api/update_piece_contrat", update_piece_du_contrat_routes_1.default);
 }

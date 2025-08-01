@@ -59,5 +59,5 @@ export function registerRoutes(app: express.Application) {
   app.use("/api/Tiers_Search", recherche_tier);
   app.use("/api/Contrat_Update", update_contrat);
   app.use("/api/Tiers_Update", update_tier);
-  app.use("/api/update_pièce_contrat",update_piece_au_contrat)
+  app.use("/api/update_piece_contrat",update_piece_au_contrat)
 }
