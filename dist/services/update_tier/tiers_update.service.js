@@ -4,6 +4,6 @@ exports.tiers_update = tiers_update;
 const soap_service_1 = require("../soap.service");
 async function tiers_update(dossier, data, Bsec) {
     const soapBody = { dossier, data };
-    const result = await (0, soap_service_1.sendSoapRequest)(soapBody, "Tiers_Update", Bsec);
+    const result = await (0, soap_service_1.sendSoapRequest)(soapBody, "Tiers_Update", Bsec, data);
     return result;
 }

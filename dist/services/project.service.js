@@ -56,7 +56,8 @@ async function Project_CreateHandler(req, res) {
         const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         basSecurityContext.SessionId = req.body.BasSecurityContext?._SessionId;
         basSecurityContext.IsAuthenticated = true;
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_Create", basSecurityContext);
+        const data = req.body.data;
+        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_Create", basSecurityContext, data);
         res.json(result);
     }
     catch (error) {
@@ -69,7 +70,8 @@ async function Project_updateHandler(req, res) {
         const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         basSecurityContext.SessionId = req.body.BasSecurityContext?._SessionId;
         basSecurityContext.IsAuthenticated = true;
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_update", basSecurityContext);
+        const data = req.body.data;
+        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_update", basSecurityContext, data);
         res.json(result);
     }
     catch (error) {
@@ -82,7 +84,8 @@ async function Project_AddOfferHandler(req, res) {
         const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         basSecurityContext.SessionId = req.body.BasSecurityContext?._SessionId;
         basSecurityContext.IsAuthenticated = true;
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_AddOffer", basSecurityContext);
+        const data = req.body.data;
+        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_AddOffer", basSecurityContext, data);
         res.json(result);
     }
     catch (error) {

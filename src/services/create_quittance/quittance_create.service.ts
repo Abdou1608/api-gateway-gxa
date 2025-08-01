@@ -11,7 +11,7 @@ export async function quittance_create(contrat:any,piece:any,bordereau:any,effet
     params.AddInt("piece", piece)
     params.AddInt("bordereau", bordereau)
   params.AddDateTime("effet", effet) 
-    params.AddStr("data", data)
+   // params.AddStr("data", data)
 
   /*
   `
@@ -34,6 +34,6 @@ bordereau (int>
     </soapenv:Envelope>
   `;
 */
-  const result = await sendSoapRequest(params, 'Quittance_Create', bass);
+  const result = await sendSoapRequest(params, 'Quittance_Create', bass, data);
   return result;
 }

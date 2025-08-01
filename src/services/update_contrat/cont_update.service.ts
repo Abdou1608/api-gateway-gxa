@@ -11,9 +11,9 @@ export async function cont_update(dossier:number,
     params.AddInt("dossier",dossier)
     piece ? params.AddString("piece",piece) : null
     effet ? params.AddDateTime("effet",effet) : null
-    data ? params.AddStr("data",data) : null
+   // data ? params.AddStr("data",data) : null
 
-  const result = await sendSoapRequest(params, "Cont_Update",BasSecurityContext);
+  const result = await sendSoapRequest(params, "Cont_Update",BasSecurityContext,data);
   return result;
 }
 export async function cont_piece_update(dossier:number,
@@ -24,8 +24,8 @@ export async function cont_piece_update(dossier:number,
     params.AddInt("dossier",dossier)
  params.AddString("piece",piece)
    // effet ? params.AddDateTime("effet",effet) : null
-    data ? params.AddStr("data",data) : null
+   // data ? params.AddStr("data",data) : null
 
-  const result = await sendSoapRequest(params, "Cont_Updatepiece",BasSecurityContext);
+  const result = await sendSoapRequest(params, "Cont_Updatepiece",BasSecurityContext,data);
   return result;
 }

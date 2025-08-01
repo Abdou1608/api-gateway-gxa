@@ -10,8 +10,8 @@ async function cont_update(dossier, piece, effet, data, BasSecurityContext) {
     params.AddInt("dossier", dossier);
     piece ? params.AddString("piece", piece) : null;
     effet ? params.AddDateTime("effet", effet) : null;
-    data ? params.AddStr("data", data) : null;
-    const result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_Update", BasSecurityContext);
+    // data ? params.AddStr("data",data) : null
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_Update", BasSecurityContext, data);
     return result;
 }
 async function cont_piece_update(dossier, piece, data, BasSecurityContext) {
@@ -20,7 +20,7 @@ async function cont_piece_update(dossier, piece, data, BasSecurityContext) {
     params.AddInt("dossier", dossier);
     params.AddString("piece", piece);
     // effet ? params.AddDateTime("effet",effet) : null
-    data ? params.AddStr("data", data) : null;
-    const result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_Updatepiece", BasSecurityContext);
+    // data ? params.AddStr("data",data) : null
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_Updatepiece", BasSecurityContext, data);
     return result;
 }

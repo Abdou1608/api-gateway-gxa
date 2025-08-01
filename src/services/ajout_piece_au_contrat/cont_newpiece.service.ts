@@ -13,8 +13,8 @@ data?: string, BasSecurityContext?:any)  {
  params.AddInt("dossier",contrat)
  produit ? params.AddString("produit",produit) : null
  effet ? params.AddDateTime("effet",effet) : null
- data ? params.AddStr("data",data) : null
-  const result = await sendSoapRequest(params, "Cont_Newpiece",BasSecurityContext);
+ //data ? params.AddStr("data",data) : null
+  const result = await sendSoapRequest(params, "Cont_Newpiece",BasSecurityContext,data);
  // const newresult=await parseXml(result)
   return result;
 }

@@ -9,8 +9,8 @@ async function cont_newpiece(contrat, produit, effet, data, BasSecurityContext) 
     params.AddInt("dossier", contrat);
     produit ? params.AddString("produit", produit) : null;
     effet ? params.AddDateTime("effet", effet) : null;
-    data ? params.AddStr("data", data) : null;
-    const result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_Newpiece", BasSecurityContext);
+    //data ? params.AddStr("data",data) : null
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_Newpiece", BasSecurityContext, data);
     // const newresult=await parseXml(result)
     return result;
 }

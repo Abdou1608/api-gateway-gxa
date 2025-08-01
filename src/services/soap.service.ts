@@ -5,6 +5,7 @@ import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 
 import {  parseProdSoapResponse, parseSoapXmlToJson, parseTabRowsXml } from '../utils/soap-parser.service';
 import { BasParam } from '../Model/BasSoapObject/BasParam';
+import { objectToXML } from '../utils/xml-parser';
 
 const clhttp = require('http')
 const config =new AppConfigService
@@ -22,17 +23,22 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
 
   // ✅ Extraction propre de SessionId
   let sid = _sid ?? "";
+  let xmldata:string=""
   if (!basSecurityContext) {
    // console.warn("⚠️ Aucune SessionId fournie dans les paramètres !");
     throw new Error("Aucune Identité n'est fournie")
   }else{
+ 
+    if (data && data !== ""){
+      xmldata = objectToXML(data)
+    }
    // console.info("⚠️ SessionId et BasSec fournie dans les paramètres correctement!!"+basSecurityContext);}
 
  // console.log("✅ Inside SENDSOAPREQUEST - actionName:", actionName);
   console.log("✅ Inside SENDSOAPREQUEST - sid:", sid);
   const an= actionName ? actionName: ""
     
-    const result= await runBasAct.RunAction(an, params,basSecurityContext ? basSecurityContext : new BasSecurityContext()).then( async response=>{
+    const result= await runBasAct.RunAction(an, params,basSecurityContext ? basSecurityContext : new BasSecurityContext(), xmldata).then( async response=>{
     //  console.log("✅ Inside runBasAct - actionName====", actionName);
       if (sid=="produit" || actionName=="Produit_Details"){
         console.log("✅ Inside runBasAct - reponse du SOAP avant parser====", response);

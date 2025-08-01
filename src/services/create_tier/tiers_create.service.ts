@@ -9,7 +9,7 @@ export async function tiers_create(basec:BasSecurityContext ,typtiers : string,
 	nature? : string, 
 	numtiers?: number, 
 	numdpp?: number,
-	data ?: Tier) {
+	data ?: any) {
   //const soapBody = {typtiers,nature,numtiers,numdpp,data}
   const params=new BasParams()
     params.AddStr("BasSecurityContext",basec.ToSoapVar())
@@ -18,10 +18,9 @@ export async function tiers_create(basec:BasSecurityContext ,typtiers : string,
     numdpp ? params.AddInt("numdpp",numdpp) : null
     nature ? params.AddString("nature",nature) : null
 	params.AddStr("typtiers",typtiers)
-	if (data) {
-		params.AddStr("data",tierModelToXml(data))	
-	}
+	//if (data) {
+	//	params.AddStr("data",tierModelToXml(data))	}
   
-  const result = await sendSoapRequest(params,"Tiers_Create");
+  const result = await sendSoapRequest(params,"Tiers_Create",basec,data);
   return result;
 }

@@ -10,7 +10,7 @@ async function quittance_create(contrat, piece, bordereau, effet, data, bass) {
     params.AddInt("piece", piece);
     params.AddInt("bordereau", bordereau);
     params.AddDateTime("effet", effet);
-    params.AddStr("data", data);
+    // params.AddStr("data", data)
     /*
     `
       <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
@@ -32,6 +32,6 @@ async function quittance_create(contrat, piece, bordereau, effet, data, bass) {
       </soapenv:Envelope>
     `;
   */
-    const result = await (0, soap_service_1.sendSoapRequest)(params, 'Quittance_Create', bass);
+    const result = await (0, soap_service_1.sendSoapRequest)(params, 'Quittance_Create', bass, data);
     return result;
 }

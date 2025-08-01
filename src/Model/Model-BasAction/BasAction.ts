@@ -10,10 +10,11 @@ export class BasAction {
 public http = require('http');
     constructor(private BasSoapCLient: BasSoapClient,  private appConfigService: AppConfigService) { }
 
-    public async RunAction(actionName: string, basParams: BasParams, basSecurityContext: BasSecurityContext): Promise<string> {
+    public async RunAction(actionName: string, basParams: BasParams, basSecurityContext: BasSecurityContext, xmldata?:string): Promise<string> {
         let body = "<ns1:RunAction>" + basSecurityContext.ToSoapVar() + `<name xsi:type=\"xsd:string\">${actionName}</name>`;
         body += basParams.ToSoapVar();
         body += '</ns1:RunAction>'; 
+        body += xmldata ?? ""
         console.log("Body de la requete est:====="+body)        
         let response = await this.BasSoapCLient.soapRequest(this.appConfigService.GetURlActionService(), body);
         if (BasSoapFault.IsBasError(response))
