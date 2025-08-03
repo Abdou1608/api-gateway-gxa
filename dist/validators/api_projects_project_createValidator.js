@@ -5,7 +5,7 @@ const zod_1 = require("zod");
 exports.api_projects_project_createValidator = zod_1.z.object({
     dossier: zod_1.z.number(),
     client: zod_1.z.any().optional(),
-    contrat: zod_1.z.number(),
+    contrat: zod_1.z.number().optional(),
     produit: zod_1.z.string().min(1, "champ requis"),
     username: zod_1.z.string().optional().refine(v => v === undefined || v.length > 0, "doit être non vide si présent"),
     libelle: zod_1.z.string().optional().refine(v => v === undefined || v.length > 0, "doit être non vide si présent"),

@@ -39,16 +39,20 @@ const parser = new XMLParser({
   let dname:string=datanode ? datanode+'-rows':""
   if (datanode =="tab"){
     dname="tab-rows"
-  }
-  if (datanode =="tabs"){
+  }else if (datanode =="tabs"){
     dname="tabs"
-  }if (datanode =="risks" || "Risks"){
+  }else if ((datanode == "risks") || (datanode =="Risks")){
     dname="risks"
+    console.log("Dans else if datanode ===risks")
+  }else if((datanode == "offers") || (datanode =="projects") || (datanode == "Offers") || (datanode =="Projects") || (datanode == "offer") || (datanode =="project"))  {
+    console.log("Dans else if datanode ===offers ||projects")
+    dname="offers"
   }
 
 console.log("La valeur de  dname est ========"+ dname)
+console.log("La valeur de  datanode est ========"+ datanode)
   let dataNode = doc.getElementsByTagName(datanode || 'Data' || 'data'|| dname)[0];
-  
+  dataNode ? dataNode : dataNode = doc.getElementsByTagName('Data')[0];
   
   if (!dataNode || !dataNode.textContent) {
      dataNode =  doc.getElementsByTagName(dname)[0];
@@ -169,7 +173,7 @@ export function parseObjectXmlToJson(xml: string): ParsedJson {
 
   const result = parser.parse(xml);
 
-  if (!result || !result.object || !result.object.param) {
+  if (!result) {
     console.log("Erreur dans if (!result || !result.object || !result.object.param)")
     throw new Error("XML invalide ou aucun <param> trouvé.");
   }
@@ -695,6 +699,106 @@ function extractDataXml(BasActionResult: any): string | undefined {
 
 
 
+/**
+ * Utilitaire pour forcer toute propriété donnée à être un tableau.
+ * @param value - une propriété d'objet issue de xml2js
+ */
+function ensureArray<T>(value: T | T[] | undefined): T[] {
+  if (value === undefined) return [];
+  return Array.isArray(value) ? value : [value];
+}
 
+/**
+ * Nettoie et extrait le XML embedded du champ Data dans un XML SOAP.
+ */
+function extractAndCleanEmbeddedXml(parsedSoap: any): string {
+  // Navigation safe vers Data
+  let dataXml = parsedSoap?.Envelope?.Body?.BasActionResult?.Data;
+  if (!dataXml) throw new Error('No <Data> field found in SOAP XML');
 
+  let embeddedXml = '';
+  if (typeof dataXml === 'string') {
+    embeddedXml = dataXml.trim();
+  } else if (typeof dataXml === 'object' && typeof dataXml._ === 'string') {
+    embeddedXml = dataXml._.trim();
+  } else {
+    // Recherche dans les props, si besoin
+    const firstKey = Object.keys(dataXml || {}).find(k => typeof dataXml[k] === 'string');
+    if (firstKey) embeddedXml = dataXml[firstKey].trim();
+  }
+
+  if (!embeddedXml) throw new Error('No embedded XML in <Data> field');
+
+  // Décodage minimal des entités HTML pour <, >, &
+  embeddedXml = embeddedXml
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/&#x27;/g, "'")
+    .replace(/&#34;/g, '"');
+
+  // Supprime l'entête XML s'il existe et gêne le parsing
+  embeddedXml = embeddedXml.replace(/<\?xml.*?\?>/g, '').trim();
+
+  return embeddedXml;
+}
+
+/**
+ * Parse le XML SOAP, extrait et nettoie le XML embedded, puis le parse en JSON.
+ * Forçage des sous-tableaux (clé passée en paramètre) à être TOUJOURS un tableau.
+ *
+ * @param xmlString - la chaîne XML SOAP complète
+ * @param forceArrayKey - si fourni, force cette clé à être toujours un tableau même si 1 seul élément
+ */
+export async function parseSoapEmbeddedXmlToJson(xmlString: string, forceArrayKey?: string): Promise<any> {
+  // Parse le SOAP
+  const parsedSoap = await parseStringPromise(xmlString, {
+    explicitArray: false,
+    mergeAttrs: true,
+    tagNameProcessors: [name => name.replace(/^.*:/, '')], // retire le namespace
+  });
+
+  // Extrait/Nettoie l'XML embedded
+  const embeddedXml = extractAndCleanEmbeddedXml(parsedSoap);
+
+  // Parse l'XML embedded
+  const result = await parseStringPromise(embeddedXml, {
+    explicitArray: false,
+    mergeAttrs: true,
+    tagNameProcessors: [name => name.replace(/^.*:/, '')],
+    valueProcessors: [v => (typeof v === 'string' ? v.trim() : v)],
+    trim: true,
+  });
+
+  // Optionnel: force la clé demandée à TOUJOURS être un tableau
+  if (forceArrayKey) {
+    // Recherche récursive de la clé dans tout l'objet
+    function forceKeyAsArray(obj: any) {
+      if (!obj || typeof obj !== 'object') return obj;
+      Object.keys(obj).forEach(key => {
+        if (key === forceArrayKey && obj[key]) {
+          obj[key] = ensureArray(obj[key]);
+        } else if (typeof obj[key] === 'object') {
+          forceKeyAsArray(obj[key]);
+        }
+      });
+    }
+    forceKeyAsArray(result);
+  }
+
+  // Retourne uniquement la racine utile (évite les objets inutiles avec "_")
+  return result;
+}
+
+/*
+Exemple d’utilisation :
+
+import { parseSoapEmbeddedXmlToJson } from './soap-utils';
+
+(async () => {
+  const res = await parseSoapEmbeddedXmlToJson(xmlString, 'offer');
+  console.log(JSON.stringify(res, null, 2));
+})();
+
+*/
 

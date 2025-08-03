@@ -26,7 +26,11 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
     }
     else {
         if (data && data !== "") {
-            xmldata = (0, xml_parser_1.objectToXML)(data);
+            xmldata = (0, xml_parser_1.objectToCustomXML)(data);
+            // xmldata=`<Data>${xmldata}</Data>`
+            console.log("✅ Inside ----------------------------------------------------------------");
+            console.log("✅ Inside SENDSOAPREQUEST - Data====:", xmldata);
+            console.log("✅ Fin Data ----------------------------------------------------------------");
         }
         // console.info("⚠️ SessionId et BasSec fournie dans les paramètres correctement!!"+basSecurityContext);}
         // console.log("✅ Inside SENDSOAPREQUEST - actionName:", actionName);
@@ -46,6 +50,16 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
             }
             else if (sid === "tab") {
                 return (0, soap_parser_service_1.parseTabRowsXml)(response);
+            }
+            else if ((sid === "offers") || (sid === "offer") || (sid === "Offer")) {
+                console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======" + response);
+                return await (0, soap_parser_service_1.parseSoapEmbeddedXmlToJson)(response, "offers");
+                //return parseSoapXmlToJson(response,sid)
+            }
+            else if ((sid === "projects") || (sid === "project") || (sid === "Project")) {
+                console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======" + response);
+                return await (0, soap_parser_service_1.parseSoapEmbeddedXmlToJson)(response, "projects");
+                //return parseSoapXmlToJson(response,sid)
             }
             else {
                 return (0, soap_parser_service_1.parseSoapXmlToJson)(response, sid);

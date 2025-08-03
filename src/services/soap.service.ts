@@ -3,9 +3,9 @@ import { BasAction } from '../Model/Model-BasAction/BasAction';
 import { BasSoapClient } from '../Model/Model-BasSoapClient/BasSoapClient';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 
-import {  parseProdSoapResponse, parseSoapXmlToJson, parseTabRowsXml } from '../utils/soap-parser.service';
+import {  parseProdSoapResponse, parseSoapEmbeddedXmlToJson, parseSoapXmlToJson, parseTabRowsXml } from '../utils/soap-parser.service';
 import { BasParam } from '../Model/BasSoapObject/BasParam';
-import { objectToXML } from '../utils/xml-parser';
+import { objectToCustomXML, objectToXML } from '../utils/xml-parser';
 
 const clhttp = require('http')
 const config =new AppConfigService
@@ -30,7 +30,12 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
   }else{
  
     if (data && data !== ""){
-      xmldata = objectToXML(data)
+      xmldata = objectToCustomXML(data)
+     // xmldata=`<Data>${xmldata}</Data>`
+      console.log("✅ Inside ----------------------------------------------------------------");
+      console.log("✅ Inside SENDSOAPREQUEST - Data====:", xmldata);
+      console.log("✅ Fin Data ----------------------------------------------------------------");
+  
     }
    // console.info("⚠️ SessionId et BasSec fournie dans les paramètres correctement!!"+basSecurityContext);}
 
@@ -52,6 +57,14 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
    }
    else if (sid==="tab"){
     return parseTabRowsXml(response)
+   }else if((sid==="offers") || (sid==="offer")|| (sid==="Offer")){
+    console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======"+ response);
+    return await parseSoapEmbeddedXmlToJson(response,"offers")
+    //return parseSoapXmlToJson(response,sid)
+   }else if((sid==="projects") || (sid==="project") || (sid==="Project")){
+    console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======"+ response);
+    return await parseSoapEmbeddedXmlToJson(response,"projects")
+    //return parseSoapXmlToJson(response,sid)
    }else{
     return parseSoapXmlToJson(response,sid)
    }
