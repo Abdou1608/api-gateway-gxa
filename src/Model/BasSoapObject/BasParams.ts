@@ -8,7 +8,10 @@ export class BasParams {
     {
         this.Items = new Array<BasParam>;
     }
-
+    public data(name: string, value: number): void
+    {
+        this.Items.push(BasParam.CreateInt(name, value));
+    }
     
     public AddInt(name: string, value: number): void
     {

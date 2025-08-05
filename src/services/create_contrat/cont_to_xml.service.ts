@@ -43,7 +43,7 @@ function objectToXml(typename: string, obj: Record<string, any>) {
 /**
  * Convert ContModel to XML structure (string)
  */
-export function contModelToXml(model: ContModel): string {
+export function contModelToXml(model: any): string {
   const objects: any[] = [];
   if (model.CONT) objects.push(objectToXml('CONT', model.CONT));
   if (model.PIEC) objects.push(objectToXml('PIEC', model.PIEC));
@@ -56,7 +56,7 @@ export function contModelToXml(model: ContModel): string {
       }
     }
   };
-  return create({ version: '1.0' }).ele(root).end({ prettyPrint: true });
+  return create({ version: '1.0' }).ele(root).end({ prettyPrint: true , headless: true });
 }
 
 // Usage:

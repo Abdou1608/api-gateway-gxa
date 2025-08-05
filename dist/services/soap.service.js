@@ -7,6 +7,7 @@ const BasSoapClient_1 = require("../Model/Model-BasSoapClient/BasSoapClient");
 const BasSecurityContext_1 = require("../Model/BasSoapObject/BasSecurityContext");
 const soap_parser_service_1 = require("../utils/soap-parser.service");
 const xml_parser_1 = require("../utils/xml-parser");
+const cont_to_xml_service_1 = require("./create_contrat/cont_to_xml.service");
 const clhttp = require('http');
 const config = new app_config_service_1.AppConfigService;
 const SOAP_URL = config.GetURlActionService();
@@ -25,11 +26,24 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
         throw new Error("Aucune Identité n'est fournie");
     }
     else {
+        console.log("✅ Inside ----------------------------------------------------------------");
         if (data && data !== "") {
-            xmldata = (0, xml_parser_1.objectToCustomXML)(data);
+            console.log("✅ Inside ----------------------------------------------------------------");
+            if ((sid === "cont") || (sid === "piecs") || (sid === "contrat") || (sid === "piece")) {
+                xmldata = (0, cont_to_xml_service_1.contModelToXml)(data);
+                console.log("----------------------------xmldata = contModelToXml(data)-------------------------------------------");
+                console.log("Data envoyé=" + xmldata);
+                console.log("_____________________________________________________________________");
+            }
+            else {
+                xmldata = (0, xml_parser_1.objectToCustomXML)(data);
+                console.log("----------------------------xmldata = objectToCustomXML(data)-------------------------------------------");
+                console.log("Data envoyé=" + xmldata);
+                console.log("_____________________________________________________________________");
+            }
             // xmldata=`<Data>${xmldata}</Data>`
             console.log("✅ Inside ----------------------------------------------------------------");
-            console.log("✅ Inside SENDSOAPREQUEST - Data====:", xmldata);
+            //  console.log("✅ Inside SENDSOAPREQUEST - Data====:", xmldata);
             console.log("✅ Fin Data ----------------------------------------------------------------");
         }
         // console.info("⚠️ SessionId et BasSec fournie dans les paramètres correctement!!"+basSecurityContext);}
@@ -37,9 +51,10 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
         console.log("✅ Inside SENDSOAPREQUEST - sid:", sid);
         const an = actionName ? actionName : "";
         const result = await runBasAct.RunAction(an, params, basSecurityContext ? basSecurityContext : new BasSecurityContext_1.BasSecurityContext(), xmldata).then(async (response) => {
-            //  console.log("✅ Inside runBasAct - actionName====", actionName);
+            console.log("✅ Inside runBasAct - actionName====", actionName);
+            console.log("✅ Inside runBasAct - response====", response);
             if (sid == "produit" || actionName == "Produit_Details") {
-                console.log("✅ Inside runBasAct - reponse du SOAP avant parser====", response);
+                // console.log("✅ Inside runBasAct - reponse du SOAP avant parser====", response);
                 return await (0, soap_parser_service_1.parseProdSoapResponse)(response);
             }
             //  if (actionName === "Xtlog_Get"){
@@ -52,17 +67,17 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
                 return (0, soap_parser_service_1.parseTabRowsXml)(response);
             }
             else if ((sid === "offers") || (sid === "offer") || (sid === "Offer")) {
-                console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======" + response);
+                // console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======"+ response);
                 return await (0, soap_parser_service_1.parseSoapEmbeddedXmlToJson)(response, "offers");
                 //return parseSoapXmlToJson(response,sid)
             }
             else if ((sid === "projects") || (sid === "project") || (sid === "Project")) {
-                console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======" + response);
+                // console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======"+ response);
                 return await (0, soap_parser_service_1.parseSoapEmbeddedXmlToJson)(response, "projects");
                 //return parseSoapXmlToJson(response,sid)
             }
             else {
-                return (0, soap_parser_service_1.parseSoapXmlToJson)(response, sid);
+                return await (0, soap_parser_service_1.parseSoapXmlToJson)(response, sid);
             }
         }).catch(e => { return "Erreur d'extraction des données :" + e.message; });
         //parser.parseStringPromise(response);

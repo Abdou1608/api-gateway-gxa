@@ -12,8 +12,10 @@ public http = require('http');
 
     public async RunAction(actionName: string, basParams: BasParams, basSecurityContext: BasSecurityContext, xmldata?:string): Promise<string> {
         let body = "<ns1:RunAction>" + basSecurityContext.ToSoapVar() + `<name xsi:type=\"xsd:string\">${actionName}</name>`;
+        console.log("Dans RunAction xmldata est :====="+xmldata) 
+        basParams.AddStr("data", xmldata ?? "")
         body += basParams.ToSoapVar();
-         body += xmldata ?? ""
+         //body +="<params>"+(xmldata ?? "")+"</params>"
         body += '</ns1:RunAction>'; 
        
         console.log("Body de la requete est:====="+body)        

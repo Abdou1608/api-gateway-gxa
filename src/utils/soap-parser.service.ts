@@ -5,8 +5,8 @@ import { Produit } from '../Model/produit.model';
 export interface XmlParsedObject {
   [key: string]: string | number | boolean | null | XmlParsedObject | XmlParsedObject[];
 }
-import { parseStringPromise } from 'xml2js';
-import { decode } from 'punycode';
+import { Parser, parseStringPromise } from 'xml2js';
+
 
 interface Param {
   name: string;
@@ -29,13 +29,13 @@ const parser = new XMLParser({
 
  //* Parse une réponse SOAP XML contenant un champ <Data> encodé.
  
- export function parseSoapXmlToJson<T = any | any[]>(soapXml: string, datanode?:string): T | T[]{
+ export async function parseSoapXmlToJson<T = any | any[]>(soapXml: string, datanode?:string): Promise<T | T[]>{
  
   try {
   const parser = new DOMParser();
   const serializer = new XMLSerializer();
   const doc = parser.parseFromString(soapXml, 'application/xml');
-  console.log("La valeur de  soapXml est ========"+ soapXml)
+  //console.log("La valeur de  soapXml est ========"+ soapXml)
   let dname:string=datanode ? datanode+'-rows':""
   if (datanode =="tab"){
     dname="tab-rows"
@@ -52,7 +52,7 @@ const parser = new XMLParser({
 console.log("La valeur de  dname est ========"+ dname)
 console.log("La valeur de  datanode est ========"+ datanode)
   let dataNode = doc.getElementsByTagName(datanode || 'Data' || 'data'|| dname)[0];
-  dataNode ? dataNode : dataNode = doc.getElementsByTagName('Data')[0];
+  dataNode = dataNode ? dataNode :  doc.getElementsByTagName('Data')[0];
   
   if (!dataNode || !dataNode.textContent) {
      dataNode =  doc.getElementsByTagName(dname)[0];
@@ -63,7 +63,7 @@ console.log("La valeur de  datanode est ========"+ datanode)
    // throw new Error('dataNode est inexistant dans la réponse SOAP oui Session utilisateur non valide');
      } else if(!dataNode.textContent){
       console.log('dataNode.textContent est inexistant dans la réponse SOAP')
-      console.log('Le contenue de dataNode est-----'+ serializer.serializeToString(dataNode))
+    //  console.log('Le contenue de dataNode est-----'+ serializer.serializeToString(dataNode))
     
      // throw new Error(dname+' dataNode.textContent introuvable dans la réponse SOAP oui Session utilisateur non valide');
     
@@ -89,18 +89,18 @@ console.log("La valeur de  datanode est ========"+ datanode)
   if (datanode && datanode !== ""){
     const nodes = root.getElementsByTagName(dname || datanode || 'Data' ) ;
     const node = nodes[0];
-    console.log("node.nodeName est :======="+node.nodeName)
-    isList = node ? node.nodeName.toLowerCase().endsWith('s') : false;
+    //console.log("node.nodeName est :======="+node?.nodeName)
+    isList = node ? node.nodeName?.toLowerCase().endsWith('s') : false;
     _dn=1
   } else {
     isList = root.tagName.toLowerCase().endsWith('s');
     _dn=2
   }
   
-  console.log("La valeur de isList est ========"+isList)
-  console.log("La valeur de _dn est ========"+_dn)
+ // console.log("La valeur de isList est ========"+isList)
+ // console.log("La valeur de _dn est ========"+_dn)
   const tagname =datanode ? datanode :""
-  console.log("La valeur de tagname  est ========"+tagname )
+ // console.log("La valeur de tagname  est ========"+tagname )
   let rawNodes:any 
   const rawnode=root.getElementsByTagName('object' )
   const _rawnode= root.getElementsByTagName(tagname);
@@ -109,8 +109,8 @@ console.log("La valeur de  datanode est ========"+ datanode)
   rawNodes = rawnode.length>0 ? rawnode : __rawnode;
   rawNodes = rawNodes.length>0  ? rawNodes : _rawnode;
   rawNodes = rawNodes.length>0  ? rawNodes : ___rawnode;
-  console.log("La valeur de rawNodes[0].textcontent  est ========"+rawNodes[0].textcontent )
-  console.log("La valeur de rawNodes[0]  est ========"+rawNodes[0] )
+ // console.log("La valeur de rawNodes[0].textcontent  est ========"+rawNodes[0].textcontent )
+ // console.log("La valeur de rawNodes[0]  est ========"+rawNodes[0] )
   console.log("La Longueur de rawNodes  est ========"+rawNodes.length )
   // On vérifie explicitement la présence d'au moins un objet
   let objectNodes: Element[] = [];
@@ -121,25 +121,26 @@ console.log("La valeur de  datanode est ========"+ datanode)
     if (objectNodes.length === 0) {
       throw new Error("Aucun élément <object> trouvé dans le XML et Datanode ="+datanode);
     }
-   return objectNodes.map((node) =>{
+    const new_res = objectNodes.map(node => {
     console.log("le node trouvés")
-    console.log("la longueur du le node trouvés est "+node)
-    console.log("le node trouvés est "+node.DOCUMENT_NODE.toString())
+   // console.log("la longueur du le node trouvés est "+node)
+   // console.log("le node trouvés est "+node.DOCUMENT_NODE.toString())
     const _serialiser = new XMLSerializer()
       const xmlString = _serialiser.serializeToString(node);
-      const result =parseObjectXmlToJson(xmlString)
-      console.log("le node trouvés ds xmlString est ----: "+xmlString)
-      console.log("le resultat de  est parseObjectXmlToJson----: "+JSON.stringify(result))
-      return result as T;
+      const result = parseObjectXmlToJson(xmlString)
+     // console.log("le node trouvés ds xmlString est ----: "+xmlString)
+    //  console.log("le resultat de  est parseObjectXmlToJson----: "+JSON.stringify(result))
+      return result;
     })
-      
+    //if (new_res == [{}])
+     return new_res as T
   } else  {
    // objectNodes.push(rawNodes[0]); // un seul objet
-   console.log("La valeur de rawNodes[0].textcontent  est ========"+rawNodes[0].textContent )
+  // console.log("La valeur de rawNodes[0].textcontent  est ========"+rawNodes[0].textContent )
   
    const xmlString = serializer.serializeToString(rawNodes[0]);
-   const result = xmlString ?? ""
-   return  parseObjectXmlToJson(result)  as T;
+   const result = parseSoapEmbeddedXmlToJson(xmlString) 
+   return  result  as T;
  // return new_xmlNodeToJson(rawNodes[0]) as T
   }
   
@@ -157,12 +158,75 @@ console.log("La valeur de  datanode est ========"+ datanode)
   throw new Error(error.message)
 }
 }
+
+
+export function xmlToJsonSync(xml: string): Record<string, any> {
+  let output: Record<string, any> = {};
+  const parser = new Parser({
+    explicitArray: false,
+    mergeAttrs: true,
+    trim: true,
+    valueProcessors: [
+      (value: string) => (!isNaN(Number(value)) && value.trim() !== '' ? Number(value) : value),
+    ],
+  });
+  parser.parseString(xml, (err, result) => {
+    if (err) throw err;
+    output = extractFirstDataChild(result);
+  });
+  return output;
+}
+
+/**
+ * Renvoie le premier objet-fils du root (ignore les attributs racine)
+ */
+function extractFirstDataChild(obj: any): any {
+  if (typeof obj !== 'object' || obj === null) return obj;
+  // Filtre les clés "attributs" (xmlns, xsi, $)
+  const keys = Object.keys(obj).filter(
+    (k) =>
+      !k.startsWith('xmlns') &&
+      !k.startsWith('xsi') &&
+      k !== '$'
+  );
+  for (const k of keys) {
+    if (typeof obj[k] === 'object') return obj[k]; // on retourne l'enfant objet
+  }
+  // fallback: si tout est primitif, on retourne le 1er champ
+  if (keys.length) return obj[keys[0]];
+  return obj;
+}
+
+/**
+ * Si le root a un seul noeud, on l'aplatit (ex: {data: {...}} => {...})
+ */
+function flattenRoot(obj: any): any {
+  // Si c'est {racine: {champ: valeur, ...}} => {champ: valeur, ...}
+  if (
+    typeof obj === 'object' &&
+    obj !== null &&
+    Object.keys(obj).length === 1 &&
+    typeof obj[Object.keys(obj)[0]] === 'object'
+  ) {
+    return obj[Object.keys(obj)[0]];
+  }
+  return obj;
+}
+
+// Exemple d'utilisation :
+// const xml = '<data><contrat>134985</contrat><effet>2024-01-01</effet></data>';
+// const json = await xmlToJsonAsync(xml);
+// // Résultat : { contrat: 134985, effet: '2024-01-01' }
+//
+// const json2 = xmlToJsonSync(xml);
+// // Résultat identique
+
+
 interface ParsedJson {
   [key: string]: string | number | boolean | null;
 }
 
 export function parseObjectXmlToJson(xml: string): ParsedJson {
-  console.log("Lancement du 1er parseObjectXmlToJson avec ==="+xml)
   const parser = new XMLParser({
     ignoreAttributes: false,
     attributeNamePrefix: '@_',
@@ -173,10 +237,12 @@ export function parseObjectXmlToJson(xml: string): ParsedJson {
 
   const result = parser.parse(xml);
 
-  if (!result) {
-    console.log("Erreur dans if (!result || !result.object || !result.object.param)")
-    throw new Error("XML invalide ou aucun <param> trouvé.");
-  }
+  if (!result || !result.object || !result.object.param) {
+   // throw new Error("XML invalide ou aucun <param> trouvé.");
+    console.log("XML invalide ou aucun <param> trouvé.")
+    console.log("XML invalide ou aucun <param> trouvé.")
+    return xmlToJsonSync(xml)
+  } 
 
   const paramNodes = Array.isArray(result.object.param)
     ? result.object.param
@@ -203,14 +269,12 @@ export function parseObjectXmlToJson(xml: string): ParsedJson {
   }
  // if (result.object['@_typename'] && result.object['@_typename'] !== "object" && result.object['@_typename'] !== "Object") {
     output.typename = result.object['@_typename'];
-    output.type = result.object['@_type'];
-    output.align = result.object['@_align'];
-    output.size = result.object['@_size'];
 //  } else if(result.object['@_typename'] === "object" || result.object['@_typename'] === "Object"){
 //    output.typename = result.object['tagName'] ??  result.object['@_tagName'] ?? result.object['tag'] ?? result.object.tag}
 
   return output;
 }
+
 
 export interface new_ParsedJson {
   [key: string]: string | number | boolean | null | new_ParsedJson[] | new_ParsedJson;
@@ -243,17 +307,15 @@ console.log(" ROOT decoded element ======="+decoded)
  // Cas 1 : <objects><object>...</object></objects>
  const objdecoded = parser.parseFromString(decoded??"", 'application/xml');
  const objectsNode = objdecoded.getElementsByTagName('objects')[0];
+ const singleObject = objdecoded.getElementsByTagName('object')[0];
  if (objectsNode) {
    const objectNodes = Array.from(objectsNode.getElementsByTagName('object'));
    const results = objectNodes.map(parseXmlObjectNode);
    return results as T;
- }
-
- // Cas 2 : <object> unique
- const singleObject = objdecoded.getElementsByTagName('object')[0];
- if (singleObject) {
+ }else if (singleObject) {
    return parseXmlObjectNode(singleObject) as T;
- }
+ } else {return parseSoapEmbeddedXmlToJson(soapXml) as T}
+ 
 
  throw new Error('Aucun <object> trouvé dans le XML');
 }

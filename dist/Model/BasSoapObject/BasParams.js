@@ -6,6 +6,9 @@ class BasParams {
     constructor() {
         this.Items = new Array;
     }
+    data(name, value) {
+        this.Items.push(BasParam_1.BasParam.CreateInt(name, value));
+    }
     AddInt(name, value) {
         this.Items.push(BasParam_1.BasParam.CreateInt(name, value));
     }

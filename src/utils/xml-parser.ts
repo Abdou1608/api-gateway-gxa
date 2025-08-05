@@ -54,7 +54,7 @@ export function objectToXML(data: Record<string, any>): string {
  * @returns Chaîne XML.
  */
 export function objectToCustomXML(data: Record<string, any>): string {
-  const root = create().ele('Data').ele('input').ele('objects');
+  const root = create().ele('cont').ele('input').ele('objects');
 
   function getXMLTypeAndValue(value: any): { type: string; valueAttr: string; value?: string } {
     if (value === null || value === undefined) {

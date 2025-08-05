@@ -6,6 +6,7 @@ import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 import {  parseProdSoapResponse, parseSoapEmbeddedXmlToJson, parseSoapXmlToJson, parseTabRowsXml } from '../utils/soap-parser.service';
 import { BasParam } from '../Model/BasSoapObject/BasParam';
 import { objectToCustomXML, objectToXML } from '../utils/xml-parser';
+import { contModelToXml } from './create_contrat/cont_to_xml.service';
 
 const clhttp = require('http')
 const config =new AppConfigService
@@ -28,14 +29,27 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
    // console.warn("⚠️ Aucune SessionId fournie dans les paramètres !");
     throw new Error("Aucune Identité n'est fournie")
   }else{
- 
+    console.log("✅ Inside ----------------------------------------------------------------");
+
     if (data && data !== ""){
+      console.log("✅ Inside ----------------------------------------------------------------");
+      if ((sid === "cont") || (sid === "piecs") || (sid === "contrat") || (sid === "piece")){
+        xmldata = contModelToXml(data)
+        console.log("----------------------------xmldata = contModelToXml(data)-------------------------------------------")
+        console.log("Data envoyé="+xmldata)
+        console.log("_____________________________________________________________________")
+      }else{
       xmldata = objectToCustomXML(data)
+      console.log("----------------------------xmldata = objectToCustomXML(data)-------------------------------------------")
+        console.log("Data envoyé="+xmldata)
+        console.log("_____________________________________________________________________")
+    
+      }
      // xmldata=`<Data>${xmldata}</Data>`
       console.log("✅ Inside ----------------------------------------------------------------");
-      console.log("✅ Inside SENDSOAPREQUEST - Data====:", xmldata);
+    //  console.log("✅ Inside SENDSOAPREQUEST - Data====:", xmldata);
       console.log("✅ Fin Data ----------------------------------------------------------------");
-  
+      
     }
    // console.info("⚠️ SessionId et BasSec fournie dans les paramètres correctement!!"+basSecurityContext);}
 
@@ -44,9 +58,10 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
   const an= actionName ? actionName: ""
     
     const result= await runBasAct.RunAction(an, params,basSecurityContext ? basSecurityContext : new BasSecurityContext(), xmldata).then( async response=>{
-    //  console.log("✅ Inside runBasAct - actionName====", actionName);
+      console.log("✅ Inside runBasAct - actionName====", actionName);
+      console.log("✅ Inside runBasAct - response====", response);
       if (sid=="produit" || actionName=="Produit_Details"){
-        console.log("✅ Inside runBasAct - reponse du SOAP avant parser====", response);
+       // console.log("✅ Inside runBasAct - reponse du SOAP avant parser====", response);
         return await parseProdSoapResponse(response) 
       }
     //  if (actionName === "Xtlog_Get"){
@@ -58,15 +73,15 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
    else if (sid==="tab"){
     return parseTabRowsXml(response)
    }else if((sid==="offers") || (sid==="offer")|| (sid==="Offer")){
-    console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======"+ response);
+   // console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======"+ response);
     return await parseSoapEmbeddedXmlToJson(response,"offers")
     //return parseSoapXmlToJson(response,sid)
    }else if((sid==="projects") || (sid==="project") || (sid==="Project")){
-    console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======"+ response);
+   // console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======"+ response);
     return await parseSoapEmbeddedXmlToJson(response,"projects")
     //return parseSoapXmlToJson(response,sid)
    }else{
-    return parseSoapXmlToJson(response,sid)
+    return await parseSoapXmlToJson(response,sid)
    }
      
     }).catch(e => {return "Erreur d'extraction des données :"+e.message})
