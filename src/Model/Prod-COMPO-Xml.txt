@@ -1,0 +1,37 @@
+<!--Composants d'un Produit-->
+<?xml version="1.0"?>
+<compo>
+  <data>
+    <numopt>
+      <!--Caption: N° option garantie-->
+      <!--Data type: ftInteger-->
+      <!--Nullable: false-->
+      <!--Persistent: true-->
+    </numopt>
+    <cie>
+      <!--Caption: code compagnie-->
+      <!--Data type: ftInteger-->
+      <!--Nullable: false-->
+      <!--Persistent: true-->
+    </cie>
+    <prodcie>
+      <!--Caption: code produit compagnie-->
+      <!--Data type: ftString(11)-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </prodcie>
+    <taux>
+      <!--Caption: taux-->
+      <!--Data type: ftFloat-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </taux>
+    <nomcie>
+      <!--Caption: nom compagnie-->
+      <!--Data type: ftString(30)-->
+      <!--Nullable: true-->
+      <!--Persistent: false-->
+      <!--Calc type: Fixed-->
+    </nomcie>
+  </data>
+</compo>

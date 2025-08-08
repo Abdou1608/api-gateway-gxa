@@ -53,8 +53,8 @@ export function objectToXML(data: Record<string, any>): string {
  * @param data - Objet source contenant des sous-objets avec des paramètres typés.
  * @returns Chaîne XML.
  */
-export function objectToCustomXML(data: Record<string, any>): string {
-  const root = create().ele('cont').ele('input').ele('objects');
+export function objectToCustomXML(data: Record<string, any>,_root:string): string {
+  const root = create().ele(_root).ele('input').ele('objects');
 
   function getXMLTypeAndValue(value: any): { type: string; valueAttr: string; value?: string } {
     if (value === null || value === undefined) {

@@ -1,0 +1,128 @@
+
+ <!--Detail des Garranties(Couvertures) -->
+
+<?xml version="1.0"?>
+<couv>
+  <data>
+    <codeprod>
+      <!--Caption: Code produit-->
+      <!--Data type: ftString(9)-->
+      <!--Nullable: false-->
+      <!--Persistent: true-->
+    </codeprod>
+    <codeopt>
+      <!--Caption: Code Option-->
+      <!--Data type: ftString(10)-->
+      <!--Nullable: false-->
+      <!--Persistent: true-->
+    </codeopt>
+    <codecouv>
+      <!--Caption: Code couverture-->
+      <!--Data type: ftString(10)-->
+      <!--Nullable: false-->
+      <!--Persistent: true-->
+    </codecouv>
+    <garass>
+      <!--Caption: N° garantie associée-->
+      <!--Data type: ftInteger-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </garass>
+    <intitule>
+      <!--Caption: Intitulé-->
+      <!--Data type: ftString(250)-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </intitule>
+    <prest>
+      <!--Caption: Nature prestation-->
+      <!--Data type: ftString(250)-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </prest>
+    <prestta>
+      <!--Caption: Taux tranche A-->
+      <!--Data type: ftFloat-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </prestta>
+    <presttb>
+      <!--Caption: Taux tranche B-->
+      <!--Data type: ftFloat-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </presttb>
+    <presttc>
+      <!--Caption: Taux tranche C-->
+      <!--Data type: ftFloat-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </presttc>
+    <prestsup>
+      <!--Caption: Taux tranches supérieures-->
+      <!--Data type: ftFloat-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </prestsup>
+    <jourfran>
+      <!--Caption: Franchise-->
+      <!--Data type: ftString(50)-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </jourfran>
+    <calcul>
+      <!--Caption: Formule calcul prestation-->
+      <!--Data type: ftMemo-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </calcul>
+    <carence>
+      <!--Caption: Carence (jours)-->
+      <!--Data type: ftSmallint-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </carence>
+    <tauxtra>
+      <!--Caption: Taux tranche A-->
+      <!--Data type: ftFloat-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </tauxtra>
+    <tauxtrb>
+      <!--Caption: Taux tranche B-->
+      <!--Data type: ftFloat-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </tauxtrb>
+    <tauxtrc>
+      <!--Caption: Taux tranche C-->
+      <!--Data type: ftFloat-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </tauxtrc>
+    <tauxsup>
+      <!--Caption: Taux tranches supérieures-->
+      <!--Data type: ftFloat-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </tauxsup>
+    <tauxaut>
+      <!--Caption: Autre taux-->
+      <!--Data type: ftFloat-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </tauxaut>
+    <forfait>
+      <!--Caption: Montant forfaitaire-->
+      <!--Data type: ftCurrency-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </forfait>
+    <forfait1>
+      <!--Caption: Montant forfaitaire (ISO 4217 currency code)-->
+      <!--Data type: ftString(3)-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </forfait1>
+  </data>
+</couv>

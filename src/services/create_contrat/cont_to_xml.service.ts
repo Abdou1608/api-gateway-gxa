@@ -56,7 +56,7 @@ export function contModelToXml(model: any): string {
       }
     }
   };
-  return create({ version: '1.0' }).ele(root).end({ prettyPrint: true , headless: true });
+  return create({ version: '1.0' }).ele(root).ele(root).end({ prettyPrint: true , headless: true });
 }
 
 // Usage:

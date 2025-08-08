@@ -40,7 +40,7 @@ async function Risk_Create(req, res) {
             params.AddInt("piece", req.body.piece);
         }
         if (req.body.dateEntree) {
-            params.AddInt("dateEntree", req.body.dateEntree);
+            params.AddDateTime("dateEntree", req.body.dateEntree);
         }
         params.AddString("datanode", "Risk");
         // const soapBody = {reference,dppname,typetiers,codp,datenais}

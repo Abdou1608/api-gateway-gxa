@@ -56,7 +56,7 @@ function contModelToXml(model) {
             }
         }
     };
-    return (0, xmlbuilder2_1.create)({ version: '1.0' }).ele(root).end({ prettyPrint: true, headless: true });
+    return (0, xmlbuilder2_1.create)({ version: '1.0' }).ele(root).ele(root).end({ prettyPrint: true, headless: true });
 }
 // Usage:
 // import { contModelToXml } from './cont-to-xml';

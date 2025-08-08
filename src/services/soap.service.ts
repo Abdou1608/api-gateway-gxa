@@ -33,13 +33,13 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
 
     if (data && data !== ""){
       console.log("✅ Inside ----------------------------------------------------------------");
-      if ((sid === "cont") || (sid === "piecs") || (sid === "contrat") || (sid === "piece")){
+      if ((sid === "cont") && (actionName !== "Cont_NewPiece")){
         xmldata = contModelToXml(data)
         console.log("----------------------------xmldata = contModelToXml(data)-------------------------------------------")
         console.log("Data envoyé="+xmldata)
         console.log("_____________________________________________________________________")
       }else{
-      xmldata = objectToCustomXML(data)
+      xmldata = objectToCustomXML(data,sid)
       console.log("----------------------------xmldata = objectToCustomXML(data)-------------------------------------------")
         console.log("Data envoyé="+xmldata)
         console.log("_____________________________________________________________________")

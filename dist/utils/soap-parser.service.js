@@ -119,8 +119,12 @@ async function parseSoapXmlToJson(soapXml, datanode) {
                 //  console.log("le resultat de  est parseObjectXmlToJson----: "+JSON.stringify(result))
                 return result;
             });
-            //if (new_res == [{}])
-            return new_res;
+            if (new_res?.length > 1) {
+                return new_res;
+            }
+            else {
+                return new_res[0];
+            }
         }
         else {
             // objectNodes.push(rawNodes[0]); // un seul objet

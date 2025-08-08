@@ -57,8 +57,8 @@ function objectToXML(data) {
  * @param data - Objet source contenant des sous-objets avec des paramètres typés.
  * @returns Chaîne XML.
  */
-function objectToCustomXML(data) {
-    const root = (0, xmlbuilder2_1.create)().ele('cont').ele('input').ele('objects');
+function objectToCustomXML(data, _root) {
+    const root = (0, xmlbuilder2_1.create)().ele(_root).ele('input').ele('objects');
     function getXMLTypeAndValue(value) {
         if (value === null || value === undefined) {
             return { type: 'ptUnknown', valueAttr: 'is_null="true"' };

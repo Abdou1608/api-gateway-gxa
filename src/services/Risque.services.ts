@@ -35,7 +35,7 @@ export async function Risk_Create(req: Request, res: Response) {
   if(req.body.piece){
     params.AddInt("piece",req.body.piece ) }
     if(req.body.dateEntree){
-      params.AddInt("dateEntree",req.body.dateEntree ) }
+      params.AddDateTime("dateEntree",req.body.dateEntree ) }
    params.AddString("datanode","Risk")
  // const soapBody = {reference,dppname,typetiers,codp,datenais}
   const result = await sendSoapRequest(params, "Risk_Create", basSecurityContext,"risk", req.body.data);

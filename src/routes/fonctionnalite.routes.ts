@@ -26,6 +26,8 @@ import tabrouter from './tab.routes';
 import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
 import riskrouter from './risque.routes';
+import list_des_tecrants from './liste_des_tecrants.routes';
+
 
 
 
@@ -34,7 +36,7 @@ import riskrouter from './risque.routes';
 export function registerRoutes(app: express.Application) {
   const swaggerDocument = YAML.load("./openapi.fr.ex.custom.yaml");
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-  app.use("/api/ajout_pièce_au_contrat", ajout_piece_au_contrat);
+  app.use("/api/ajout_piece_au_contrat", ajout_piece_au_contrat);
   app.use("/api/check_session", check_session);
   app.use("/api/create_contrat", create_contrat);
   app.use("/api/create_quittance", create_quittance);
@@ -47,6 +49,7 @@ export function registerRoutes(app: express.Application) {
   app.use("/api/liste_des_contrats", liste_des_contrats);
   app.use("/api/liste_des_contrats_d_un_tier", liste_des_contrats_d_un_tier);
   app.use("/api/liste_des_produits", liste_des_produits);
+  app.use("/api/liste_des_types_ecrans", list_des_tecrants);
   app.use("/api/liste_des_quittances", liste_des_quittances);
   app.use("/api/projects", router);
   app.use("/api/tab", tabrouter);

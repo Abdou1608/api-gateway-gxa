@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { registerRoutes } from './routes/fonctionnalité.routes';
+import { registerRoutes } from './routes/fonctionnalite.routes';
 import { applyGlobalMiddleware } from './middleware/Apply-Middlewares';
 
 const app = express();

@@ -1,0 +1,38 @@
+
+ <!--Clauses du contrat-->
+
+<?xml version="1.0"?>
+<pcla>
+  <data>
+    <contrat>
+      <!--Caption: Numéro contrat-->
+      <!--Data type: ftInteger-->
+      <!--Nullable: false-->
+      <!--Persistent: true-->
+    </contrat>
+    <piece>
+      <!--Caption: numéro piece-->
+      <!--Data type: ftInteger-->
+      <!--Nullable: false-->
+      <!--Persistent: true-->
+    </piece>
+    <codeprod>
+      <!--Caption: code produit-->
+      <!--Data type: ftString(9)-->
+      <!--Nullable: false-->
+      <!--Persistent: true-->
+    </codeprod>
+    <clause>
+      <!--Caption: clauses-->
+      <!--Data type: ftString(6)-->
+      <!--Nullable: false-->
+      <!--Persistent: true-->
+    </clause>
+    <ordre>
+      <!--Caption: N° ordre-->
+      <!--Data type: ftInteger-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </ordre>
+  </data>
+</pcla>

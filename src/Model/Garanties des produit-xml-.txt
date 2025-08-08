@@ -1,0 +1,134 @@
+<!--Garanties des produit-->
+
+<?xml version="1.0"?>
+<opt>
+  <data>
+    <codeprod>
+      <!--Caption: code produit-->
+      <!--Data type: ftString(9)-->
+      <!--Nullable: false-->
+      <!--Persistent: true-->
+    </codeprod>
+    <affiche>
+      <!--Caption: ordre affichage-->
+      <!--Data type: ftInteger-->
+      <!--Nullable: false-->
+      <!--Persistent: true-->
+    </affiche>
+    <codegar>
+      <!--Caption: code gararantie-->
+      <!--Data type: ftString(11)-->
+      <!--Nullable: false-->
+      <!--Persistent: true-->
+    </codegar>
+    <numopt>
+      <!--Caption: N° option-->
+      <!--Data type: ftInteger-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </numopt>
+    <cieprin>
+      <!--Caption: Cie principale-->
+      <!--Data type: ftInteger-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </cieprin>
+    <libelle>
+      <!--Caption: libellé de l'option-->
+      <!--Data type: ftString(40)-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </libelle>
+    <variatio>
+      <!--Caption: variation-->
+      <!--Data type: ftString(2)-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </variatio>
+    <nomind>
+      <!--Caption: nom indice-->
+      <!--Data type: ftString(11)-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </nomind>
+    <typegar>
+      <!--Caption: Type de garanties-->
+      <!--Data type: ftString(1)-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+      <!--Code table: TYPEGAR-->
+    </typegar>
+    <natgar>
+      <!--Caption: Nature-->
+      <!--Data type: ftString(1)-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+      <!--Code table: NATGAR-->
+    </natgar>
+    <tarctaxe>
+      <!--Caption: Code taxe (Tarif)-->
+      <!--Data type: ftString(22)-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </tarctaxe>
+    <tarxtaxe>
+      <!--Caption: Taux de taxe (Tarif)-->
+      <!--Data type: ftFloat-->
+      <!--Nullable: true-->
+      <!--Persistent: false-->
+      <!--Calc type: Fixed-->
+    </tarxtaxe>
+    <tarcomm>
+      <!--Caption: % commission (Tarif)-->
+      <!--Data type: ftString(22)-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </tarcomm>
+    <tarxcomm>
+      <!--Caption: Taux de comm (tarif)-->
+      <!--Data type: ftFloat-->
+      <!--Nullable: true-->
+      <!--Persistent: false-->
+      <!--Calc type: Fixed-->
+    </tarxcomm>
+    <tarcn>
+      <!--Caption: Code Cat/Nat (tarif)-->
+      <!--Data type: ftSmallint-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </tarcn>
+    <tarcnpn>
+      <!--Caption: Part de Cat/Nat dans PN-->
+      <!--Data type: ftFloat-->
+      <!--Nullable: true-->
+      <!--Persistent: false-->
+      <!--Calc type: Fixed-->
+    </tarcnpn>
+    <tarcncom>
+      <!--Caption: % commission sur Cat/Nat-->
+      <!--Data type: ftFloat-->
+      <!--Nullable: true-->
+      <!--Persistent: false-->
+      <!--Calc type: Fixed-->
+    </tarcncom>
+    <tarpnpp>
+      <!--Caption: Prime nette / prime pure-->
+      <!--Data type: ftString(1)-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </tarpnpp>
+    <tardev>
+      <!--Caption: devise spécifique du tarif-->
+      <!--Data type: ftString(3)-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </tardev>
+    <tarcntax>
+      <!--Caption: code taxe sur Cat/Nat-->
+      <!--Data type: ftSmallint-->
+      <!--Nullable: true-->
+      <!--Persistent: false-->
+      <!--Calc type: Fixed-->
+    </tarcntax>
+  </data>
+</opt>

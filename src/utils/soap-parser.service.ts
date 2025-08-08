@@ -132,8 +132,12 @@ console.log("La valeur de  datanode est ========"+ datanode)
     //  console.log("le resultat de  est parseObjectXmlToJson----: "+JSON.stringify(result))
       return result;
     })
-    //if (new_res == [{}])
-     return new_res as T
+    if (new_res?.length > 1){
+       return new_res as T[]
+    }else {
+      return new_res[0] as T
+    }
+    
   } else  {
    // objectNodes.push(rawNodes[0]); // un seul objet
   // console.log("La valeur de rawNodes[0].textcontent  est ========"+rawNodes[0].textContent )

@@ -31,10 +31,11 @@ const tab_routes_1 = __importDefault(require("./tab.routes"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const yamljs_1 = __importDefault(require("yamljs"));
 const risque_routes_1 = __importDefault(require("./risque.routes"));
+const liste_des_tecrants_routes_1 = __importDefault(require("./liste_des_tecrants.routes"));
 function registerRoutes(app) {
     const swaggerDocument = yamljs_1.default.load("./openapi.fr.ex.custom.yaml");
     app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocument));
-    app.use("/api/ajout_pièce_au_contrat", ajout_piece_au_contrat_routes_1.default);
+    app.use("/api/ajout_piece_au_contrat", ajout_piece_au_contrat_routes_1.default);
     app.use("/api/check_session", check_session_routes_1.default);
     app.use("/api/create_contrat", create_contrat_routes_1.default);
     app.use("/api/create_quittance", create_quittance_routes_1.default);
@@ -47,6 +48,7 @@ function registerRoutes(app) {
     app.use("/api/liste_des_contrats", liste_des_contrats_routes_1.default);
     app.use("/api/liste_des_contrats_d_un_tier", liste_des_contrats_d_un_tier_routes_1.default);
     app.use("/api/liste_des_produits", liste_des_produits_routes_1.default);
+    app.use("/api/liste_des_types_ecrans", liste_des_tecrants_routes_1.default);
     app.use("/api/liste_des_quittances", liste_des_quittances_routes_1.default);
     app.use("/api/projects", project_routes_1.default);
     app.use("/api/tab", tab_routes_1.default);

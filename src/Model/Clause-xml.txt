@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<clause>
+  <data>
+    <codeprod>
+      <!--Caption: code produit lié-->
+      <!--Data type: ftString(9)-->
+      <!--Nullable: false-->
+      <!--Persistent: true-->
+    </codeprod>
+    <clause>
+      <!--Caption: code clause-->
+      <!--Data type: ftString(6)-->
+      <!--Nullable: false-->
+      <!--Persistent: true-->
+    </clause>
+    <ordre>
+      <!--Caption: N° ordre-->
+      <!--Data type: ftInteger-->
+      <!--Nullable: false-->
+      <!--Persistent: true-->
+    </ordre>
+    <libelle>
+      <!--Caption: libelle clause-->
+      <!--Data type: ftString(50)-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </libelle>
+    <texte>
+      <!--Caption: texte-->
+      <!--Data type: ftMemo-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </texte>
+    <datefin>
+      <!--Caption: Date expiration / remplacement-->
+      <!--Data type: ftDateTime-->
+      <!--Nullable: true-->
+      <!--Persistent: true-->
+    </datefin>
+  </data>
+</clause>

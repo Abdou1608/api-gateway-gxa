@@ -29,14 +29,14 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
         console.log("✅ Inside ----------------------------------------------------------------");
         if (data && data !== "") {
             console.log("✅ Inside ----------------------------------------------------------------");
-            if ((sid === "cont") || (sid === "piecs") || (sid === "contrat") || (sid === "piece")) {
+            if ((sid === "cont") && (actionName !== "Cont_NewPiece")) {
                 xmldata = (0, cont_to_xml_service_1.contModelToXml)(data);
                 console.log("----------------------------xmldata = contModelToXml(data)-------------------------------------------");
                 console.log("Data envoyé=" + xmldata);
                 console.log("_____________________________________________________________________");
             }
             else {
-                xmldata = (0, xml_parser_1.objectToCustomXML)(data);
+                xmldata = (0, xml_parser_1.objectToCustomXML)(data, sid);
                 console.log("----------------------------xmldata = objectToCustomXML(data)-------------------------------------------");
                 console.log("Data envoyé=" + xmldata);
                 console.log("_____________________________________________________________________");
