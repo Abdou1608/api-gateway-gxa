@@ -15,15 +15,15 @@ async function parseXml(xml) {
  * @param data - L'objet contenant plusieurs sous-objets à convertir en XML.
  * @returns Un flux XML sous forme de chaîne de caractères.
  */
-function objectToXML(data) {
-    const root = (0, xmlbuilder2_1.create)().ele('Data');
+function objectToXML(data, _root) {
+    const root = (0, xmlbuilder2_1.create)().ele(_root).ele('input').ele('objects');
     function buildXml(parent, obj) {
         Object.entries(obj).forEach(([key, value]) => {
             if (value === null || value === undefined) {
-                parent.ele(key).att('xsi:nil', 'true');
+                parent.ele('param').att('xsi:nil', 'true').att('name', key).att('is_null', "true").att('type', 'ptUnknown');
             }
             else if (Array.isArray(value)) {
-                const arrayParent = parent.ele(key);
+                const arrayParent = parent.ele('object').att('typename', key);
                 value.forEach((item) => {
                     const itemElem = arrayParent.ele('item');
                     if (typeof item === 'object') {
@@ -35,17 +35,18 @@ function objectToXML(data) {
                 });
             }
             else if (typeof value === 'object') {
-                const child = parent.ele(key);
+                const child = parent.ele('object').att('typename', key);
+                ;
                 buildXml(child, value);
             }
             else if (typeof value === 'boolean') {
-                parent.ele(key).att('type', 'boolean').txt(value ? 'true' : 'false');
+                parent.ele('param').att('name', key).att('type', 'ptBool').att('bool_val', value ? 'true' : 'false').txt(value ? 'true' : 'false');
             }
             else if (typeof value === 'number') {
-                parent.ele(key).att('type', Number.isInteger(value) ? 'integer' : 'float').txt(String(value));
+                parent.ele('param').att('name', key).att('type', Number.isInteger(value) ? 'ptInt' : 'ptfloat').att('int_val', String(value)).txt(String(value));
             }
             else {
-                parent.ele(key).att('type', 'string').txt(value);
+                parent.ele('param').att('name', key).att('type', 'ptString').txt(value);
             }
         });
     }

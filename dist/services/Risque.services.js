@@ -66,6 +66,9 @@ async function Risk_Update(req, res) {
         if (req.body.piece) {
             params.AddInt("piece", req.body.piece);
         }
+        if (req.body.adhesion) {
+            params.AddInt("adhesion", req.body.adhesion);
+        }
         if (req.body.dateEntree) {
             params.AddInt("dateEntree", req.body.dateEntree);
         }

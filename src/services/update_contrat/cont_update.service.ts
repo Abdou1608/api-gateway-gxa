@@ -16,16 +16,20 @@ export async function cont_update(contrat:number,piece?:number,
   const result = await sendSoapRequest(params, "Cont_Update",BasSecurityContext,"",data );
   return result;
 }
-export async function cont_piece_update(dossier:number,
-  piece:string,
+export async function cont_piece_update(contrat:number,produit:string,
+  piece:number,Effet?:any,
   data?: any,BasSecurityContext?:any,) {
     const params=new BasParams()
     params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())
-    params.AddInt("dossier",dossier)
- params.AddString("piece",piece)
+    params.AddInt("contrat",contrat)
+    if(piece){ params.AddInt("piece",piece)}
+
+ params.AddString("produit",produit)
+ if(Effet){params.AddDateTime("Effet",Effet )}
+ 
    // effet ? params.AddDateTime("effet",effet) : null
    data ? params.AddString("data",data) : null
 
-  const result = await sendSoapRequest(params, "Cont_Updatepiece",BasSecurityContext,data);
+  const result = await sendSoapRequest(params, "Cont_Updatepiece",BasSecurityContext, "",data);
   return result;
 }

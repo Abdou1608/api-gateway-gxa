@@ -35,6 +35,14 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
                 console.log("Data envoyé=" + xmldata);
                 console.log("_____________________________________________________________________");
             }
+            else if (sid === "risk") {
+                xmldata = (0, xml_parser_1.objectToXML)(data, sid);
+                //objectToCustomXML(data,sid)
+                //
+                console.log("----------------------------xmldata = objectToXML(data)-------------------------------------------");
+                console.log("Data envoyé=" + xmldata);
+                console.log("_____________________________________________________________________");
+            }
             else {
                 xmldata = (0, xml_parser_1.objectToCustomXML)(data, sid);
                 console.log("----------------------------xmldata = objectToCustomXML(data)-------------------------------------------");
@@ -79,7 +87,7 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
             else {
                 return await (0, soap_parser_service_1.parseSoapXmlToJson)(response, sid);
             }
-        }).catch(e => { return "Erreur d'extraction des données :" + e.message; });
+        }).catch(e => { return "Erreur d'extraction des données :" + e; });
         //parser.parseStringPromise(response);
         if (JSON.stringify(result).includes("Erreur d'extraction des données :")) {
             throw new Error(JSON.stringify(result));

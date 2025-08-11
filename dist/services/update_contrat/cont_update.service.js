@@ -15,13 +15,19 @@ async function cont_update(contrat, piece, data, BasSecurityContext) {
     const result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_Update", BasSecurityContext, "", data);
     return result;
 }
-async function cont_piece_update(dossier, piece, data, BasSecurityContext) {
+async function cont_piece_update(contrat, produit, piece, Effet, data, BasSecurityContext) {
     const params = new BasParams_1.BasParams();
     params.AddStr("BasSecurityContext", BasSecurityContext.ToSoapVar());
-    params.AddInt("dossier", dossier);
-    params.AddString("piece", piece);
+    params.AddInt("contrat", contrat);
+    if (piece) {
+        params.AddInt("piece", piece);
+    }
+    params.AddString("produit", produit);
+    if (Effet) {
+        params.AddDateTime("Effet", Effet);
+    }
     // effet ? params.AddDateTime("effet",effet) : null
     data ? params.AddString("data", data) : null;
-    const result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_Updatepiece", BasSecurityContext, data);
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_Updatepiece", BasSecurityContext, "", data);
     return result;
 }

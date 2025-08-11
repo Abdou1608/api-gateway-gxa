@@ -1,64 +1,167 @@
-
 import { create } from 'xmlbuilder2';
-import { ContModel } from '../../Model/create_update_contrat';
+
+// ====== Config ======
+const MONETARY_FIELDS = new Set([
+  'Primann', 'Totann', 'Franini', 'Capini', 'Coutpol', 'Cieprime', 'Cietaxes', 'Commsup','Commann','Txcomm',
+  // ajouter ici les autres champs monétaires
+]);
+
+// forcer une devise quand le champ compagnon "...1" est absent :
+const DEFAULT_CURRENCY: string | null = "DJF"; 
+
+// ====== Helpers ======
+function formatFloatForBas(n: number): string {
+  // "3.00000000000000E+0004" style BAS
+  const s = n.toExponential(14).toUpperCase(); // ex "3.50000000000000E+3"
+  const m = s.match(/E([+-])(\d+)/);
+  if (!m) return s;
+  const sign = m[1];
+  const exp = m[2].padStart(4, '0');
+  return s.replace(/E[+-]\d+/, `E${sign}${exp}`);
+}
+
+function looksIsoDateTime(v: string): boolean {
+  return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(v);
+}
 
 /**
- * Helper to generate the correct <param ...> for one field
+ * Génère un <param ...> selon le type ET le nom du champ.
  */
 function buildParamXml(name: string, value: any): any {
+  if (DATE_FIELDS.has(name)) {
+    return buildDateParam(name, value);
+  }
+
+  // Null / undefined
   if (value === null || value === undefined) {
     return { '@name': name, '@type': 'ptUnknown', '@is_null': 'true' };
   }
-  if (typeof value === 'number' && Number.isInteger(value)) {
-    return { '@name': name, '@type': 'ptInt', '@int_val': value.toString() };
+
+  // Montants monétaires forçés en ptFloat (même si entier)
+  if (MONETARY_FIELDS.has(name)) {
+    const num = typeof value === 'number' ? value : Number(String(value).replace(',', '.'));
+    if (!isFinite(num)) {
+      // fallback string si non numérisable
+      return { '@name': name, '@type': 'ptString', '#': String(value) };
+    }
+    return { '@name': name, '@type': 'ptFloat', '@float_val': formatFloatForBas(num) };
   }
+
+  // Nombres
   if (typeof value === 'number') {
-    return { '@name': name, '@type': 'ptFloat', '@float_val': value.toExponential(14) };
+    if (Number.isInteger(value)) {
+      return { '@name': name, '@type': 'ptInt', '@int_val': String(value) };
+    }
+    return { '@name': name, '@type': 'ptFloat', '@float_val': formatFloatForBas(value) };
   }
+
+  // Booléens
   if (typeof value === 'boolean') {
     return { '@name': name, '@type': 'ptBool', '@bool_val': value ? 'true' : 'false' };
   }
+
+  // Chaînes
   if (typeof value === 'string') {
-    // date ISO
+    // si la chaîne ressemble déjà à une ISO complète, on peut aussi la sérialiser en ptDateTime
     if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) {
-      return { '@name': name, '@type': 'ptDateTime', '@date_val': value };
+      return { '@name': name, '@type': 'ptDateTime', '@date_val': value.endsWith('.000') ? value : `${value}.000` };
     }
+    if (value === '') return { '@name': name, '@type': 'ptString' };
     return { '@name': name, '@type': 'ptString', '#': value };
   }
+
+
+  // Fallback
   return { '@name': name, '@type': 'ptString', '#': String(value) };
 }
 
 /**
- * Convert a plain object to <object typename=...><param/></object> structure
+ * Injecte la devise par défaut pour un champ monétaire s'il manque le compagnon "...1"
+ * ex: Primann -> Primann1, Totann -> Totann1
  */
-function objectToXml(typename: string, obj: Record<string, any>) {
-  return {
-    'object': {
-      '@typename': typename,
-      'param': Object.entries(obj).map(([key, value]) => buildParamXml(key, value)),
+function ensureCurrencyCompanions(obj: Record<string, any>) {
+  if (!DEFAULT_CURRENCY) return;
+
+  for (const key of Object.keys(obj)) {
+    if (MONETARY_FIELDS.has(key)) {
+      const curKey = `${key}1`;
+      if (!(curKey in obj)) {
+        obj[curKey] = DEFAULT_CURRENCY; // ex "DJF"
+      }
     }
+  }
+}
+
+/**
+ * Convertit un objet JS en <object typename="..."><param .../></object>
+ */
+function objectToXmlNode(typename: string, obj: Record<string, any>) {
+  // optionnel : injecter devise défaut si nécessaire
+  ensureCurrencyCompanions(obj);
+
+  return {
+    '@typename': typename,
+    'param': Object.entries(obj).map(([key, value]) => buildParamXml(key, value)),
   };
 }
 
 /**
- * Convert ContModel to XML structure (string)
+ * Produit <cont><input><objects><object .../><object .../></objects></input></cont>
  */
 export function contModelToXml(model: any): string {
-  const objects: any[] = [];
-  if (model.CONT) objects.push(objectToXml('CONT', model.CONT));
-  if (model.PIEC) objects.push(objectToXml('PIEC', model.PIEC));
-  if (model.poli) objects.push(objectToXml('poli', model.poli));
+  const objectNodes: any[] = [];
+  if (model?.CONT) objectNodes.push(objectToXmlNode('CONT', model.CONT));
+  if (model?.PIEC) objectNodes.push(objectToXmlNode('PIEC', model.PIEC));
+  if (model?.poli) objectNodes.push(objectToXmlNode('poli', model.poli));
 
   const root = {
     cont: {
       input: {
-        objects: objects
+        objects: { object: objectNodes }
       }
     }
   };
-  return create({ version: '1.0' }).ele(root).ele(root).end({ prettyPrint: true , headless: true });
+
+  return create({ version: '1.0' }).ele(root).end({ prettyPrint: true, headless: true });
 }
 
-// Usage:
-// import { contModelToXml } from './cont-to-xml';
-// const xml = contModelToXml(obj);
+// --- Ajoute ces helpers/config ---
+
+const DATE_FIELDS = new Set([
+  'Datdermo', 'Dateresi', 'Ddebpiec', 'Dfinpiec', 'Entree', 'Sortie',
+  'Dateori', 'Datebia', 'Datetar', 'ext_piec_datesit' // complète si besoin
+]);
+
+function toIsoDateTime(value: any): string | null {
+  if (value === null || value === undefined || value === '') return null;
+
+  // Date JS
+  if (value instanceof Date && !isNaN(value.getTime())) {
+    const pad = (n:number)=> String(n).padStart(2,'0');
+    return `${value.getFullYear()}-${pad(value.getMonth()+1)}-${pad(value.getDate())}T${pad(value.getHours())}:${pad(value.getMinutes())}:${pad(value.getSeconds())}.000`;
+  }
+
+  const s = String(value).trim();
+
+  // DD/MM/YYYY
+  let m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (m) return `${m[3]}-${m[2]}-${m[1]}T00:00:00.000`;
+
+  // YYYY-MM-DD
+  m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m) return `${m[1]}-${m[2]}-${m[3]}T00:00:00.000`;
+
+  // ISO complet déjà (YYYY-MM-DDTHH:mm:ss(.SSS)?)
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?$/.test(s)) {
+    return s.endsWith('.000') ? s : `${s.replace(/(\.\d{3})?$/, '.000')}`;
+  }
+
+  // Format non reconnu -> invalide pour cast
+  return null;
+}
+
+function buildDateParam(name: string, value: any) {
+  const iso = toIsoDateTime(value);
+  if (!iso) return { '@name': name, '@type': 'ptUnknown', '@is_null': 'true' }; // évite le cast serveur
+  return { '@name': name, '@type': 'ptDateTime', '@date_val': iso };
+}
