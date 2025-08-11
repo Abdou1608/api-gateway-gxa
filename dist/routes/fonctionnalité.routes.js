@@ -26,7 +26,6 @@ const recherche_tier_routes_1 = __importDefault(require("./recherche_tier.routes
 const update_contrat_routes_1 = __importDefault(require("./update_contrat.routes"));
 const update_tier_routes_1 = __importDefault(require("./update_tier.routes"));
 const project_routes_1 = __importDefault(require("./project.routes"));
-const update_piece_du_contrat_routes_1 = __importDefault(require("./update_piece_du_contrat.routes"));
 const tab_routes_1 = __importDefault(require("./tab.routes"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const yamljs_1 = __importDefault(require("yamljs"));
@@ -57,5 +56,4 @@ function registerRoutes(app) {
     app.use("/api/Tiers_Search", recherche_tier_routes_1.default);
     app.use("/api/Contrat_Update", update_contrat_routes_1.default);
     app.use("/api/Tiers_Update", update_tier_routes_1.default);
-    app.use("/api/update_piece_contrat", update_piece_du_contrat_routes_1.default);
 }

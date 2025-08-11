@@ -28,6 +28,6 @@ async function cont_piece_update(contrat, produit, piece, Effet, data, BasSecuri
     }
     // effet ? params.AddDateTime("effet",effet) : null
     data ? params.AddString("data", data) : null;
-    const result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_Updatepiece", BasSecurityContext, "", data);
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_Updatepiece", BasSecurityContext, "piec", data);
     return result;
 }

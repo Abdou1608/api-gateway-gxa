@@ -30,6 +30,6 @@ export async function cont_piece_update(contrat:number,produit:string,
    // effet ? params.AddDateTime("effet",effet) : null
    data ? params.AddString("data",data) : null
 
-  const result = await sendSoapRequest(params, "Cont_Updatepiece",BasSecurityContext, "",data);
+  const result = await sendSoapRequest(params, "Cont_Updatepiece",BasSecurityContext, "piec",data);
   return result;
 }
