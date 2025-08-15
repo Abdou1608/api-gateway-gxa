@@ -15,8 +15,9 @@ export async function Project_ListItemsHandler(req: Request, res: Response) {
      params.AddInt("dossier",req.body.dossier)
     const result = await sendSoapRequest(params,"Project_ListItems",basSecurityContext,"projects");
     res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: 'SOAP Error', details: error });
+  } catch (error:any) {
+     const e=error ? error :null
+  res.status(500).json({ error: 'SOAP Error:'+e?.message, details: e });
   }
 };
 
@@ -32,8 +33,9 @@ export async function Project_OfferListItemsHandler(req: Request, res: Response)
     // params.AddInt("projet",req.body.projet)
     const result = await sendSoapRequest(params,"Project_OfferListItem",basSecurityContext,"offers");
     res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: 'SOAP Error', details: error });
+  } catch (error:any) {
+     const e=error ? error :null
+  res.status(500).json({ error: 'SOAP Error:'+e?.message, details: e });
   }
 }
 
@@ -49,8 +51,9 @@ export async function Project_DetailHandler(req: Request, res: Response) {
      
     const result = await sendSoapRequest(params,"Project_Detail",basSecurityContext, "project");
     res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: 'SOAP Error', details: error });
+  } catch (error:any) {
+     const e=error ? error :null
+  res.status(500).json({ error: 'SOAP Error:'+e?.message, details: e });
   }
 }
 
@@ -69,8 +72,9 @@ export async function Project_CreateHandler(req: Request, res: Response) {
     const data = req.body.data
     const result = await sendSoapRequest(params, "Project_Create", basSecurityContext,"offers",data);
     res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: 'SOAP Error', details: error });
+  } catch (error:any) {
+     const e=error ? error :null
+  res.status(500).json({ error: 'SOAP Error:'+e?.message, details: e });
   }
 }
 
@@ -87,8 +91,9 @@ export async function Project_updateHandler(req: Request, res: Response) {
     const data = req.body.data
     const result = await sendSoapRequest(params,"Project_update",basSecurityContext,"project",data);
     res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: 'SOAP Error', details: error });
+  } catch (error:any) {
+     const e=error ? error :null
+  res.status(500).json({ error: 'SOAP Error:'+e?.message, details: e });
   }
 }
 
@@ -106,8 +111,9 @@ export async function Project_AddOfferHandler(req: Request, res: Response) {
     // params.AddString("libelle",req.body.libelle)
     const result = await sendSoapRequest(params, "Project_AddOffer",basSecurityContext,"offer");
     res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: 'SOAP Error', details: error });
+  } catch (error:any) {
+     const e=error ? error :null
+  res.status(500).json({ error: 'SOAP Error:'+e?.message, details: e });
   }
 }
 
@@ -124,8 +130,9 @@ export async function Project_DeleteOfferHandler(req: Request, res: Response) {
    //  params.AddString("produit",req.body.produit)
     const result = await sendSoapRequest(params,"Project_DeleteOffer",basSecurityContext, "project");
     res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: 'SOAP Error', details: error });
+  } catch (error:any) {
+     const e=error ? error :null
+  res.status(500).json({ error: 'SOAP Error:'+e?.message, details: e });
   }
 }
 
@@ -143,7 +150,8 @@ export async function Project_ValidateOfferHandler(req: Request, res: Response) 
     params.AddBool("Avenant",req.body.Avenant)
     const result = await sendSoapRequest(params,"Project_ValidateOffer",basSecurityContext, "Cont");
     res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: 'SOAP Error', details: error });
+  } catch (error:any) {
+     const e=error ? error :null
+  res.status(500).json({ error: 'SOAP Error:'+e?.message, details: e });
   }
 }

@@ -23,9 +23,10 @@ console.log("-----------------------------Données Reccus Route listedesproduits
   
     const result = await produit_listitems(typeecran,branche,disponible,_BasSecurityContext);
     res.json(result);
-  } catch (error:any) {
-    res.status(500).json({ error: error.message });
-  }
+  }  catch (error:any) {
+   const e=error ? error :null
+  res.status(500).json({ error: 'SOAP Error:'+e?.message, details: e });
+}
 });
 
 export default router;

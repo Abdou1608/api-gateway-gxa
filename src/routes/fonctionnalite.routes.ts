@@ -6,6 +6,7 @@ import create_quittance from './create_quittance.routes';
 import create_reglement from './create_reglement.routes';
 import create_tier from './create_tier.routes';
 import detail_contrat from './detail_contrat.routes';
+import detail_adhesion from './detail_adhesion.routes';
 import detail_produit from './detail_produit.routes';
 import detail_quittance from './detail_quittance.routes';
 import detail_tier from './detail_tier.routes';
@@ -43,6 +44,7 @@ export function registerRoutes(app: express.Application) {
   app.use("/api/create_reglement", create_reglement);
   app.use("/api/create_tier", create_tier);
   app.use("/api/detail_contrat", detail_contrat);
+  app.use("/api/detail_adhesion", detail_adhesion);
   app.use("/api/detail_produit", detail_produit);
   app.use("/api/detail_quittance", detail_quittance);
   app.use("/api/detail_tier", detail_tier);
@@ -52,7 +54,7 @@ export function registerRoutes(app: express.Application) {
   app.use("/api/liste_des_types_ecrans", list_des_tecrants);
   app.use("/api/liste_des_quittances", liste_des_quittances);
   app.use("/api/projects", router);
-  app.use("/api/tab", tabrouter);
+  app.use("/api/tabs", tabrouter);
   app.use("/api/risk", riskrouter);
   app.use("/api/login", login);
   app.use("/api/logout", logout);

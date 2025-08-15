@@ -1,23 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const Bran_listitems_service_1 = require("../services/Bran_listitems.service");
 const BasSecurityContext_1 = require("../Model/BasSoapObject/BasSecurityContext");
-const api_liste_des_bransValidator_1 = require("../validators/api_liste_des_bransValidator");
+const api_detail_adhesionValidator_1 = require("../validators/api_detail_adhesionValidator");
 const zodValidator_1 = require("../middleware/zodValidator");
+const adh_details_service_1 = require("../services/detail_adhesion/adh_details.service");
 const router = (0, express_1.Router)();
-router.post('/', (0, zodValidator_1.validateBody)(api_liste_des_bransValidator_1.api_liste_des_bransValidator), async (req, res) => {
+router.post('/', (0, zodValidator_1.validateBody)(api_detail_adhesionValidator_1.api_detail_adhesionValidator), async (req, res) => {
     try {
         const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         _BasSecurityContext.IsAuthenticated = true;
         _BasSecurityContext.SessionId = req.body.BasSecurityContext?._SessionId;
-        //console.log("-----------------------------Données Reccus Route listedesbrans req.body.BasSecurityContext =="+JSON.stringify( req.body.BasSecurityContext))
-        const result = await (0, Bran_listitems_service_1.bran_listitems)(_BasSecurityContext);
+        const result = await (0, adh_details_service_1.adh_details)(req.body, _BasSecurityContext);
         res.json(result);
     }
     catch (error) {
-        const e = error ? error : null;
-        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: e });
+        res.status(500).json({ error: error.message });
     }
 });
 exports.default = router;

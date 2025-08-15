@@ -20,9 +20,10 @@ router.post('/', validateBody(api_liste_des_bransValidator), async (req, res) =>
   
     const result = await bran_listitems(_BasSecurityContext);
     res.json(result);
-  } catch (error:any) {
-    res.status(500).json({ error: error.message });
-  }
+  }  catch (error:any) {
+   const e=error ? error :null
+  res.status(500).json({ error: 'SOAP Error:'+e?.message, details: e });
+}
 });
 
 export default router;

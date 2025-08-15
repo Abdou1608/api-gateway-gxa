@@ -20,7 +20,8 @@ router.post('/', (0, zodValidator_1.validateBody)(api_liste_des_produitsValidato
         res.json(result);
     }
     catch (error) {
-        res.status(500).json({ error: error.message });
+        const e = error ? error : null;
+        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: e });
     }
 });
 exports.default = router;

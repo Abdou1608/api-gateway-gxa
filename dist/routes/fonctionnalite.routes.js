@@ -11,6 +11,7 @@ const create_quittance_routes_1 = __importDefault(require("./create_quittance.ro
 const create_reglement_routes_1 = __importDefault(require("./create_reglement.routes"));
 const create_tier_routes_1 = __importDefault(require("./create_tier.routes"));
 const detail_contrat_routes_1 = __importDefault(require("./detail_contrat.routes"));
+const detail_adhesion_routes_1 = __importDefault(require("./detail_adhesion.routes"));
 const detail_produit_routes_1 = __importDefault(require("./detail_produit.routes"));
 const detail_quittance_routes_1 = __importDefault(require("./detail_quittance.routes"));
 const detail_tier_routes_1 = __importDefault(require("./detail_tier.routes"));
@@ -41,6 +42,7 @@ function registerRoutes(app) {
     app.use("/api/create_reglement", create_reglement_routes_1.default);
     app.use("/api/create_tier", create_tier_routes_1.default);
     app.use("/api/detail_contrat", detail_contrat_routes_1.default);
+    app.use("/api/detail_adhesion", detail_adhesion_routes_1.default);
     app.use("/api/detail_produit", detail_produit_routes_1.default);
     app.use("/api/detail_quittance", detail_quittance_routes_1.default);
     app.use("/api/detail_tier", detail_tier_routes_1.default);
@@ -50,7 +52,7 @@ function registerRoutes(app) {
     app.use("/api/liste_des_types_ecrans", liste_des_tecrants_routes_1.default);
     app.use("/api/liste_des_quittances", liste_des_quittances_routes_1.default);
     app.use("/api/projects", project_routes_1.default);
-    app.use("/api/tab", tab_routes_1.default);
+    app.use("/api/tabs", tab_routes_1.default);
     app.use("/api/risk", risque_routes_1.default);
     app.use("/api/login", login_routes_1.default);
     app.use("/api/logout", logout_routes_1.default);

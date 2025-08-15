@@ -24,7 +24,8 @@ async function Project_ListItemsHandler(req, res) {
         res.json(result);
     }
     catch (error) {
-        res.status(500).json({ error: 'SOAP Error', details: error });
+        const e = error ? error : null;
+        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: e });
     }
 }
 ;
@@ -42,7 +43,8 @@ async function Project_OfferListItemsHandler(req, res) {
         res.json(result);
     }
     catch (error) {
-        res.status(500).json({ error: 'SOAP Error', details: error });
+        const e = error ? error : null;
+        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: e });
     }
 }
 async function Project_DetailHandler(req, res) {
@@ -58,7 +60,8 @@ async function Project_DetailHandler(req, res) {
         res.json(result);
     }
     catch (error) {
-        res.status(500).json({ error: 'SOAP Error', details: error });
+        const e = error ? error : null;
+        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: e });
     }
 }
 async function Project_CreateHandler(req, res) {
@@ -78,7 +81,8 @@ async function Project_CreateHandler(req, res) {
         res.json(result);
     }
     catch (error) {
-        res.status(500).json({ error: 'SOAP Error', details: error });
+        const e = error ? error : null;
+        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: e });
     }
 }
 async function Project_updateHandler(req, res) {
@@ -96,7 +100,8 @@ async function Project_updateHandler(req, res) {
         res.json(result);
     }
     catch (error) {
-        res.status(500).json({ error: 'SOAP Error', details: error });
+        const e = error ? error : null;
+        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: e });
     }
 }
 async function Project_AddOfferHandler(req, res) {
@@ -115,7 +120,8 @@ async function Project_AddOfferHandler(req, res) {
         res.json(result);
     }
     catch (error) {
-        res.status(500).json({ error: 'SOAP Error', details: error });
+        const e = error ? error : null;
+        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: e });
     }
 }
 async function Project_DeleteOfferHandler(req, res) {
@@ -133,7 +139,8 @@ async function Project_DeleteOfferHandler(req, res) {
         res.json(result);
     }
     catch (error) {
-        res.status(500).json({ error: 'SOAP Error', details: error });
+        const e = error ? error : null;
+        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: e });
     }
 }
 async function Project_ValidateOfferHandler(req, res) {
@@ -152,6 +159,7 @@ async function Project_ValidateOfferHandler(req, res) {
         res.json(result);
     }
     catch (error) {
-        res.status(500).json({ error: 'SOAP Error', details: error });
+        const e = error ? error : null;
+        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: e });
     }
 }

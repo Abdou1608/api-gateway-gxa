@@ -16,8 +16,9 @@ export async function Tab_ListValues(req: Request, res: Response) {
  // const soapBody = {reference,dppname,typetiers,codp,datenais}
   const result = await sendSoapRequest(params, "Tab_ListValues", basSecurityContext,"tabs");
   res.json(result);
-} catch (error) {
-  res.status(500).json({ error: 'SOAP Error', details: error });
+} catch (error:any) {
+   const e=error ? error :null
+  res.status(500).json({ error: 'SOAP Error:'+e?.message, details: e });
 }
 }
 
@@ -34,8 +35,9 @@ export async function Tab_ListItems(req: Request, res: Response) {
  // const soapBody = {reference,dppname,typetiers,codp,datenais}
   const result = await sendSoapRequest(params, "Tab_ListItems", basSecurityContext,"tab");
   res.json(result);
-} catch (error) {
-  res.status(500).json({ error: 'SOAP Error', details: error });
+} catch (error:any) {
+   const e=error ? error :null
+  res.status(500).json({ error: 'SOAP Error:'+e?.message, details: e });
 }
 }
 
@@ -52,8 +54,9 @@ export async function Tab_GetValue(req: Request, res: Response) {
    params.AddString("datanode","tabs")
  // const soapBody = {reference,dppname,typetiers,codp,datenais}
   const result = await sendSoapRequest(params, "Tab_GetValue", basSecurityContext);
-} catch (error) {
-  res.status(500).json({ error: 'SOAP Error', details: error });
+} catch (error:any) {
+   const e=error ? error :null
+  res.status(500).json({ error: 'SOAP Error:'+e?.message, details: e });
 
 }
 }
