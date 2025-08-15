@@ -34,7 +34,7 @@ async function start() {
 
   const port = Number(app.config.PORT ?? 8080);
   try {
-    await app.listen({ port, host: '0.0.0.0' });
+    await app.listen({ port, host: '51.44.168.49' });
   } catch (err) {
     app.log.error(err);
     process.exit(1);
