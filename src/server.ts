@@ -32,7 +32,7 @@ async function start() {
   registerExpressRoutes(exApp);
   app.use(exApp);
 
-  const port = Number(app.config.PORT ?? 8080);
+  const port = Number(app.config.PORT ?? 3000);
   try {
     await app.listen({ port, host: '51.44.168.49' });
   } catch (err) {

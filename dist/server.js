@@ -65,7 +65,7 @@ async function start() {
     exApp.use(express_2.default.urlencoded({ extended: true }));
     (0, fonctionnalite_routes_1.registerRoutes)(exApp);
     app.use(exApp);
-    const port = Number(app.config.PORT ?? 8080);
+    const port = Number(app.config.PORT ?? 3000);
     try {
         await app.listen({ port, host: '51.44.168.49' });
     }
