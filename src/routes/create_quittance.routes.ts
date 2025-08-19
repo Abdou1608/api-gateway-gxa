@@ -16,12 +16,33 @@ router.post('/', validateBody(api_create_quittanceValidator), async (req, res) =
    const contrat=req.body.contrat
    const piece= req.body.piece 
    const bordereau= req.body.bordereau 
-   const effet=req.body.effet 
+   const autocalcul=false 
+   const affectation=true
    const data= req.body.data
-    const result = await quittance_create(contrat,piece,bordereau,effet,data, _BasSecurityContext);
+    const result = await quittance_create(contrat,piece,bordereau,autocalcul,affectation,data, _BasSecurityContext);
     res.json(result);
   } catch (error:any) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message, details:error });
+  }
+});
+
+router.post('/autocalcule', validateBody(api_create_quittanceValidator), async (req, res) => {
+  try {
+    const _BasSecurityContext= new BasSecurityContext()
+    _BasSecurityContext.IsAuthenticated=true
+    _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
+   const contrat=req.body.contrat
+   const piece= req.body.piece 
+   const bordereau= req.body.bordereau 
+   const autocalcul=true 
+   const affectation=true
+   const data= req.body.data
+   const datedebut= req.body.datedebut
+   const datedefin= req.body.datedefin
+    const result = await quittance_create(contrat,piece,bordereau,autocalcul,affectation,data, _BasSecurityContext,datedebut,datedefin);
+    res.json(result);
+  } catch (error:any) {
+    res.status(500).json({ error: error.message, details:error });
   }
 });
 

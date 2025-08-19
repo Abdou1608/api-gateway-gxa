@@ -11,7 +11,7 @@ export class AppConfigService {
       throw new Error("Method not implemented.");
   }
 
-  private _baseSOAPUrl: string =process.env.SOAP_URL ?? "http://10.0.46.11";
+  private _baseSOAPUrl: string =process.env.SOAP_URL ?? "http://ec2-13-39-84-162.eu-west-3.compute.amazonaws.com";
   //http://10.0.46.11
   //"http://ec2-13-39-84-162.eu-west-3.compute.amazonaws.com"
   

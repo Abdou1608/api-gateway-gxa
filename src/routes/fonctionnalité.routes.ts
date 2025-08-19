@@ -33,6 +33,7 @@ import riskrouter from './risque.routes';
 
 
 
+
 export function registerRoutes(app: express.Application) {
   const swaggerDocument = YAML.load("./openapi.fr.ex.custom.yaml");
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));

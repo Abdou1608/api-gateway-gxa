@@ -462,9 +462,6 @@ function new_parseObjectXmlToJson(xml) {
 }
 async function parseProdSoapResponse(xmlString) {
     const produits = [];
-    console.log(":===============================================================================================================================");
-    console.log(":===============================================================================================================================");
-    console.log(":===============================================================================================================================");
     // console.log('xmlString dans parseSoapResponse=.....'+ xmlString)
     const _xmlContent = xmlString
         .replace(/\\</g, '<')

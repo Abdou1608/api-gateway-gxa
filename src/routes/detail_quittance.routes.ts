@@ -15,8 +15,11 @@ router.post('/', validateBody(api_detail_quittanceValidator), async (req, res) =
     _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
     const quittance=req.body.quittance
     const details=req.body.details ?? true
-    const basecouvs= req.body.basecouvs ?? false
-    const result = await quittance_details(quittance,details,_BasSecurityContext);
+    const garanties= req.body.garanties ?? true
+    const addinfospqg= req.body.addinfospqg ?? true
+    const intervenants = req.body.intervenants  ?? true
+    const addinfosqint = req.body.addinfosqint  ?? true
+    const result = await quittance_details(quittance,details,garanties,addinfospqg,intervenants,addinfosqint,  _BasSecurityContext);
     res.json(result);
   } catch (error:any) {
     res.status(500).json({ error: error.message });

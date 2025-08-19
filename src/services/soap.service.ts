@@ -38,7 +38,7 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
         console.log("----------------------------xmldata = contModelToXml(data)-------------------------------------------")
         console.log("Data envoyé="+xmldata)
         console.log("_____________________________________________________________________")
-      }else if(sid==="risk"){
+      }else if(sid==="risk" || sid=="quit"){
         xmldata =objectToXML(data,sid)
         //objectToCustomXML(data,sid)
         //
@@ -69,7 +69,7 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
     const result= await runBasAct.RunAction(an, params,basSecurityContext ? basSecurityContext : new BasSecurityContext(), xmldata).then( async response=>{
       console.log("✅ Inside runBasAct - actionName====", actionName);
       console.log("✅ Inside runBasAct - response====", response);
-      if (sid=="produit" || actionName=="Produit_Details"){
+      if (sid=="produit" ){
        // console.log("✅ Inside runBasAct - reponse du SOAP avant parser====", response);
         return await parseProdSoapResponse(response) 
       }

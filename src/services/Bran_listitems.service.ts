@@ -4,7 +4,7 @@ import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 import { BasParams } from '../Model/BasSoapObject/BasParams';
 
 export async function bran_listitems( BasSecurityContext?:BasSecurityContext) {
-    try {
+
       
   //const soapBody = {typeecran,branche,disponible,BasSecurityContext}
   const params=new BasParams()
@@ -16,7 +16,5 @@ export async function bran_listitems( BasSecurityContext?:BasSecurityContext) {
    params.AddString("datanode","bran")
   const result = await sendSoapRequest(params, "Bran_ListItems",BasSecurityContext,"bran");
   return result;
-} catch (error:any) {
-  throw new Error("erreur d'acces aux données, veuillex vous reconnecter et reessayer")
-} 
+ 
 }

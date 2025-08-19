@@ -519,10 +519,7 @@ export function new_parseObjectXmlToJson(xml: string): new_ParsedJson {
 }
 export async function parseProdSoapResponse(xmlString: string): Promise<any> {
   const produits: Produit[] = [];
-  console.log(":===============================================================================================================================")
-  console.log(":===============================================================================================================================")
-  console.log(":===============================================================================================================================")
-
+ 
  // console.log('xmlString dans parseSoapResponse=.....'+ xmlString)
   const _xmlContent = xmlString
   .replace(/\\</g, '<')

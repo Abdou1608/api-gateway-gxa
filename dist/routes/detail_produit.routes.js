@@ -12,9 +12,9 @@ router.post('/', (0, zodValidator_1.validateBody)(api_detail_produitValidator_1.
         _BasSecurityContext.IsAuthenticated = true;
         _BasSecurityContext.SessionId = req.body.BasSecurityContext?._SessionId;
         const code = req.body.code;
-        const options = req.body.options ?? false;
-        const basecouvs = req.body.basecouvs ?? false;
-        const clauses = req.body.clauses ?? false;
+        const options = req.body.options ?? true;
+        const basecouvs = req.body.basecouvs ?? true;
+        const clauses = req.body.clauses ?? true;
         const result = await (0, produit_details_service_1.produit_details)(code, _BasSecurityContext, options, basecouvs, clauses);
         res.json(result);
     }
