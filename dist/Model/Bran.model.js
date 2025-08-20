@@ -1,5 +1,4 @@
 "use strict";
-// path: src/app/models/bran.model.ts
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BranFieldTagMap = void 0;
 /** Map des métadonnées (captions, types, nullabilité, etc.) */

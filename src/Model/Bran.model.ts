@@ -1,12 +1,4 @@
-// path: src/app/models/bran.model.ts
 
-/**
- * Modèle généré depuis le XML <bran><data>...</data></bran>.
- * Pourquoi ce format : garder un "fieldTagMap" aligné sur les commentaires XML
- * pour outiller la validation, les formulaires dynamiques et la doc runtime.
- */
-
-/** Types de données vus dans les commentaires du XML */
 export type DataType =
   | 'ftString'
   | 'ftSmallint'
