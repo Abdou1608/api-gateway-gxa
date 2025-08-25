@@ -37,8 +37,8 @@ export interface TagMeta {
 
 export type FieldTagMap<T> = { [K in keyof T]-?: TagMeta };
 
-/** Modèle issu de <tarc3><data>… */
-export interface Tarc3 {
+/** Modèle issu de <Proposition><data>… */
+export interface Proposition {
   /** code interne */
   code: FtInteger; // not null, persistent
 
@@ -77,7 +77,7 @@ export interface Tarc3 {
 }
 
 /** fieldTagMap (métadonnées pour chaque propriété) */
-export const Tarc3FieldTags: FieldTagMap<Tarc3> = {
+export const PropositionFieldTags: FieldTagMap<Proposition> = {
   code:     { caption: 'code interne', dataType: 'ftInteger', nullable: false, persistent: true },
   rub:      { caption: 'rubrique', dataType: 'ftString', nullable: true, persistent: true },
   propos:   { caption: 'Proposition', dataType: 'ftInteger', nullable: true, persistent: true },
@@ -93,7 +93,7 @@ export const Tarc3FieldTags: FieldTagMap<Tarc3> = {
 };
 
 /** Fabrique un objet avec valeurs par défaut */
-export const createTarc3 = (init?: Partial<Tarc3>): Tarc3 => ({
+export const createProposition = (init?: Partial<Proposition>): Proposition => ({
   code: 0,
   ...init,
 });

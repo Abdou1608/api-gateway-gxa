@@ -14,6 +14,6 @@ async function tiers_details(BasSecurityContext, Dossier, composition, extension
     params.AddString("ListeEntites", "CLI, SAL,DPP");
     params.AddString("datanode", "Tiers");
     //console.log("BasSecurityContext in tiers_detail service ===="+JSON.stringify( BasSecurityContext))
-    const result = await (0, soap_service_1.sendSoapRequest)(params, "Tiers_Details", BasSecurityContext);
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Tiers_Details", BasSecurityContext, "Tiers");
     return result;
 }

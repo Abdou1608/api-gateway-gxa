@@ -39,12 +39,12 @@ async function Project_OfferListItemsHandler(req, res) {
         params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
         params.AddInt("idproj", req.body.idproj);
         // params.AddInt("projet",req.body.projet)
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_OfferListItem", basSecurityContext, "offers");
+        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_OfferListItem", basSecurityContext, "Project");
         res.json(result);
     }
     catch (error) {
         const e = error ? error : null;
-        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: e });
+        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: JSON.stringify(e) });
     }
 }
 async function Project_DetailHandler(req, res) {
@@ -77,7 +77,7 @@ async function Project_CreateHandler(req, res) {
         params.AddString("produit", req.body.produit);
         params.AddString("libelle", req.body.libelle);
         const data = req.body.data;
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_Create", basSecurityContext, "offers", data);
+        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_Create", basSecurityContext, "Project", data);
         res.json(result);
     }
     catch (error) {

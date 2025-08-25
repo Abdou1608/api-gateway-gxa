@@ -37,8 +37,8 @@ export interface TagMeta {
 
 export type FieldTagMap<T> = { [K in keyof T]-?: TagMeta };
 
-/** Modèle issu de <tarc0><data>… */
-export interface Tarc0 {
+/** Modèle issu de <Project><data>… */
+export interface Project {
   /** Numéro du projet */
   numproj: FtInteger; // not null, persistent
 
@@ -125,7 +125,7 @@ export interface Tarc0 {
 }
 
 /** fieldTagMap (métadonnées pour chaque propriété) */
-export const Tarc0FieldTags: FieldTagMap<Tarc0> = {
+export const ProjectFieldTags: FieldTagMap<Project> = {
   numproj:  { caption: 'Numéro du projet', dataType: 'ftInteger', nullable: false, persistent: true },
   rub:      { caption: 'Etat', dataType: 'ftString', nullable: true, persistent: true },
   libelle:  { caption: 'Titre du projet', dataType: 'ftString', nullable: true, persistent: true },
@@ -157,7 +157,7 @@ export const Tarc0FieldTags: FieldTagMap<Tarc0> = {
 };
 
 /** Fabrique un objet avec valeurs par défaut */
-export const createTarc0 = (init?: Partial<Tarc0>): Tarc0 => ({
+export const createProject = (init?: Partial<Project>): Project => ({
   numproj: 0,
   ...init,
 });

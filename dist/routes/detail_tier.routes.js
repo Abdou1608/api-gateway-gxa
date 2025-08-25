@@ -12,8 +12,8 @@ router.post('/', (0, zodValidator_1.validateBody)(api_detail_tierValidator_1.api
         _BasSecurityContext.IsAuthenticated = true;
         _BasSecurityContext.SessionId = req.body.BasSecurityContext?._SessionId ?? req.body.BasSecurityContext?.SessionId;
         const Dossier = req.body.Dossier ?? 0;
-        const comp = req.body.composition ?? false;
-        const ext = req.body.extentions ?? false;
+        const comp = req.body.composition ?? true;
+        const ext = false;
         const result = await (0, tiers_details_service_1.tiers_details)(_BasSecurityContext, Dossier, comp, ext);
         res.json(result);
     }

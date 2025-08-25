@@ -15,8 +15,8 @@ router.post('/', validateBody(api_detail_tierValidator), async (req, res) => {
   _BasSecurityContext.IsAuthenticated=true
   _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId ?? req.body.BasSecurityContext?.SessionId 
   const Dossier=req.body.Dossier ?? 0
-  const comp= req.body.composition ?? false
-  const ext=req.body.extentions ?? false
+  const comp= req.body.composition ?? true
+  const ext=false
     const result = await tiers_details(_BasSecurityContext,Dossier,comp,ext);
     res.json(result);
   } catch (error:any) {

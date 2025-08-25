@@ -1,4 +1,4 @@
-import { parseStringPromise } from 'xml2js';
+import { parseStringPromise } from "xml2js";
 import { create } from 'xmlbuilder2';
 export async function parseXml(xml: string): Promise<any> {
   return await parseStringPromise(xml, { explicitArray: false });

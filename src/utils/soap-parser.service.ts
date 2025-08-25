@@ -6,6 +6,7 @@ export interface XmlParsedObject {
   [key: string]: string | number | boolean | null | XmlParsedObject | XmlParsedObject[];
 }
 import { Parser, parseStringPromise } from 'xml2js';
+//import { parseStringPromise } from "xml2js/parseStringPromise";
 
 
 interface Param {

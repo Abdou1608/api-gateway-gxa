@@ -1,9 +1,9 @@
 "use strict";
 // project.model.ts
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTarc0 = exports.Tarc0FieldTags = void 0;
+exports.createProject = exports.ProjectFieldTags = void 0;
 /** fieldTagMap (métadonnées pour chaque propriété) */
-exports.Tarc0FieldTags = {
+exports.ProjectFieldTags = {
     numproj: { caption: 'Numéro du projet', dataType: 'ftInteger', nullable: false, persistent: true },
     rub: { caption: 'Etat', dataType: 'ftString', nullable: true, persistent: true },
     libelle: { caption: 'Titre du projet', dataType: 'ftString', nullable: true, persistent: true },
@@ -34,8 +34,8 @@ exports.Tarc0FieldTags = {
     pieceori: { caption: 'Piece origine', dataType: 'ftInteger', nullable: true, persistent: true },
 };
 /** Fabrique un objet avec valeurs par défaut */
-const createTarc0 = (init) => ({
+const createProject = (init) => ({
     numproj: 0,
     ...init,
 });
-exports.createTarc0 = createTarc0;
+exports.createProject = createProject;

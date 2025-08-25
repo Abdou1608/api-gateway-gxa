@@ -8,6 +8,7 @@ const BasSecurityContext_1 = require("../Model/BasSoapObject/BasSecurityContext"
 const soap_parser_service_1 = require("../utils/soap-parser.service");
 const xml_parser_1 = require("../utils/xml-parser");
 const cont_to_xml_service_1 = require("./create_contrat/cont_to_xml.service");
+//import {  parseSoapOffersToRows } from '../utils/new-soap-parser.service';
 const clhttp = require('http');
 const config = new app_config_service_1.AppConfigService;
 const SOAP_URL = config.GetURlActionService();
@@ -35,7 +36,7 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
                 console.log("Data envoyé=" + xmldata);
                 console.log("_____________________________________________________________________");
             }
-            else if (sid === "risk" || sid == "quit") {
+            else if (sid === "risk" || sid == "quit" || sid == "Project") {
                 xmldata = (0, xml_parser_1.objectToXML)(data, sid);
                 //objectToCustomXML(data,sid)
                 //
@@ -81,8 +82,10 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
             }
             else if ((sid === "projects") || (sid === "project") || (sid === "Project")) {
                 // console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======"+ response);
-                return await (0, soap_parser_service_1.parseSoapEmbeddedXmlToJson)(response, "projects");
-                //return parseSoapXmlToJson(response,sid)
+                return await (0, soap_parser_service_1.parseSoapEmbeddedXmlToJson)(response, sid);
+            }
+            else if (sid === "project-detail") {
+                (0, soap_parser_service_1.parseSoapEmbeddedXmlToJson)(response, "Tarc0");
             }
             else {
                 return await (0, soap_parser_service_1.parseSoapXmlToJson)(response, sid);

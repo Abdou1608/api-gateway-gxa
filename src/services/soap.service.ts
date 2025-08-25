@@ -3,10 +3,11 @@ import { BasAction } from '../Model/Model-BasAction/BasAction';
 import { BasSoapClient } from '../Model/Model-BasSoapClient/BasSoapClient';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 
-import {  parseProdSoapResponse, parseSoapEmbeddedXmlToJson, parseSoapXmlToJson, parseTabRowsXml } from '../utils/soap-parser.service';
+import {  new_parseSoapXmlToJson, parseProdSoapResponse, parseSoapEmbeddedXmlToJson, parseSoapXmlToJson, parseTabRowsXml } from '../utils/soap-parser.service';
 import { BasParam } from '../Model/BasSoapObject/BasParam';
 import { objectToCustomXML, objectToXML } from '../utils/xml-parser';
 import { contModelToXml } from './create_contrat/cont_to_xml.service';
+//import {  parseSoapOffersToRows } from '../utils/new-soap-parser.service';
 
 const clhttp = require('http')
 const config =new AppConfigService
@@ -38,7 +39,7 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
         console.log("----------------------------xmldata = contModelToXml(data)-------------------------------------------")
         console.log("Data envoyé="+xmldata)
         console.log("_____________________________________________________________________")
-      }else if(sid==="risk" || sid=="quit"){
+      }else if(sid==="risk" || sid=="quit" || sid=="Project"){
         xmldata =objectToXML(data,sid)
         //objectToCustomXML(data,sid)
         //
@@ -87,8 +88,9 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
     //return parseSoapXmlToJson(response,sid)
    }else if((sid==="projects") || (sid==="project") || (sid==="Project")){
    // console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======"+ response);
-    return await parseSoapEmbeddedXmlToJson(response,"projects")
-    //return parseSoapXmlToJson(response,sid)
+    return await parseSoapEmbeddedXmlToJson(response,sid)
+  }else if( sid==="project-detail" ){
+    parseSoapEmbeddedXmlToJson(response,"Tarc0")
    }else{
     return await parseSoapXmlToJson(response,sid)
    }

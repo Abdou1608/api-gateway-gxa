@@ -1,9 +1,9 @@
 "use strict";
 // proposition.model.ts
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTarc3 = exports.Tarc3FieldTags = void 0;
+exports.createProposition = exports.PropositionFieldTags = void 0;
 /** fieldTagMap (métadonnées pour chaque propriété) */
-exports.Tarc3FieldTags = {
+exports.PropositionFieldTags = {
     code: { caption: 'code interne', dataType: 'ftInteger', nullable: false, persistent: true },
     rub: { caption: 'rubrique', dataType: 'ftString', nullable: true, persistent: true },
     propos: { caption: 'Proposition', dataType: 'ftInteger', nullable: true, persistent: true },
@@ -18,8 +18,8 @@ exports.Tarc3FieldTags = {
     lettre: { caption: 'Lettre devis détail', dataType: 'ftInteger', nullable: true, persistent: true },
 };
 /** Fabrique un objet avec valeurs par défaut */
-const createTarc3 = (init) => ({
+const createProposition = (init) => ({
     code: 0,
     ...init,
 });
-exports.createTarc3 = createTarc3;
+exports.createProposition = createProposition;
