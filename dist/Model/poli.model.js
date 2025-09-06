@@ -1,5 +1,5 @@
 "use strict";
-// poli.model.ts
+// police.model.ts
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createPoli = exports.PoliFieldTags = void 0;
 /** Métadonnées des champs (fieldTagMap) */

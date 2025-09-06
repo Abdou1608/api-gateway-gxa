@@ -15,8 +15,9 @@ router.post('/', validateBody(api_contrat_updateValidator), async (req, res) => 
     _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
    const contrat=req.body.contrat
    const piece= req.body.piece
+   const effet= req.body.effet
    const data= req.body.data
-    const result = await cont_update(contrat,piece,data,_BasSecurityContext);
+    const result = await cont_update(contrat,effet,piece,data,_BasSecurityContext);
     res.json(result);
   } catch (error:any) {
     res.status(500).json({ error: error.message });

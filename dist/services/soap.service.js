@@ -72,6 +72,9 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
             else if (sid == "prod") {
                 return (0, soap_parser_service_1.parseProdSoapResponse)(response);
             }
+            else if (sid === "contrat" || sid === "cont_") {
+                return (0, soap_parser_service_1.parseTabRowsXml)(response);
+            }
             else if (sid === "tab") {
                 return (0, soap_parser_service_1.parseTabRowsXml)(response);
             }

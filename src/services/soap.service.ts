@@ -79,6 +79,8 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
    // }
    else if (sid=="prod"){
     return parseProdSoapResponse(response)
+   } else if (sid==="contrat" || sid==="cont_" ){
+    return  parseTabRowsXml(response)
    }
    else if (sid==="tab"){
     return parseTabRowsXml(response)

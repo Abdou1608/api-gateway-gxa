@@ -13,8 +13,9 @@ router.post('/', (0, zodValidator_1.validateBody)(api_contrat_updateValidator_1.
         _BasSecurityContext.SessionId = req.body.BasSecurityContext?._SessionId;
         const contrat = req.body.contrat;
         const piece = req.body.piece;
+        const effet = req.body.effet;
         const data = req.body.data;
-        const result = await (0, cont_update_service_1.cont_update)(contrat, piece, data, _BasSecurityContext);
+        const result = await (0, cont_update_service_1.cont_update)(contrat, effet, piece, data, _BasSecurityContext);
         res.json(result);
     }
     catch (error) {

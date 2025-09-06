@@ -22,7 +22,7 @@ router.post('/', validateBody(api_create_quittanceValidator), async (req, res) =
     const result = await quittance_create(contrat,piece,bordereau,autocalcul,affectation,data, _BasSecurityContext);
     res.json(result);
   } catch (error:any) {
-    res.status(500).json({ error: error.message, details:error });
+    res.status(500).json({ error: error.message, details:JSON.stringify( error) });
   }
 });
 
@@ -42,7 +42,7 @@ router.post('/autocalcule', validateBody(api_create_quittanceValidator), async (
     const result = await quittance_create(contrat,piece,bordereau,autocalcul,affectation,data, _BasSecurityContext,datedebut,datedefin);
     res.json(result);
   } catch (error:any) {
-    res.status(500).json({ error: error.message, details:error });
+    res.status(500).json({ error: error.message,  details:JSON.stringify( error) });
   }
 });
 

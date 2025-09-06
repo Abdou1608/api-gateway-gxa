@@ -2,12 +2,12 @@ import { BasParams } from '../../Model/BasSoapObject/BasParams';
 import { BasSecurityContext } from '../../Model/BasSoapObject/BasSecurityContext';
 import { sendSoapRequest } from '../soap.service';
 
-export async function quittance_listitems(dossier:number,
-contrat: number,BasSecurityContext:BasSecurityContext,) {
+export async function quittance_listitems(dossier:any,
+contrat: any,BasSecurityContext:BasSecurityContext,) {
   const params=new BasParams()
 params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())
-params.AddInt("contrat",contrat)
- params.AddInt("dossier",dossier)
+params.AddInt("contrat",JSON.parse( contrat))
+ params.AddInt("dossier",JSON.parse(dossier))
  
 //   disponible ?  params.AddBool("disponible",disponible) :null
 

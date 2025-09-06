@@ -1,6 +1,7 @@
 import { sendSoapRequest } from '../soap.service';
 import { BasSecurityContext } from '../../Model/BasSoapObject/BasSecurityContext';
 import { BasParams } from '../../Model/BasSoapObject/BasParams';
+import { Tier } from '../../Model/tier.model';
 
 export async function tiers_search(BasSecurityContext:BasSecurityContext,reference: string,
 dppname:string, typetiers? : string,codp ?: string, datenais?: string) {
@@ -13,6 +14,7 @@ dppname:string, typetiers? : string,codp ?: string, datenais?: string) {
 
    params.AddString("datanode","")
  // const soapBody = {reference,dppname,typetiers,codp,datenais}
-  const result = await sendSoapRequest(params, "Tiers_Search", BasSecurityContext);
+  let result:[Tier],Tier
+  result = await sendSoapRequest(params, "Tiers_Search", BasSecurityContext);
   return result;
 }

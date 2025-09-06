@@ -162,8 +162,7 @@ const contModelSchema = z.object({
 export const api_create_contratValidator = z.object({
   dossier: z.number().describe("Le dossier doit être un nombre" ),
   produit: z.string().min(1, "champ requis"),
-  Effet: z.preprocess(val => (typeof val === "string" || val instanceof Date) ? new Date(val) : val, z.date().describe("Date d'effet invalide" )),
-  defaut: z.any().optional(),
+  effet: z.string(),
   piece: z.any().optional(),
   data:  z.any(),
   BasSecurityContext: z.object({

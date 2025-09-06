@@ -3,17 +3,17 @@ import { contModelToXml } from '../create_contrat/cont_to_xml.service';
 import { sendSoapRequest } from '../soap.service';
 
 
-export async function cont_update(contrat:number,piece?:number,
+export async function cont_update(contrat:number,effet?:string,piece?:number,
   data?: any,BasSecurityContext?:any,) {
     const params=new BasParams()
     params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())
     params.AddInt("contrat",contrat)
     piece ? params.AddInt("piece",piece) : null
-   // effet ? params.AddDateTime("effet",effet) : null
+    effet ? params.AddStrDate("effet",effet) : null
   // data ? params.AddStr("data",contModelToXml(data)) :null
    //console.log("££££££££===========DATA"+JSON.stringify( data))
 
-  const result = await sendSoapRequest(params, "Cont_Update",BasSecurityContext,"",data );
+  const result = await sendSoapRequest(params, "Cont_Update",BasSecurityContext,"cont",data );
   return result;
 }
 export async function cont_piece_update(contrat:number,produit:string,

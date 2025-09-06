@@ -8,7 +8,7 @@ async function cont_create(dossier, produit, effet, data, BasSecurityContext) {
     BasSecurityContext ? params.AddStr("BasSecurityContext", BasSecurityContext.ToSoapVar()) : null;
     params.AddInt("dossier", dossier);
     produit ? params.AddString("produit", produit) : null;
-    effet ? params.AddDateTime("effet", effet) : null;
+    effet ? params.AddStrDate("effet", effet) : null;
     // data ? params.AddStr("data",contModelToXml(data)) :null
     //console.log("££££££££===========DATA"+JSON.stringify( data))
     const result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_Create", BasSecurityContext, "cont", data);

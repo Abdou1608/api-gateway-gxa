@@ -21,7 +21,7 @@ router.post('/', (0, zodValidator_1.validateBody)(api_create_quittanceValidator_
         res.json(result);
     }
     catch (error) {
-        res.status(500).json({ error: error.message, details: error });
+        res.status(500).json({ error: error.message, details: JSON.stringify(error) });
     }
 });
 router.post('/autocalcule', (0, zodValidator_1.validateBody)(api_create_quittanceValidator_1.api_create_quittanceValidator), async (req, res) => {
@@ -41,7 +41,7 @@ router.post('/autocalcule', (0, zodValidator_1.validateBody)(api_create_quittanc
         res.json(result);
     }
     catch (error) {
-        res.status(500).json({ error: error.message, details: error });
+        res.status(500).json({ error: error.message, details: JSON.stringify(error) });
     }
 });
 exports.default = router;

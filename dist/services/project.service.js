@@ -1,4 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Project_ListItemsHandler = Project_ListItemsHandler;
 exports.Project_OfferListItemsHandler = Project_OfferListItemsHandler;
@@ -11,6 +14,7 @@ exports.Project_ValidateOfferHandler = Project_ValidateOfferHandler;
 const soap_service_1 = require("./soap.service");
 const BasSecurityContext_1 = require("../Model/BasSoapObject/BasSecurityContext");
 const BasParams_1 = require("../Model/BasSoapObject/BasParams");
+const groupByTypename_1 = __importDefault(require("../utils/groupByTypename"));
 async function Project_ListItemsHandler(req, res) {
     try {
         const params = new BasParams_1.BasParams();
@@ -40,7 +44,8 @@ async function Project_OfferListItemsHandler(req, res) {
         params.AddInt("idproj", req.body.idproj);
         // params.AddInt("projet",req.body.projet)
         const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_OfferListItem", basSecurityContext, "Project");
-        res.json(result);
+        const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
+        res.json(grouped);
     }
     catch (error) {
         const e = error ? error : null;
@@ -57,7 +62,8 @@ async function Project_DetailHandler(req, res) {
         params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
         params.AddInt("idproj", req.body.idproj);
         const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_Detail", basSecurityContext, "project");
-        res.json(result);
+        const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
+        res.json(grouped);
     }
     catch (error) {
         const e = error ? error : null;

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { sendSoapRequest } from './soap.service';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 import { BasParams } from '../Model/BasSoapObject/BasParams';
+import groupByTypename from '../utils/groupByTypename';
 
 
 export async function Project_ListItemsHandler(req: Request, res: Response) {
@@ -32,7 +33,9 @@ export async function Project_OfferListItemsHandler(req: Request, res: Response)
      params.AddInt("idproj",req.body.idproj)
     // params.AddInt("projet",req.body.projet)
     const result = await sendSoapRequest(params,"Project_OfferListItem",basSecurityContext,"Project");
-    res.json(result);
+    const grouped = groupByTypename(result, { keepUnknown: true });
+
+    res.json(grouped);
   } catch (error:any) {
      const e=error ? error :null
   res.status(500).json({ error: 'SOAP Error:'+e?.message, details: JSON.stringify(e) });
@@ -50,7 +53,9 @@ export async function Project_DetailHandler(req: Request, res: Response) {
      params.AddInt("idproj",req.body.idproj)
      
     const result = await sendSoapRequest(params,"Project_Detail",basSecurityContext, "project");
-    res.json(result);
+    const grouped = groupByTypename(result, { keepUnknown: true });
+
+    res.json(grouped);
   } catch (error:any) {
      const e=error ? error :null
   res.status(500).json({ error: 'SOAP Error:'+e?.message, details: e });

@@ -15,7 +15,7 @@ try {
   _BasSecurityContext.IsAuthenticated=true
   _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
   const reference=req.body.reference ?? ""
-  const dppname=req.body.dppname ?? ""
+  const dppname=req.body.dppname ?? reference
   
 //console.log("-----------------------------Données Reccus dans Recherche Tier Route req.body.SessionId =="+ req.body.BasSecurityContext._SessionId)
 
@@ -23,7 +23,7 @@ try {
   const result = await tiers_search(_BasSecurityContext,reference,dppname);
   res.json(result);
 } catch (error:any) {
-  res.status(500).json({ error: error });
+  res.status(500).json({message:error.message, detail: error });
 }
 });
 

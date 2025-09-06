@@ -1,4 +1,4 @@
-// poli.model.ts
+// police.model.ts
 
 /** Scalar aliases */
 export type FtString<N extends number = number> = string;

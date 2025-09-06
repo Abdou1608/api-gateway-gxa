@@ -1,5 +1,6 @@
 import { BasParams } from "../../Model/BasSoapObject/BasParams";
 import { BasSecurityContext } from "../../Model/BasSoapObject/BasSecurityContext";
+import groupByTypename from "../../utils/groupByTypename";
 import { sendSoapRequest } from "../soap.service";
 
 
@@ -10,6 +11,6 @@ export async function adh_details(body:any,bss:BasSecurityContext) {
    params.AddInt("adhesion",body.adhesion)
   
   const result = await sendSoapRequest(params,"Adh_Details",bss);
-  return result;
-
+  const grouped = groupByTypename(result, { keepUnknown: true });
+  return grouped;
 }
