@@ -13,7 +13,7 @@ async function produit_details(code, BasSecurityContext, options, basecouvs, cla
     params.AddString("code", code);
     // params.AddBool("composition",composition ?? false) 
     params.AddBool("options", options ?? true);
-    params.AddBool("basecouvs", basecouvs ?? true);
+    params.AddBool("basecouv", basecouvs ?? true);
     params.AddBool("clauses", clauses ?? true);
     console.log("Paramettres du Detail du produit requis===" + JSON.stringify(params));
     const result = await (0, soap_service_1.sendSoapRequest)(params, "Produit_Details", BasSecurityContext, "newprod");

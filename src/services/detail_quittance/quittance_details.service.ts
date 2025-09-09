@@ -1,5 +1,6 @@
 import { BasParams } from "../../Model/BasSoapObject/BasParams";
 import { BasSecurityContext } from "../../Model/BasSoapObject/BasSecurityContext";
+import groupByTypename from "../../utils/groupByTypename";
 import { sendSoapRequest } from "../soap.service";
 
 
@@ -18,5 +19,6 @@ details:boolean,garanties:boolean,addinfospqg:boolean,intervenants:boolean,addin
  params.AddBool("intervenants",intervenants)
  params.AddBool("addinfosqint",addinfosqint)
   const result = await sendSoapRequest(params, "Quittance_Details",BasSecurityContext);
-  return result;
+  const grouped = groupByTypename(result, { keepUnknown: true });
+  return grouped;
 }

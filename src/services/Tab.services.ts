@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { sendSoapRequest } from './soap.service';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 import { BasParams } from '../Model/BasSoapObject/BasParams';
+import groupByTypename from '../utils/groupByTypename';
 
 export async function Tab_ListValues(req: Request, res: Response) {
   try {
@@ -15,7 +16,9 @@ export async function Tab_ListValues(req: Request, res: Response) {
    params.AddString("datanode","tabs")
  // const soapBody = {reference,dppname,typetiers,codp,datenais}
   const result = await sendSoapRequest(params, "Tab_ListValues", basSecurityContext,"tabs");
-  res.json(result);
+  const grouped = groupByTypename(result, { keepUnknown: true });
+ // return grouped;
+  res.json(grouped);
 } catch (error:any) {
    const e=error ? error :null
   res.status(500).json({ error: 'SOAP Error:'+e?.message, details: e });

@@ -1,4 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Tab_ListValues = Tab_ListValues;
 exports.Tab_ListItems = Tab_ListItems;
@@ -6,6 +9,7 @@ exports.Tab_GetValue = Tab_GetValue;
 const soap_service_1 = require("./soap.service");
 const BasSecurityContext_1 = require("../Model/BasSoapObject/BasSecurityContext");
 const BasParams_1 = require("../Model/BasSoapObject/BasParams");
+const groupByTypename_1 = __importDefault(require("../utils/groupByTypename"));
 async function Tab_ListValues(req, res) {
     try {
         const params = new BasParams_1.BasParams();
@@ -18,7 +22,9 @@ async function Tab_ListValues(req, res) {
         params.AddString("datanode", "tabs");
         // const soapBody = {reference,dppname,typetiers,codp,datenais}
         const result = await (0, soap_service_1.sendSoapRequest)(params, "Tab_ListValues", basSecurityContext, "tabs");
-        res.json(result);
+        const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
+        // return grouped;
+        res.json(grouped);
     }
     catch (error) {
         const e = error ? error : null;

@@ -14,7 +14,7 @@ export async function produit_details(code : string,BasSecurityContext:BasSecuri
    params.AddString("code",code)
   // params.AddBool("composition",composition ?? false) 
    params.AddBool("options",options ?? true)
-params.AddBool("basecouvs",basecouvs ?? true) 
+params.AddBool("basecouv",basecouvs ?? true) 
  params.AddBool("clauses",clauses ?? true)
 console.log("Paramettres du Detail du produit requis==="+JSON.stringify(params))
   const result = await sendSoapRequest(params,"Produit_Details",BasSecurityContext,"newprod");

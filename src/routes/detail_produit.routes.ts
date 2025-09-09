@@ -15,9 +15,9 @@ router.post('/', validateBody(api_detail_produitValidator), async (req, res) => 
     _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
     const code=req.body.code
     const options=req.body.options ?? true
-    const basecouvs= req.body.basecouvs ?? true
+    const basecouv= req.body.basecouvs ?? true
     const clauses= req.body.clauses?? true
-    const result = await produit_details(code,_BasSecurityContext, options,basecouvs,clauses);
+    const result = await produit_details(code,_BasSecurityContext, options,basecouv,clauses);
     res.json(result);
   } catch (error:any) {
     res.status(500).json({ error: error.message });

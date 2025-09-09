@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = groupByTypename;
 function groupByTypename(input, opts = {}) {
-    const { keepUnknown = false } = opts;
+    const { keepUnknown = true } = opts;
     // 1) Normaliser l'entrée en tableau T[]
     let arr;
     if (typeof input === 'string') {
@@ -27,6 +27,7 @@ function groupByTypename(input, opts = {}) {
     }
     // 2) Réduction
     const result = {};
+    let i = 0;
     for (const item of arr) {
         if (!item || typeof item !== 'object')
             continue;
@@ -35,9 +36,27 @@ function groupByTypename(input, opts = {}) {
         if (!key) {
             // Pas de typename
             if (keepUnknown) {
-                if (!Array.isArray(result.Produit))
-                    result.Produit = [];
-                result.Produit.push(item);
+                i++;
+                if (i > 1) {
+                    if (!Array.isArray(result.Produit)) {
+                        if (result.Produit) {
+                            const obj = result.Produit;
+                            result.Produit = [];
+                            result.Produit.push(item);
+                            result.Produit.push(obj);
+                        }
+                        else {
+                            result.Produit = [];
+                            result.Produit.push(item);
+                        }
+                    }
+                    else {
+                        result.Produit.push(item);
+                    }
+                }
+                else {
+                    result.Produit = item;
+                }
             }
             continue;
         }

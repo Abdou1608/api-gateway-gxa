@@ -10,7 +10,7 @@ export interface HasTypename {
 
   export type GroupedByTypename<T> = Record<string, T | T[]> & {
     /** Les éléments sans typename (si keepUnknown=true) */
-    Produit?: T[]; // toujours un tableau pour les "unknown"
+    Produit?: T | T[] ; // toujours un tableau pour les "unknown"
   };
   
   /**
@@ -70,6 +70,7 @@ export interface HasTypename {
   }
    */
   // Types utilitaires (adapte si tu les as déjà ailleurs)
+  
 export interface HasTypename {
   typename?: string | undefined;
 }
@@ -80,7 +81,7 @@ export default function groupByTypename<T extends HasTypename>(
   input: T[] | string,
   opts: { keepUnknown?: boolean } = {}
 ): GroupedByTypename<T> {
-  const { keepUnknown = false } = opts;
+  const { keepUnknown = true } = opts;
 
   // 1) Normaliser l'entrée en tableau T[]
   let arr: T[];
@@ -103,7 +104,7 @@ export default function groupByTypename<T extends HasTypename>(
 
   // 2) Réduction
   const result: GroupedByTypename<T> = {};
-
+let i=0
   for (const item of arr) {
     if (!item || typeof item !== 'object') continue;
 
@@ -113,8 +114,27 @@ export default function groupByTypename<T extends HasTypename>(
     if (!key) {
       // Pas de typename
       if (keepUnknown) {
-        if (!Array.isArray(result.Produit)) result.Produit = [];
+        i++
+        if (i>1){
+           if (!Array.isArray(result.Produit))
+            {
+              if (result.Produit){
+                const obj = result.Produit
+                 result.Produit = [];
         result.Produit.push(item as T);
+        result.Produit.push(obj as T);
+              }else{
+                result.Produit = [];
+                result.Produit.push(item as T);
+              }
+             
+            } else{
+              result.Produit.push(item as T);
+            }
+        }else{
+          result.Produit = item as T
+        }
+       
       }
       continue;
     }
