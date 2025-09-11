@@ -10,7 +10,7 @@ async function cont_listitems(dossier, includeall, defaut, BasSecurityContext) {
     params.AddStr("BasSecurityContext", BasSecurityContext.ToSoapVar());
     params.AddInt("dossier", dossier);
     // params.AddBool("composition",composition ?? false) 
-    params.AddBool("includeall", includeall);
+    params.AddBool("includeall", includeall ?? true);
     params.AddBool("defaut", defaut ?? false);
     //params.AddString("ListeEntites","CLI, SAL,DPP")
     params.AddString("datanode", "Tiers");
