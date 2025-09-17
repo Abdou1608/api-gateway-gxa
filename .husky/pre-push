@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Pre-push safety hook: remind backup tagging if rewriting many commits.
+# Skip on CI
+[ -n "$CI" ] && exit 0
+
+# Ensure git is available
+command -v git >/dev/null 2>&1 || exit 0
+
+UPSTREAM=${1:-origin}
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+# Fetch remote ref quietly
+git fetch -q $UPSTREAM $BRANCH:$UPSTREAM/$BRANCH || true
+
+if git rev-parse -q --verify $UPSTREAM/$BRANCH >/dev/null; then
+  AHEAD=$(git rev-list --count $UPSTREAM/$BRANCH..HEAD)
+  BEHIND=$(git rev-list --count HEAD..$UPSTREAM/$BRANCH)
+else
+  AHEAD=$(git rev-list --count HEAD)
+  BEHIND=0
+fi
+
+THRESHOLD=${COMMIT_REWRITE_THRESHOLD:-10}
+
+# Detect potential history rewrite: pushing fewer new commits than remote has (force push scenario)
+IS_FORCE=false
+if [ $BEHIND -gt 0 ] && ! git merge-base --is-ancestor $UPSTREAM/$BRANCH HEAD; then
+  IS_FORCE=true
+fi
+
+if $IS_FORCE; then
+  echo "[WARN] Vous allez potentiellement réécrire l'historique (force push)." >&2
+fi
+
+if [ $AHEAD -ge $THRESHOLD ] || $IS_FORCE; then
+  echo "[INFO] $AHEAD commits locaux en avance (seuil: $THRESHOLD)." >&2
+  echo "[HINT] Créez un tag de sauvegarde avant push: git tag backup-pre-push-$(date +%Y%m%d-%H%M%S)" >&2
+  echo "Continuer le push ? (y/N)" >&2
+  read ans
+  if [ "${ans}" != "y" ] && [ "${ans}" != "Y" ]; then
+    echo "Push annulé." >&2
+    exit 1
+  fi
+fi
+exit 0
