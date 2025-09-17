@@ -28,6 +28,14 @@ bash scripts/git-recovery/recovery-menu.sh
 ```
 Permet de lancer les actions sans mémoriser les commandes.
 
+Version PowerShell:
+```powershell
+pwsh scripts/git-recovery/Recovery-Menu.ps1
+```
+
+## Vérification worktree propre
+Avant les resets destructifs, les scripts PowerShell exigent désormais un worktree propre (aucun changement non commit). Stashez ou commitez d'abord.
+
 ## Alias Git (Bash)
 Installation:
 ```bash

@@ -10,6 +10,9 @@ param(
   [switch]$DryRun
 )
 
+. "$PSScriptRoot/_helpers.ps1"
+if (-not $AbortOnly) { try { Assert-CleanWorktree } catch { exit 1 } }
+
 if (Test-Path .git\rebase-merge -or Test-Path .git\rebase-apply) {
   if ($AbortOnly) { git rebase --abort; exit }
   Write-Host "[INFO] Rebase en cours détecté -> abort" -ForegroundColor Yellow

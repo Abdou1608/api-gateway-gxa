@@ -8,6 +8,9 @@ param(
   [switch]$DryRun
 )
 
+. "$PSScriptRoot/_helpers.ps1"
+try { Assert-CleanWorktree } catch { exit 1 }
+
 # Merge en cours ?
 if (Test-Path .git\MERGE_HEAD) {
   Write-Host "[INFO] Merge en cours -> abort" -ForegroundColor Yellow

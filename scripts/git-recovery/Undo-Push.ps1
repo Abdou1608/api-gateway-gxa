@@ -12,6 +12,9 @@ param(
   [switch]$DryRun
 )
 
+. "$PSScriptRoot/_helpers.ps1"
+try { Assert-CleanWorktree } catch { exit 1 }
+
 Write-Host "[INFO] Reflog récent:" -ForegroundColor Cyan
 git reflog -n 8
 Write-Host "[INFO] Restauration locale vers $LocalRef" -ForegroundColor Yellow

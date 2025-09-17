@@ -1,0 +1,28 @@
+name: PR Guidelines
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: pr-guidelines-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Render Guidelines
+        run: |
+          echo "## PR Checklist" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] Titre clair (type: scope: sujet)" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] Description des changements" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] Tests ajoutés/ajustés" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] OpenAPI mis à jour si impact" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] Aucune fuite de secret" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] Scripts npm existants non cassés" >> $GITHUB_STEP_SUMMARY
+          echo "- [ ] Lint / Build / CI passent localement" >> $GITHUB_STEP_SUMMARY
