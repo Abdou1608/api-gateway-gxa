@@ -1,0 +1,44 @@
+name: Dependency Audit
+
+on:
+  schedule:
+    - cron: '0 4 * * 1' # Weekly Monday 04:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install (CI clean)
+        run: npm ci --ignore-scripts
+
+      - name: npm audit (high and above)
+        run: |
+          set -e
+          npm audit --json > audit.json || true
+          jq '{metadata: .metadata, vulnerabilities: .vulnerabilities}' audit.json > audit.filtered.json || true
+          echo "## Audit Summary" >> $GITHUB_STEP_SUMMARY
+          if [ -f audit.filtered.json ]; then jq -r '.vulnerabilities | to_entries[] | "* " + .key + ": " + (.value.severity // "unknown")' audit.filtered.json >> $GITHUB_STEP_SUMMARY; fi
+
+      - name: Upload raw audit json
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-json
+          path: audit.json
+          if-no-files-found: ignore

@@ -3,7 +3,8 @@ import { BasParams } from "../BasSoapObject/BasParams";
 import { BasSecurityContext } from "../BasSoapObject/BasSecurityContext";
 import { BasSoapClient } from "../Model-BasSoapClient/BasSoapClient";
 import * as Xpath from "xpath";
-import { BasSoapFault } from "../BasSoapObject/BasSoapFault";
+import { handleSoapResponse } from '../../utils/soap-fault-handler';
+import logger from '../../utils/logger';
 import { AppConfigService } from "../../services/AppConfigService/app-config.service";
 
 export class BasAction {
@@ -19,15 +20,10 @@ public http = require('http');
         body += '</ns1:RunAction>'; 
        
        console.log("Body de la requete est:====="+body)        
-        let response = await this.BasSoapCLient.soapRequest(this.appConfigService.GetURlActionService(), body);
-        console.log("BasSoapFault.IsBasError(response):====="+BasSoapFault.IsBasError(response)) 
-    
-        if (BasSoapFault.IsBasError(response)){
-            console.log("response:====="+response) 
-        
-              BasSoapFault.ThrowError(response);}
-      
-        return response;
+                let response = await this.BasSoapCLient.soapRequest(this.appConfigService.GetURlActionService(), body);
+                // Centralisation fault -> handleSoapResponse (lèvera AppError si fault)
+                response = handleSoapResponse(response, logger);
+                return response;
     }
 
     public GetLogEntry(soapEnv: string): Array<string> {

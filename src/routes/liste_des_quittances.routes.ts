@@ -20,7 +20,7 @@ router.post('/', validateBody(api_liste_des_quittancesValidator), async (req, re
     const result = await quittance_listitems(dossier,contrat,_BasSecurityContext);
     res.json(result);
   } catch (error:any) {
-    res.status(500).json({ error: error.message });
+    res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
   }
 });
 

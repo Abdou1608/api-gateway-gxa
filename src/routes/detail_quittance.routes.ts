@@ -22,7 +22,7 @@ router.post('/', validateBody(api_detail_quittanceValidator), async (req, res) =
     const result = await quittance_details(quittance,details,garanties,addinfospqg,intervenants,addinfosqint,  _BasSecurityContext);
     res.json(result);
   } catch (error:any) {
-    res.status(500).json({ error: error.message });
+    res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
   }
 });
 

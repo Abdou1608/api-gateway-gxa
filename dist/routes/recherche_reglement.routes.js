@@ -12,7 +12,7 @@ router.post('/', (0, zodValidator_1.validateBody)(api_create_reglementValidator_
         res.json(response);
     }
     catch (error) {
-        res.status(500).json({ error: 'SOAP request failed', details: error });
+        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
     }
 });
 exports.default = router;

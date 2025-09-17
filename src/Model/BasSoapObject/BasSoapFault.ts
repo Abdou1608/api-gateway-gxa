@@ -1,83 +1,127 @@
 import * as Xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';
 
+/**
+ * Structure enrichie d'une faute SOAP.
+ */
+export interface BasFaultInfo {
+  faultcode?: string;
+  faultstring?: string;
+  reasonText?: string;
+  details?: string;
+  state?: string;
+  raw?: string;          // XML original (nettoyé)
+  shortMessage: string;  // Message court synthétisé
+}
+
+/** Utilitaire: décodage minimal des entités les plus courantes. */
+function decodeXmlEntities(input: string): string {
+  return input
+    .replace(/^\s+|\s+$/g, '')
+    .replace(/^"|"$/g, '') // enlève guillemets englobants éventuels
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/&#34;/g, '"')
+    .replace(/&#39;/g, "'");
+}
+
+/** Extraction manuelle via RegExp quand XPath échoue (XML cassé ou partiel). */
+function regexExtract(tag: string, xml: string): string | undefined {
+  const r = new RegExp(`<([A-Za-z0-9_-]+:)?${tag}[^>]*>([\s\S]*?)<\\/([A-Za-z0-9_-]+:)?${tag}>`, 'i');
+  const m = r.exec(xml);
+  if (m && m[2]) return m[2].trim();
+  return undefined;
+}
+
 export class BasSoapFault {
+  /**
+   * Lance toujours une erreur enrichie si le XML représente une faute SOAP.
+   */
   public static ThrowError(soapEnv: string): never {
-    const msg = this.IsBasError(soapEnv) ? this.ParseBasError(soapEnv) : soapEnv;
-    throw new Error(msg);
+    const cleaned = decodeXmlEntities(soapEnv || '');
+    if (this.IsBasError(cleaned)) {
+      const fault = this.ParseBasErrorDetailed(cleaned);
+      throw new Error(fault.shortMessage);
+    }
+    throw new Error(cleaned);
   }
 
+  /**
+   * Détermine si le contenu ressemble à une faute SOAP (robuste: XPath + regex fallback).
+   */
   public static IsBasError(soapEnv: string): boolean {
     if (!soapEnv) return false;
+    const xml = decodeXmlEntities(soapEnv);
+
+    // Heuristique rapide regex
+    if (/<([A-Za-z0-9\-_]+:)?Fault\b/i.test(xml)) return true;
 
     try {
-      // IMPORTANT: ne pas passer d'options ici (évite TS2322/TS2353)
-      const doc = new DOMParser().parseFromString(soapEnv, 'text/xml');
-
-      // Détection principale : <Envelope>/<Body>/<Fault> (agnostique aux préfixes)
+      const doc = new DOMParser().parseFromString(xml, 'text/xml');
       const faultNodes = Xpath.select(
         '//*[local-name()="Envelope"]/*[local-name()="Body"]/*[local-name()="Fault"]',
-        doc as unknown as any
+        doc as any
       ) as any[];
+      if (faultNodes?.length) return true;
 
-      if (faultNodes && faultNodes.length > 0) return true;
-
-      // Indices secondaires : faultcode/faultstring
-      const hintCount =
+      const indicators =
         (Xpath.select('//*[local-name()="faultcode"]', doc as any) as any[]).length +
-        (Xpath.select('//*[local-name()="faultstring"]', doc as any) as any[]).length;
-
-      return hintCount > 0;
+        (Xpath.select('//*[local-name()="faultstring"]', doc as any) as any[]).length +
+        (Xpath.select('//*[local-name()="Reason"]', doc as any) as any[]).length;
+      return indicators > 0;
     } catch {
-      // XML mal formé : dernier filet par regex
-      return /<([A-Za-z0-9\-_]+:)?Fault\b/i.test(soapEnv);
+      // Si parsing DOM impossible mais regex plus haut a échoué, considérer non-fault.
+      return false;
     }
   }
 
+  /** Version existante conservée pour rétro-compat : renvoie un message string. */
   public static ParseBasError(soapEnv: string): string {
+    return this.ParseBasErrorDetailed(soapEnv).shortMessage;
+  }
+
+  /** Nouvelle version: renvoie la structure détaillée BasFaultInfo. */
+  public static ParseBasErrorDetailed(soapEnv: string): BasFaultInfo {
+    const xml = decodeXmlEntities(soapEnv);
+    const fault: BasFaultInfo = { shortMessage: 'SOAP Fault', raw: xml };
+
     try {
-      const doc = new DOMParser().parseFromString(soapEnv, 'text/xml');
+      const doc = new DOMParser().parseFromString(xml, 'text/xml');
 
-      // 1) SOAP 1.1: <faultstring>
-      const faultString = Xpath.select(
-        'string(//*[local-name()="Fault"]/*[local-name()="faultstring"])',
-        doc as unknown as any
-      ) as string;
-      if (faultString && String(faultString).trim().length > 0) {
-        return String(faultString).trim();
-      }
+      const faultcode = Xpath.select('string(//*[local-name()="Fault"]/*[local-name()="faultcode"])', doc as any) as string;
+      if (faultcode && faultcode.trim()) fault.faultcode = faultcode.trim();
 
-      // 2) SOAP 1.2: <Reason>/<Text>
-      const reasonText = Xpath.select(
-        'string(//*[local-name()="Fault"]/*[local-name()="Reason"]/*[local-name()="Text"])',
-        doc as unknown as any
-      ) as string;
-      if (reasonText && String(reasonText).trim().length > 0) {
-        return String(reasonText).trim();
-      }
+      const faultstring = Xpath.select('string(//*[local-name()="Fault"]/*[local-name()="faultstring"])', doc as any) as string;
+      if (faultstring && faultstring.trim()) fault.faultstring = faultstring.trim();
 
-      // 3) Détail applicatif: .../detail/.../Details
-      const details = Xpath.select(
-        'string(//*[local-name()="Fault"]/*[local-name()="detail"]//*[local-name()="Details"])',
-        doc as unknown as any
-      ) as string;
-      if (details && String(details).trim().length > 0) {
-        return String(details).trim();
-      }
+      const reasonText = Xpath.select('string(//*[local-name()="Fault"]/*[local-name()="Reason"]/*[local-name()="Text"])', doc as any) as string;
+      if (reasonText && reasonText.trim()) fault.reasonText = reasonText.trim();
 
-      // 4) Fallback: texte du noeud Fault
-      const faultTextNode = Xpath.select(
-        'string(//*[local-name()="Fault"])',
-        doc as unknown as any
-      ) as string;
-      if (faultTextNode && String(faultTextNode).trim().length > 0) {
-        return String(faultTextNode).trim();
-      }
+      const details = Xpath.select('string(//*[local-name()="Fault"]/*[local-name()="detail"]//*[local-name()="Details"])', doc as any) as string;
+      if (details && details.trim()) fault.details = details.trim();
 
-      // Si rien trouvé, renvoyer le XML brut
-      return soapEnv;
+      // State spécifique (exemple EBasRemotableException/State)
+      const state = Xpath.select('string(//*[local-name()="Fault"]/*[local-name()="detail"]//*[local-name()="State"])', doc as any) as string;
+      if (state && state.trim()) fault.state = state.trim();
     } catch {
-      return soapEnv;
+      // Ignoré: on utilisera extraction regex dessous si nécessaire.
     }
+
+    // Fallbacks regex si certains champs manquent
+    if (!fault.faultcode) fault.faultcode = regexExtract('faultcode', xml);
+    if (!fault.faultstring) fault.faultstring = regexExtract('faultstring', xml);
+    if (!fault.details) fault.details = regexExtract('Details', xml);
+    if (!fault.state) fault.state = regexExtract('State', xml);
+
+    // Construction du message court priorisant faultstring puis reason
+    const parts: string[] = [];
+    if (fault.faultcode) parts.push(`[${fault.faultcode}]`);
+    if (fault.faultstring) parts.push(fault.faultstring);
+    else if (fault.reasonText) parts.push(fault.reasonText);
+    else if (fault.details) parts.push(fault.details);
+    fault.shortMessage = parts.length ? parts.join(' ') : 'SOAP Fault';
+
+    return fault;
   }
 }

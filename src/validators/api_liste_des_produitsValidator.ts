@@ -6,7 +6,6 @@ export const api_liste_des_produitsValidator = z.object({
   cie: z.number().optional(),
   entite: z.number().optional(),
   disponible: z.boolean().optional(),
-
   BasSecurityContext:z.object({
     _SessionId:z.string().min(1, "champ SessionId est requis"),
      })

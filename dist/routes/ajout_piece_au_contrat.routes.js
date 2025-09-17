@@ -19,7 +19,7 @@ router.post('/', (0, zodValidator_1.validateBody)(api_ajout_piece_au_contratVali
         res.json(result);
     }
     catch (error) {
-        res.status(500).json({ error: error?.message, detail: JSON.stringify(error)
+        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error)
         });
     }
 });

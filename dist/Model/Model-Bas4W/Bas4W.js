@@ -32,10 +32,14 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Bas4W = void 0;
 const Xpath = __importStar(require("xpath"));
-const BasSoapFault_1 = require("../BasSoapObject/BasSoapFault");
+const soap_fault_handler_1 = require("../../utils/soap-fault-handler");
+const logger_1 = __importDefault(require("../../utils/logger"));
 const Bas4WObject_1 = require("./Bas4WObject");
 class Bas4W {
     get bas4WObject() {
@@ -55,8 +59,7 @@ class Bas4W {
             body = `<ns1:GetWebInfo><sc xsi:type="ns1:BasSecurityContext"></sc><bas4WebInfoType xsi:type=\"xsd:string\">bas4WebInfoGeneric</bas4WebInfoType>`;
         body += '</ns1:GetWebInfo>';
         let response = await this.BasSoapCLient.soapRequest(this.appConfigService.GetURlB4WService(), body);
-        if (BasSoapFault_1.BasSoapFault.IsBasError(response))
-            BasSoapFault_1.BasSoapFault.ThrowError(response);
+        response = (0, soap_fault_handler_1.handleSoapResponse)(response, logger_1.default);
         return response;
     }
     GetDataFromSoapEnv(soapEnv) {

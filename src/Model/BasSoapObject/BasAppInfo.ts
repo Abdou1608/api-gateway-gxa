@@ -1,5 +1,6 @@
 import * as Xpath from "xpath";
-import { BasSoapFault } from "./BasSoapFault";
+import { handleSoapResponse } from '../../utils/soap-fault-handler';
+import logger from '../../utils/logger';
 
 export class BasAppInfo {
 
@@ -34,7 +35,7 @@ export class BasAppInfo {
                 this.GetTitleFromXml(XmlDoc, XPathSelect);
             }
             else {
-                BasSoapFault.ThrowError(xmlstring);
+                handleSoapResponse(xmlstring, logger);
             }
         }
         catch (e: any) {

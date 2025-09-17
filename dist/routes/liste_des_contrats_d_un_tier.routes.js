@@ -18,7 +18,7 @@ router.post('/', (0, zodValidator_1.validateBody)(api_liste_des_contrats_d_un_ti
         res.json(result);
     }
     catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
     }
 });
 exports.default = router;

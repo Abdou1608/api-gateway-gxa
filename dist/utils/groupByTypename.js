@@ -1,62 +1,48 @@
 "use strict";
-// src/utils/groupByTypename.ts
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = groupByTypename;
+/**
+ * Regroupe les objets par leur typename.
+ * - Le 1er élément d'un groupe est stocké directement (objet)
+ * - Dès qu'il y a un 2e élément pour le même typename, on convertit en tableau
+ * - Pour les éléments sans typename (si keepUnknown=true), on les place dans Produit (toujours un array)
+ */
 function groupByTypename(input, opts = {}) {
-    const { keepUnknown = true } = opts;
+    const { keepUnknown = false } = opts;
     // 1) Normaliser l'entrée en tableau T[]
     let arr;
     if (typeof input === 'string') {
-        let parsed;
         try {
-            parsed = JSON.parse(input);
+            const parsed = JSON.parse(input);
+            if (Array.isArray(parsed)) {
+                arr = parsed;
+            }
+            else if (parsed && typeof parsed === 'object') {
+                arr = [parsed];
+            }
+            else {
+                arr = [];
+            }
         }
         catch {
-            throw new Error('JSON invalide fourni à groupByTypename.');
+            arr = [];
         }
-        if (!Array.isArray(parsed)) {
-            throw new Error('La chaîne JSON ne représente pas un tableau.');
-        }
-        arr = parsed;
-    }
-    else if (Array.isArray(input)) {
-        arr = input;
     }
     else {
-        throw new Error('groupByTypename attend un tableau ou une chaîne JSON.');
+        arr = input;
     }
     // 2) Réduction
     const result = {};
-    let i = 0;
     for (const item of arr) {
         if (!item || typeof item !== 'object')
             continue;
-        const rawKey = item.typename;
-        const key = (typeof rawKey === 'string' ? rawKey.trim() : '');
+        const key = (item.typename ?? item.__typename);
         if (!key) {
             // Pas de typename
             if (keepUnknown) {
-                i++;
-                if (i > 1) {
-                    if (!Array.isArray(result.Produit)) {
-                        if (result.Produit) {
-                            const obj = result.Produit;
-                            result.Produit = [];
-                            result.Produit.push(item);
-                            result.Produit.push(obj);
-                        }
-                        else {
-                            result.Produit = [];
-                            result.Produit.push(item);
-                        }
-                    }
-                    else {
-                        result.Produit.push(item);
-                    }
-                }
-                else {
-                    result.Produit = item;
-                }
+                if (!Array.isArray(result.Produit))
+                    result.Produit = [];
+                result.Produit.push(item);
             }
             continue;
         }

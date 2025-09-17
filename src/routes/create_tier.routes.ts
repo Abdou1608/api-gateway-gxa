@@ -22,7 +22,7 @@ const	data =req.body.data
     const result = await tiers_create(_BasSecurityContext,typtiers,nature,numtiers,numdpp,data);
     res.json(result);
   } catch (error:any) {
-    res.status(500).json({ error: error.message });
+    res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
   }
 });
 

@@ -10,7 +10,7 @@ router.post('/', async (req, res) => {
         res.json(response);
     }
     catch (error) {
-        res.status(500).json({ error: 'SOAP request failed', details: error });
+        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
     }
 });
 exports.default = router;

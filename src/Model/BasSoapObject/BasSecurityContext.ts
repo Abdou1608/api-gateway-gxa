@@ -1,6 +1,7 @@
 
 import * as Xpath from "xpath";
-import { BasSoapFault } from "./BasSoapFault";
+import { handleSoapResponse } from '../../utils/soap-fault-handler';
+import logger from '../../utils/logger';
 import { XMLParser } from 'fast-xml-parser';
 
 export class BasSecurityContext {
@@ -47,7 +48,7 @@ export class BasSecurityContext {
     
                 this.IsAuthenticated = context.IsAuthenticated === 'true' || context.IsAuthenticated === true || context.IsAuthenticated['#text'] === true;
             } else {
-                BasSoapFault.ThrowError(xmlstring);
+                handleSoapResponse(xmlstring, logger); // lèvera AppError si Fault
             }
         } catch (e: any) {
             throw new Error(`Erreur lors du parsing XML: ${e.message}`);

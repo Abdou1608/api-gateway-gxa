@@ -19,7 +19,8 @@ router.post('/', (0, zodValidator_1.validateBody)(api_create_contratValidator_1.
         res.json(result);
     }
     catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
+        // res.status(500).json({ error: error?.message, detail: JSON.stringify(error) --- IGNORE ---
     }
 });
 exports.default = router;

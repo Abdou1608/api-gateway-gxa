@@ -1,5 +1,6 @@
 import * as Xpath from "xpath";
-import { BasSoapFault } from "./BasSoapFault";
+import { handleSoapResponse } from '../../utils/soap-fault-handler';
+import logger from '../../utils/logger';
 
 export class BasSysInfo {
 
@@ -50,7 +51,7 @@ export class BasSysInfo {
                 this.GetVersionFromXml(XmlDoc, XPathSelect);
             }
             else {
-                BasSoapFault.ThrowError(xmlstring);
+                handleSoapResponse(xmlstring, logger);
             }
         }
         catch (e: any) {

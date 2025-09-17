@@ -2,7 +2,8 @@ import * as HttpClient  from "axios";
 import { BasSecurityContext } from "../BasSoapObject/BasSecurityContext";
 import { BasSoapClient } from "../Model-BasSoapClient/BasSoapClient";
 import * as Xpath from "xpath";
-import { BasSoapFault } from "../BasSoapObject/BasSoapFault";
+import { handleSoapResponse } from '../../utils/soap-fault-handler';
+import logger from '../../utils/logger';
 import { Bas4WObject } from "./Bas4WObject";
 import { AppConfigService } from "../../services/AppConfigService/app-config.service";
 
@@ -24,8 +25,7 @@ export class Bas4W {
             body = `<ns1:GetWebInfo><sc xsi:type="ns1:BasSecurityContext"></sc><bas4WebInfoType xsi:type=\"xsd:string\">bas4WebInfoGeneric</bas4WebInfoType>`;
         body += '</ns1:GetWebInfo>';         
         let response = await this.BasSoapCLient.soapRequest(this.appConfigService.GetURlB4WService(), body);
-        if (BasSoapFault.IsBasError(response))
-            BasSoapFault.ThrowError(response);
+        response = handleSoapResponse(response, logger);
         return response;       
     }
     

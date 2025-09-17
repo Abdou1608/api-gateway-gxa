@@ -32,10 +32,14 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BasAppInfo = void 0;
 const Xpath = __importStar(require("xpath"));
-const BasSoapFault_1 = require("./BasSoapFault");
+const soap_fault_handler_1 = require("../../utils/soap-fault-handler");
+const logger_1 = __importDefault(require("../../utils/logger"));
 class BasAppInfo {
     constructor() {
     }
@@ -60,7 +64,7 @@ class BasAppInfo {
                 this.GetTitleFromXml(XmlDoc, XPathSelect);
             }
             else {
-                BasSoapFault_1.BasSoapFault.ThrowError(xmlstring);
+                (0, soap_fault_handler_1.handleSoapResponse)(xmlstring, logger_1.default);
             }
         }
         catch (e) {

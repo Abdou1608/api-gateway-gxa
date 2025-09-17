@@ -1,5 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { BasSoapFault } from '../BasSoapObject/BasSoapFault';
+import { handleSoapResponse } from '../../utils/soap-fault-handler';
+import logger from '../../utils/logger';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
@@ -48,15 +50,17 @@ export class BasSoapClient {
         responseType: 'text',
       });
 
-      if (response.status !== 200) {
-        throw response.data || 'Erreur SOAP';
-      }
-// console.log("From BasSoapClient response in soapRequest.....="+response)
-// console.log("From BasSoapClient response in soapRequest+response.data.....="+response.data)
-      return response.data;
-     
+      // Centralisation: on laisse handleSoapResponse détecter et lever une AppError au besoin
+  const safeXml = handleSoapResponse(response.data, logger);
+      return safeXml;
     } catch (error: any) {
-      throw error?.response?.data || error.message || 'Erreur lors de l’appel SOAP';
+      // Si la requête a déjà retourné un XML de fault dans error.response.data, on laisse BasSoapFault pour compat rétro
+      const payload = (error?.response?.data ?? error?.response) || error?.message || JSON.stringify(error);
+      if (BasSoapFault.IsBasError(payload)) {
+        // handleSoapResponse lèvera AppError normalisée
+        handleSoapResponse(payload, logger);
+      }
+      throw error; // Pas une fault SOAP -> propager l'erreur axios originale
     }
   }
 
@@ -75,11 +79,13 @@ export class BasSoapClient {
         responseType: 'text',
       });
 
-      if (response.status === 200 && response.data && BasSoapFault.IsBasError(response.data)) {
-        BasSoapFault.ThrowError(response.data);
+      if (response.status === 200 && response.data) {
+        handleSoapResponse(response.data, logger);
       }
     } catch (error: any) {
-      throw error?.response?.data || error.message;
+      const payload = error?.response?.data || error.message;
+      if (BasSoapFault.IsBasError(payload)) handleSoapResponse(payload, logger);
+      throw error;
     }
   }
 }

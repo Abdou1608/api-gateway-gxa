@@ -15,8 +15,7 @@ router.put('/',
    throw new Error("Fonction Non Disponible");
    
   } catch (error:any) {
-    res.status(500).json({ error: 'SOAP request failed', details: error });
-  }
+   res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });  }
 });
 
 export default router;

@@ -29,7 +29,7 @@ router.post('/', validateBody(api_profileValidator), async (req, res) => {
     res.json(result);
   } catch (error:any) {
     console.log("Erreur dans profile route =="+JSON.stringify(error))
-    res.status(500).json({ error: error.message });
+    res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
   }
 });
 

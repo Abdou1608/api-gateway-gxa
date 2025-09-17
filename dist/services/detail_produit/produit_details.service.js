@@ -18,5 +18,5 @@ async function produit_details(code, BasSecurityContext, options, basecouvs, cla
     console.log("Paramettres du Detail du produit requis===" + JSON.stringify(params));
     const result = await (0, soap_service_1.sendSoapRequest)(params, "Produit_Details", BasSecurityContext, "newprod");
     const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
-    return grouped;
+    return result;
 }

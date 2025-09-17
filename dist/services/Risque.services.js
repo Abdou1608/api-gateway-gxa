@@ -23,7 +23,7 @@ async function Risk_ListItems(req, res) {
     }
     catch (error) {
         const e = error ? error : null;
-        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: e });
+        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
     }
 }
 async function Risk_Create(req, res) {
@@ -49,7 +49,7 @@ async function Risk_Create(req, res) {
     }
     catch (error) {
         const e = error ? error : null;
-        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: e });
+        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
     }
 }
 async function Risk_Update(req, res) {
@@ -79,6 +79,6 @@ async function Risk_Update(req, res) {
     }
     catch (error) {
         const e = error ? error : null;
-        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: e });
+        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
     }
 }

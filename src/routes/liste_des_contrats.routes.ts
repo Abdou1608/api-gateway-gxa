@@ -21,7 +21,7 @@ router.post('/', validateBody(api_liste_des_contratsValidator), async (req, res)
     const result = await cont_search(reference,detailorigine,origine,codefic,nomchamp,_BasSecurityContext);
     res.json(result);
   } catch (error:any) {
-    res.status(500).json({ error: error.message });
+    res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
   }
 });
 

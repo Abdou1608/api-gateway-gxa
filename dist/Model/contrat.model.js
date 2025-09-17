@@ -103,7 +103,10 @@ class Contrat {
     constructor(data) {
         if (data) {
             Object.assign(this, data);
-            Object.assign(this.numcont, data.contrat);
+            // Assign numcont if not explicitly provided but contrat present
+            if (data.contrat && !this.numcont) {
+                this.numcont = data.contrat;
+            }
         }
     }
     toJSON() {

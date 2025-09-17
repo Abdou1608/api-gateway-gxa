@@ -22,8 +22,7 @@ router.post('/', validateBody(api_liste_des_bransValidator), async (req, res) =>
     res.json(result);
   }  catch (error:any) {
    const e=error ? error :null
-  res.status(500).json({ error: 'SOAP Error:'+e?.message, details: e });
-}
+  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });}
 });
 
 export default router;

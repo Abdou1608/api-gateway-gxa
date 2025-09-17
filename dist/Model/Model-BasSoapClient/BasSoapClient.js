@@ -39,6 +39,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BasSoapClient = void 0;
 const axios_1 = __importDefault(require("axios"));
 const BasSoapFault_1 = require("../BasSoapObject/BasSoapFault");
+const soap_fault_handler_1 = require("../../utils/soap-fault-handler");
+const logger_1 = __importDefault(require("../../utils/logger"));
 const fs = __importStar(require("fs/promises"));
 const path = __importStar(require("path"));
 class BasSoapClient {
@@ -78,15 +80,18 @@ class BasSoapClient {
                 },
                 responseType: 'text',
             });
-            if (response.status !== 200) {
-                throw response.data || 'Erreur SOAP';
-            }
-            // console.log("From BasSoapClient response in soapRequest.....="+response)
-            // console.log("From BasSoapClient response in soapRequest+response.data.....="+response.data)
-            return response.data;
+            // Centralisation: on laisse handleSoapResponse détecter et lever une AppError au besoin
+            const safeXml = (0, soap_fault_handler_1.handleSoapResponse)(response.data, logger_1.default);
+            return safeXml;
         }
         catch (error) {
-            throw error?.response?.data || error.message || 'Erreur lors de l’appel SOAP';
+            // Si la requête a déjà retourné un XML de fault dans error.response.data, on laisse BasSoapFault pour compat rétro
+            const payload = (error?.response?.data ?? error?.response) || error?.message || JSON.stringify(error);
+            if (BasSoapFault_1.BasSoapFault.IsBasError(payload)) {
+                // handleSoapResponse lèvera AppError normalisée
+                (0, soap_fault_handler_1.handleSoapResponse)(payload, logger_1.default);
+            }
+            throw error; // Pas une fault SOAP -> propager l'erreur axios originale
         }
     }
     async soapVoidRequest(url, request) {
@@ -101,12 +106,15 @@ class BasSoapClient {
                 },
                 responseType: 'text',
             });
-            if (response.status === 200 && response.data && BasSoapFault_1.BasSoapFault.IsBasError(response.data)) {
-                BasSoapFault_1.BasSoapFault.ThrowError(response.data);
+            if (response.status === 200 && response.data) {
+                (0, soap_fault_handler_1.handleSoapResponse)(response.data, logger_1.default);
             }
         }
         catch (error) {
-            throw error?.response?.data || error.message;
+            const payload = error?.response?.data || error.message;
+            if (BasSoapFault_1.BasSoapFault.IsBasError(payload))
+                (0, soap_fault_handler_1.handleSoapResponse)(payload, logger_1.default);
+            throw error;
         }
     }
 }

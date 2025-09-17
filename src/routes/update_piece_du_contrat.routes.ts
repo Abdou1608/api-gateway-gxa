@@ -22,8 +22,7 @@ router.post('/', validateBody(api_update_piece_contratValidator), async (req, re
     const response = await cont_piece_update( contrat,produit,piece,Effet,data,_BasSecurityContext ?? req.body.basSecurityContext );
     res.json(response);
   } catch (error:any) {
-    res.status(500).json({ error: 'SOAP request failed:'+error.message, details: error });
-  }
+   res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });  }
 });
 
 export default router;

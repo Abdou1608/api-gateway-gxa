@@ -18,7 +18,7 @@ router.post('/', (0, zodValidator_1.validateBody)(api_tiers_searchValidator_1.ap
         res.json(result);
     }
     catch (error) {
-        res.status(500).json({ message: error.message, detail: error });
+        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
     }
 });
 exports.default = router;

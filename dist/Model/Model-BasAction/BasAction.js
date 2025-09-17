@@ -32,10 +32,14 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BasAction = void 0;
 const Xpath = __importStar(require("xpath"));
-const BasSoapFault_1 = require("../BasSoapObject/BasSoapFault");
+const soap_fault_handler_1 = require("../../utils/soap-fault-handler");
+const logger_1 = __importDefault(require("../../utils/logger"));
 class BasAction {
     constructor(BasSoapCLient, appConfigService) {
         this.BasSoapCLient = BasSoapCLient;
@@ -51,11 +55,8 @@ class BasAction {
         body += '</ns1:RunAction>';
         console.log("Body de la requete est:=====" + body);
         let response = await this.BasSoapCLient.soapRequest(this.appConfigService.GetURlActionService(), body);
-        console.log("BasSoapFault.IsBasError(response):=====" + BasSoapFault_1.BasSoapFault.IsBasError(response));
-        if (BasSoapFault_1.BasSoapFault.IsBasError(response)) {
-            console.log("response:=====" + response);
-            BasSoapFault_1.BasSoapFault.ThrowError(response);
-        }
+        // Centralisation fault -> handleSoapResponse (lèvera AppError si fault)
+        response = (0, soap_fault_handler_1.handleSoapResponse)(response, logger_1.default);
         return response;
     }
     GetLogEntry(soapEnv) {

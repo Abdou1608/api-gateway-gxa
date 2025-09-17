@@ -21,7 +21,7 @@ router.post('/', (0, zodValidator_1.validateBody)(api_update_piece_contratValida
         res.json(response);
     }
     catch (error) {
-        res.status(500).json({ error: 'SOAP request failed:' + error.message, details: error });
+        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
     }
 });
 exports.default = router;

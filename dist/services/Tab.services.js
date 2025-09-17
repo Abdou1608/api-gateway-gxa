@@ -28,7 +28,7 @@ async function Tab_ListValues(req, res) {
     }
     catch (error) {
         const e = error ? error : null;
-        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: e });
+        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
     }
 }
 async function Tab_ListItems(req, res) {
@@ -48,7 +48,7 @@ async function Tab_ListItems(req, res) {
     }
     catch (error) {
         const e = error ? error : null;
-        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: e });
+        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
     }
 }
 async function Tab_GetValue(req, res) {
@@ -67,6 +67,6 @@ async function Tab_GetValue(req, res) {
     }
     catch (error) {
         const e = error ? error : null;
-        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: e });
+        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
     }
 }
