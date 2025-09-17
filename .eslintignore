@@ -1,0 +1,5 @@
+dist/
+coverage/
+node_modules/
+**/*.d.ts
+src/utils/soap-parser.service_old.ts
