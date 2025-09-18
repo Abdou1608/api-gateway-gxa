@@ -4,6 +4,7 @@
 ### Added
 - Injection automatique de `BasSecurityContext._SessionId` par le `authMiddleware` à partir de `req.auth.sid` (JWT) pour compatibilité.
 - Tests d'intégration confirmant qu'un corps sans `BasSecurityContext` fonctionne avec un Bearer valide.
+- Service de révocation de token (`invalidateToken`, `isTokenRevoked`) avec denylist en mémoire + intégration sur la route `profile`.
 
 ### Changed
 - Source d'autorité du Session ID: le JWT (champ `sid`). Les valeurs fournies dans le body sont ignorées si différentes.

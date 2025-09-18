@@ -152,6 +152,23 @@ Bonnes pratiques:
 
 État de migration: phase de transition – compatibilité maintenue, suppression future annoncée dans CHANGELOG.
 
+### Révocation de token (Denylist en mémoire)
+
+Deux fonctions disponibles dans `src/auth/token-revocation.service.ts` :
+
+- `invalidateToken(token: string): Promise<void>` ajoute le JWT (par `jti` si présent, sinon hash SHA-256) dans une denylist avec son `exp`.
+- `isTokenRevoked(token: string): Promise<boolean>` retourne `true` si le token est encore listé et non expiré.
+
+Implémentation:
+- Stockage en mémoire (Map) avec nettoyage paresseux (intervalle ~60s).
+- Fallback TTL 5 min si le token ne contient pas `exp`.
+- TODO présent dans le code pour brancher Redis en environnement distribué.
+
+Intégration route `profile` (voir `src/routes/profile.routes.ts`):
+- Vérification initiale: si `isTokenRevoked(...)` => 401.
+- Après récupération du profil: si résultat vide ou erreur => `invalidateToken` + logout de la session (SID) => 401.
+- Lignes clés: pré-check juste après l'entrée handler (~15+), logique post-fetch juste avant l'envoi de la réponse.
+
 ## 🧼 Erreurs standardisées
 
 Réponses communes:
