@@ -37,15 +37,15 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
     req.auth = { sid, token };
     // Compatibility mapping for legacy validators expecting SessionID variants
     if (req.body && typeof req.body === 'object') {
-      (req.body as any).SessionID ??= sid;
-      (req.body as any)._SessionID ??= sid;
-      (req.body as any).sessionId ??= sid;
-      (req.body as any)._sessionId ??= sid;
-      // Legacy nested structure expected by existing validators: BasSecurityContext._SessionId
+      // Always enforce authoritative SID from JWT, ignoring any client supplied values.
+      (req.body as any).SessionID = sid;
+      (req.body as any)._SessionID = sid;
+      (req.body as any).sessionId = sid;
+      (req.body as any)._sessionId = sid;
       if (!(req.body as any).BasSecurityContext) {
         (req.body as any).BasSecurityContext = {};
       }
-      (req.body as any).BasSecurityContext._SessionId ??= sid;
+      (req.body as any).BasSecurityContext._SessionId = sid;
     }
     next();
   } catch (err) {
