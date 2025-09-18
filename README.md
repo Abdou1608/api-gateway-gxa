@@ -132,6 +132,26 @@ PORT=3000
 
 Schéma `bearerAuth` (JWT) défini dans l'OpenAPI. Les endpoints publics sont marqués avec `security: []`. Les autres héritent de la sécurité globale.
 
+### Normalisation du Session ID (SID)
+
+Depuis l'introduction du middleware JWT (`authMiddleware`), la source d'autorité unique du SID est le token décodé (`req.auth.sid`).
+
+Compatibilité (Option B active):
+- Si le client n'envoie plus `BasSecurityContext` ni `SessionID`, le middleware injecte automatiquement `req.body.BasSecurityContext._SessionId` avec la valeur du SID.
+- Les anciens champs (`SessionID`, `_SessionID`, `sessionId`, `_sessionId`) sont aussi auto-renseignés si absents.
+
+Implications:
+- Les validateurs n'ont plus besoin d'exiger que le client fournisse `BasSecurityContext._SessionId` (nettoyage progressif en cours).
+- Le client ne doit pas faire confiance à une valeur saisie coté utilisateur: toute valeur fournie est ignorée si le JWT dit autre chose.
+- Prochaine étape (Option A future): supprimer totalement `BasSecurityContext` des schémas pour simplifier la surface publique.
+
+Bonnes pratiques:
+- Toujours envoyer `Authorization: Bearer <token>` sur les routes protégées.
+- Ne pas logger le token ni le SID en production.
+- Clé `JWS_KEY` >= 32 chars (aléatoire) obligatoire côté serveur.
+
+État de migration: phase de transition – compatibilité maintenue, suppression future annoncée dans CHANGELOG.
+
 ## 🧼 Erreurs standardisées
 
 Réponses communes:

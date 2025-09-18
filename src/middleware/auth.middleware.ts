@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import AuthService from '../auth/auth.service';
+import env from '../config/env';
 
 const BEARER = /^Bearer\s+(.+)$/i;
 const authService = new AuthService();
@@ -22,16 +23,16 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
   try {
     const token = extractToken(req);
     if (!token) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: 'Unauthorized, Authentication needed to process' });
     }
-    const key = process.env.JWS_KEY;
+    const key = process.env.JWS_KEY ?? env.jwtSecret ?? '';
     if (!key) {
       console.error('[authMiddleware] Missing JWS_KEY env');
-      return res.status(500).json({ error: 'Server misconfiguration' });
+      return res.status(503).json({ error: 'Server misconfiguration' });
     }
     const sid = await authService.get_SID(token, key);
     if (!sid) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: 'Unauthorized, Authentication needed to process' });
     }
     req.auth = { sid, token };
     // Compatibility mapping for legacy validators expecting SessionID variants
@@ -40,10 +41,15 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
       (req.body as any)._SessionID ??= sid;
       (req.body as any).sessionId ??= sid;
       (req.body as any)._sessionId ??= sid;
+      // Legacy nested structure expected by existing validators: BasSecurityContext._SessionId
+      if (!(req.body as any).BasSecurityContext) {
+        (req.body as any).BasSecurityContext = {};
+      }
+      (req.body as any).BasSecurityContext._SessionId ??= sid;
     }
     next();
   } catch (err) {
     console.warn('[authMiddleware] token invalid', err instanceof Error ? err.message : String(err));
-    return res.status(401).json({ error: 'Unauthorized' });
+    return res.status(401).json({ error: 'Unauthorized, Authentication needed to process' });
   }
 }
