@@ -17,9 +17,16 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
-      - name: Prune old backup branches/tags (>30 days)
+      - name: Prune old backup branches/tags (>30 days) with archive
         run: |
-          bash scripts/backup/prune-backups.sh 30 backup
+          mkdir -p backup-archives
+          bash scripts/backup/prune-backups.sh 30 backup 5 backup-archives
+      - name: Upload archive artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backup-archives
+          path: backup-archives
       - name: Push deletions
         run: |
           git push --prune origin

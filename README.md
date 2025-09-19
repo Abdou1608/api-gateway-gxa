@@ -226,6 +226,14 @@ Collision handling:
 Rotation / purge:
 - Scripts de nettoyage: `npm run backup:prune` (PowerShell) / `npm run backup:prune:sh` (Bash) suppriment les branches `backup/` et tags `backup-pre-push-` plus vieux que 30 jours (valeur par défaut; paramètre personnalisable dans les scripts).
 - Une GitHub Action planifiée (`.github/workflows/backup-prune.yml`) exécute chaque nuit (02:00 UTC) la purge des backups >30 jours.
+ - Les scripts conservent toujours les N derniers (par défaut 5) même s'ils dépassent le seuil (paramètre protectCount / Protect).
+ - Possibilité d'archiver (bundle git + README extrait) avant suppression via argument `archiveDir` (Bash) ou `-ArchiveDir` (PowerShell).
+
+Commande complète:
+```
+npm run backup:full
+```
+Enchaîne création d'un backup puis purge (avec paramètres par défaut).
 
 Auto-tagging hook:
 - Le hook `.husky/pre-push` crée automatiquement un tag de backup s'il manque lorsque le nombre de commits locaux dépasse le seuil (par défaut 10) ou en cas de push potentiellement force.
