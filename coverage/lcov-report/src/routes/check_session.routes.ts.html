@@ -125,7 +125,7 @@ router.post('/', validateBody(api_check_sessionValidator), async (req, res) =&gt
 <span class="cstat-no" title="statement not covered" >  try {</span>
 <span class="cstat-no" title="statement not covered" >    const _BasSecurityContext= new BasSecurityContext()</span>
 <span class="cstat-no" title="statement not covered" >    _BasSecurityContext.IsAuthenticated=true</span>
-<span class="cstat-no" title="statement not covered" >    _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId</span>
+<span class="cstat-no" title="statement not covered" >    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId</span>
 <span class="cstat-no" title="statement not covered" >    const result = await checksession_(_BasSecurityContext);</span>
 <span class="cstat-no" title="statement not covered" >    res.json(result);</span>
 <span class="cstat-no" title="statement not covered" >  } catch (error:any) {</span>

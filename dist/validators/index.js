@@ -42,3 +42,8 @@ __exportStar(require("./api_projects_project_updateValidator"), exports);
 __exportStar(require("./api_projects_project_validateofferValidator"), exports);
 __exportStar(require("./api_tiers_searchValidator"), exports);
 __exportStar(require("./api_update_piece_contratValidator"), exports);
+// export * from "./api_update_tierValidator"; // Removed: file does not exist
+__exportStar(require("./api_sinistres_sinistre_createValidator"), exports);
+__exportStar(require("./api_sinistres_sinistre_detailValidator"), exports);
+__exportStar(require("./api_sinistres_sinistre_listitemsValidator"), exports);
+__exportStar(require("./api_sinistres_sinistre_updateValidator"), exports);

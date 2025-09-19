@@ -3,12 +3,13 @@ import { opensession } from '../services/login/opensession';
 import { api_loginValidator } from '../validators/api_loginValidator';
 import { validateBody } from '../middleware/zodValidator';
 import AuthService from '../auth/auth.service';
+import env from '../config/env';
 
 
 
 const router = Router();
 
-const authService = new AuthService({ defaultTtlSeconds: 900 });
+const authService = new AuthService({ defaultTtlSeconds: 1800 });
 
 router.post('/', validateBody(api_loginValidator), async (req, res) => {
   const logon: string | undefined = req.body?.login ?? req.body?.username;
@@ -20,17 +21,17 @@ router.post('/', validateBody(api_loginValidator), async (req, res) => {
   if (logon && password && domain) {
     try {
       const result: unknown = await opensession(logon, password, domain);
-      const anyResult = result as Record<string, unknown> | undefined;
-      const SID = (anyResult?.SessionID ?? anyResult?._SessionID) as string | undefined;
+      const anyResult = result as any | undefined;
+      const SID = (anyResult?.SessionId ?? anyResult?._SessionId) as string | undefined;
       if (!SID) {
         console.error('[login] Missing SessionID in upstream result');
-        return res.status(500).json({ error: 'Missing SessionID from upstream' });
+        return res.status(503).json({ error: 'Missing SessionID from upstream' });
       }
 
-      const key = process.env.JWS_KEY ?? '';
+      const key = env.jwtSecret  ?? '';
       if (!key) {
         console.error('[login] Missing JWS_KEY env');
-        return res.status(500).json({ error: 'Server misconfiguration: JWS_KEY is missing' });
+        return res.status(503).json({ error: 'Server misconfiguration: JWS_KEY is missing' });
       }
 
       const token = await authService.get_token(key, SID);
@@ -44,11 +45,11 @@ router.post('/', validateBody(api_loginValidator), async (req, res) => {
       }
 
       res.set('Authorization', `Bearer ${token}`);
-      return res.json({ ...(anyResult || {}), token, sid: SID });
+      return res.json({ ...(anyResult || {}), token});
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';
       console.error('[login] Error:', message);
-      return res.status(500).json({ error: message });
+      return res.status(503).json({ error: message });
     }
   } else {
     return res.status(501).json({ error: 'Données manquantes ou non conforme' });

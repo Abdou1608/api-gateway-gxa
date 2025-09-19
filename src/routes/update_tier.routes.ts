@@ -13,7 +13,7 @@ router.put('/',  async (req, res) => {
   try {
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
-    _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
+    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
 const	numtiers=req.body.numtiers?? null
 const	numdpp=req.body.numdpp?? null
 const	data =req.body.data

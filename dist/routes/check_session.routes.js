@@ -10,12 +10,12 @@ router.post('/', (0, zodValidator_1.validateBody)(api_check_sessionValidator_1.a
     try {
         const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         _BasSecurityContext.IsAuthenticated = true;
-        _BasSecurityContext.SessionId = req.body.BasSecurityContext?._SessionId;
+        _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
         const result = await (0, checksession__service_1.checksession_)(_BasSecurityContext);
         res.json(result);
     }
     catch (error) {
-        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error)
+        res.status(error.status ?? 401).json({ error: error?.message, detail: JSON.stringify(error)
         });
     }
 });

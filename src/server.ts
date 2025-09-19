@@ -1,3 +1,5 @@
+// (Doit être importé avant express pour permettre le patching des auto-instrumentations)
+import './observability/otel';
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
@@ -8,11 +10,13 @@ import { registerRoutes } from './routes/fonctionnalite.routes';
 import { applyGlobalMiddleware } from './middleware/Apply-Middlewares';
 import config from './config/env';
 import { errorHandler, notFoundHandler } from './middleware/error-handler';
+import { metricsInstrumentation, metricsHandler } from './observability/metrics';
 
 const app = express();
 
-// Application des middlewares globaux
+// Application des middlewares globaux + instrumentation métriques
 applyGlobalMiddleware(app);
+app.use(metricsInstrumentation);
 
 // Documentation OpenAPI (lecture du YAML principal)
 const openapiPathCandidates = [
@@ -33,6 +37,9 @@ if (openapiDoc) {
 } else {
   console.warn('⚠️  Fichier OpenAPI non trouvé, /docs désactivé');
 }
+
+// Endpoint metrics (protégé via header si METRICS_SECRET configuré)
+app.get('/metrics', metricsHandler);
 
 // Enregistrement des routes applicatives
 registerRoutes(app);

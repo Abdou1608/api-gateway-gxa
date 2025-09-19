@@ -12,11 +12,11 @@ router.post('/', validateBody(api_check_sessionValidator), async (req, res) => {
   try {
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
-    _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
+    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
     const result = await checksession_(_BasSecurityContext);
     res.json(result);
   } catch (error:any) {
-    res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error)
+    res.status(error.status ?? 401).json({ error: error?.message, detail: JSON.stringify(error)
       });
   }
 });

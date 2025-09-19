@@ -10,7 +10,7 @@ router.post('/', (0, zodValidator_1.validateBody)(api_tiers_searchValidator_1.ap
     try {
         const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         _BasSecurityContext.IsAuthenticated = true;
-        _BasSecurityContext.SessionId = req.body.BasSecurityContext?._SessionId;
+        _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
         const reference = req.body.reference ?? "";
         const dppname = req.body.dppname ?? reference;
         //console.log("-----------------------------Données Reccus dans Recherche Tier Route req.body.SessionId =="+ req.body.BasSecurityContext._SessionId)

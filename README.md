@@ -152,6 +152,49 @@ Bonnes pratiques:
 
 État de migration: phase de transition – compatibilité maintenue, suppression future annoncée dans CHANGELOG.
 
+### Observabilité: Métriques Prometheus
+
+Exposition sur `GET /metrics` (format Prometheus). Sécurisé par l'en-tête `x-metrics-secret: <METRICS_SECRET>` si la variable est définie. Sans ce header (ou si incorrect) => 403.
+
+Métriques clés:
+- `http_requests_total{method,route,status}`
+- `http_request_duration_seconds_bucket|sum|count`
+- `token_revocations_total{backend,reason}` (incrémenté lors d'une révocation)
+- `token_revocation_checks_total{backend,result}` (chaque vérification de denylist)
+- `token_revoked_memory_current` (taille exacte de la denylist en mémoire)
+- `token_revoked_redis_cardinality` (cardinalité approximative via HyperLogLog lorsque Redis actif)
+
+Activation HyperLogLog (Redis):
+- Fournir `REDIS_URL` pour activer le backend Redis.
+- Chaque révocation exécute `PFADD revoked:hll <key>`.
+- La cardinalité est lue via `PFCOUNT revoked:hll` et reflétée dans `token_revoked_redis_cardinality`.
+
+### Observabilité: Traces OpenTelemetry (optionnel)
+
+Activation:
+```env
+OTEL_ENABLE=1
+OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:4318 # (optionnel, défaut http://localhost:4318/v1/traces)
+```
+
+Comportement:
+- Si `OTEL_ENABLE` est absent ou différent de `1|true` => aucune surcharge.
+- Ignoré en environnement de test (`NODE_ENV=test`).
+- Auto-instrumentations Node (HTTP, Express, etc.).
+- Export OTLP HTTP (`/v1/traces`).
+
+Arrêt propre: signaux `SIGINT/SIGTERM` déclenchent `sdk.shutdown()`.
+
+Variables supplémentaires:
+| Variable | Description | Défaut |
+|----------|-------------|--------|
+| `METRICS_SECRET` | Active protection de `/metrics` | (désactivé) |
+| `ADMIN_SECRET` | Protection endpoints admin | (obligatoire pour admin) |
+| `JWS_KEY` | Clé HS256 JWT (>=32 chars) | (aucun) |
+| `REDIS_URL` | Active backend Redis + HLL | (mémoire) |
+| `OTEL_ENABLE` | Active traces | `0` |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | URL collecteur OTLP (avec ou sans /v1/traces) | `http://localhost:4318/v1/traces` |
+
 ### Révocation de token (Denylist en mémoire)
 
 Deux fonctions disponibles dans `src/auth/token-revocation.service.ts` :

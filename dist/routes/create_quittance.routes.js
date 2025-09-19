@@ -10,7 +10,7 @@ router.post('/', (0, zodValidator_1.validateBody)(api_create_quittanceValidator_
     try {
         const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         _BasSecurityContext.IsAuthenticated = true;
-        _BasSecurityContext.SessionId = req.body.BasSecurityContext?._SessionId;
+        _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
         const contrat = req.body.contrat;
         const piece = req.body.piece;
         const bordereau = req.body.bordereau;
@@ -28,7 +28,7 @@ router.post('/autocalcule', (0, zodValidator_1.validateBody)(api_create_quittanc
     try {
         const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         _BasSecurityContext.IsAuthenticated = true;
-        _BasSecurityContext.SessionId = req.body.BasSecurityContext?._SessionId;
+        _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
         const contrat = req.body.contrat;
         const piece = req.body.piece;
         const bordereau = req.body.bordereau;

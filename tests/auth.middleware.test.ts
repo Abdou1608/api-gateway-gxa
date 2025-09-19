@@ -3,6 +3,19 @@ import express from 'express';
 import { authMiddleware } from '../src/middleware/auth.middleware';
 import AuthService from '../src/auth/auth.service';
 
+// Augment Express Request to include auth populated by authMiddleware
+declare global {
+  namespace Express {
+    interface Request {
+      auth?: {
+        sid?: string;
+        [key: string]: any;
+      };
+    }
+  }
+}
+export {};
+
 const app = express();
 app.use(express.json());
 

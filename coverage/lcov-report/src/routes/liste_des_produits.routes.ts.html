@@ -143,7 +143,7 @@ router.post('/', validateBody(api_liste_des_produitsValidator), async (req, res)
 <span class="cstat-no" title="statement not covered" >  try {</span>
 <span class="cstat-no" title="statement not covered" >    const _BasSecurityContext= new BasSecurityContext()</span>
 <span class="cstat-no" title="statement not covered" >    _BasSecurityContext.IsAuthenticated=true</span>
-<span class="cstat-no" title="statement not covered" >    _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId</span>
+<span class="cstat-no" title="statement not covered" >    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId</span>
 <span class="cstat-no" title="statement not covered" > const branche =req.body.branche  ?? null</span>
 <span class="cstat-no" title="statement not covered" > const entites=req.body.extentions ?? null</span>
 <span class="cstat-no" title="statement not covered" > const typeecran=req.body.typeecran ?? null</span>

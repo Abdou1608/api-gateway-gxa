@@ -10,7 +10,7 @@ router.post('/', (0, zodValidator_1.validateBody)(api_liste_des_bransValidator_1
     try {
         const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         _BasSecurityContext.IsAuthenticated = true;
-        _BasSecurityContext.SessionId = req.body.BasSecurityContext?._SessionId;
+        _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
         //console.log("-----------------------------Données Reccus Route listedesbrans req.body.BasSecurityContext =="+JSON.stringify( req.body.BasSecurityContext))
         const result = await (0, Bran_listitems_service_1.bran_listitems)(_BasSecurityContext);
         res.json(result);

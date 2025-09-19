@@ -177,7 +177,7 @@ router.post('/', validateBody(api_create_quittanceValidator), async (req, res) =
 <span class="cstat-no" title="statement not covered" >  try {</span>
 <span class="cstat-no" title="statement not covered" >    const _BasSecurityContext= new BasSecurityContext()</span>
 <span class="cstat-no" title="statement not covered" >    _BasSecurityContext.IsAuthenticated=true</span>
-<span class="cstat-no" title="statement not covered" >    _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId</span>
+<span class="cstat-no" title="statement not covered" >    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId</span>
 <span class="cstat-no" title="statement not covered" >   const contrat=req.body.contrat</span>
 <span class="cstat-no" title="statement not covered" >   const piece= req.body.piece </span>
 <span class="cstat-no" title="statement not covered" >   const bordereau= req.body.bordereau </span>
@@ -195,7 +195,7 @@ router.post('/autocalcule', validateBody(api_create_quittanceValidator), async (
 <span class="cstat-no" title="statement not covered" >  try {</span>
 <span class="cstat-no" title="statement not covered" >    const _BasSecurityContext= new BasSecurityContext()</span>
 <span class="cstat-no" title="statement not covered" >    _BasSecurityContext.IsAuthenticated=true</span>
-<span class="cstat-no" title="statement not covered" >    _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId</span>
+<span class="cstat-no" title="statement not covered" >    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId</span>
 <span class="cstat-no" title="statement not covered" >   const contrat=req.body.contrat</span>
 <span class="cstat-no" title="statement not covered" >   const piece= req.body.piece </span>
 <span class="cstat-no" title="statement not covered" >   const bordereau= req.body.bordereau </span>

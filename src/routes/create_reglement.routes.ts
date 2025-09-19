@@ -12,7 +12,7 @@ router.post('/', validateBody(api_create_reglementValidator), async (req, res) =
   try {
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
-    _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
+    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
     const result = await kco_cashtransaction(req.body, _BasSecurityContext);
     res.json(result);
   } catch (error:any) {

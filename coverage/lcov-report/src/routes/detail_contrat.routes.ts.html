@@ -125,7 +125,7 @@ router.post('/', validateBody(api_detail_contratValidator), async (req, res) =&g
   try {
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
-    _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
+    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
     const result = await cont_details(req.body,_BasSecurityContext);
     res.json(result);
   } <span class="branch-0 cbranch-no" title="branch not covered" >catch (error:any) {</span>

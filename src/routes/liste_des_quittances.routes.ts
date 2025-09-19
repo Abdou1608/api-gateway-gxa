@@ -12,7 +12,7 @@ router.post('/', validateBody(api_liste_des_quittancesValidator), async (req, re
   try {
     const _BasSecurityContext= new BasSecurityContext()
   _BasSecurityContext.IsAuthenticated=true
-  _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
+  _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
  const dossier =req.body.dossier
  const contrat=req.body.contrat 
  //console.log("dossier==="+dossier)

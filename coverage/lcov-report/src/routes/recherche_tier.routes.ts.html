@@ -140,7 +140,7 @@ router.post('/', validateBody(api_tiers_searchValidator), async (req, res) =&gt;
 <span class="cstat-no" title="statement not covered" >try {</span>
 <span class="cstat-no" title="statement not covered" >    const _BasSecurityContext= new BasSecurityContext()</span>
 <span class="cstat-no" title="statement not covered" >  _BasSecurityContext.IsAuthenticated=true</span>
-<span class="cstat-no" title="statement not covered" >  _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId</span>
+<span class="cstat-no" title="statement not covered" >  _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId</span>
 <span class="cstat-no" title="statement not covered" >  const reference=req.body.reference ?? ""</span>
 <span class="cstat-no" title="statement not covered" >  const dppname=req.body.dppname ?? reference</span>
 <span class="cstat-no" title="statement not covered" >  </span>

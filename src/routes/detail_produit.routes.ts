@@ -12,7 +12,7 @@ router.post('/', validateBody(api_detail_produitValidator), async (req, res) => 
   try {
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
-    _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
+    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
     const code=req.body.code
     const options=req.body.options ?? true
     const basecouv= req.body.basecouvs ?? true

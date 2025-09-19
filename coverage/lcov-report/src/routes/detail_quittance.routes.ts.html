@@ -137,7 +137,7 @@ router.post('/', validateBody(api_detail_quittanceValidator), async (req, res) =
 <span class="cstat-no" title="statement not covered" >  try {</span>
 <span class="cstat-no" title="statement not covered" >    const _BasSecurityContext= new BasSecurityContext()</span>
 <span class="cstat-no" title="statement not covered" >    _BasSecurityContext.IsAuthenticated=true</span>
-<span class="cstat-no" title="statement not covered" >    _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId</span>
+<span class="cstat-no" title="statement not covered" >    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId</span>
 <span class="cstat-no" title="statement not covered" >    const quittance=req.body.quittance</span>
 <span class="cstat-no" title="statement not covered" >    const details=req.body.details ?? true</span>
 <span class="cstat-no" title="statement not covered" >    const garanties= req.body.garanties ?? true</span>

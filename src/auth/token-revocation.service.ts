@@ -1,5 +1,6 @@
 import { createHash } from 'crypto';
 import AuthService from './auth.service';
+import { tokenRevocationsTotal, tokenRevocationChecksTotal } from '../observability/metrics';
 import type { RedisClientType } from 'redis';
 
 let redisClient: RedisClientType | undefined;
@@ -75,12 +76,18 @@ export async function invalidateToken(token: string): Promise<void> {
   if (r) {
     const ttl = effectiveExp - Math.floor(now / 1000);
     if (ttl > 0) {
-      // NX ensure idempotent add; value is minimal payload (json) if needed later
-      await r.set(`revoked:${key}`, '1', { EX: ttl, NX: true });
+      const setRes = await r.set(`revoked:${key}`, '1', { EX: ttl, NX: true });
+      await r.pfAdd('revoked:hll', key);
+      if (setRes === 'OK') {
+        tokenRevocationsTotal.inc({ backend: 'redis', reason: 'manual' });
+      }
     }
     return;
   }
-  if (!denyMap.has(key)) denyMap.set(key, { exp: effectiveExp });
+  if (!denyMap.has(key)) {
+    denyMap.set(key, { exp: effectiveExp });
+    tokenRevocationsTotal.inc({ backend: 'memory', reason: 'manual' });
+  }
 }
 
 /**
@@ -94,25 +101,35 @@ export async function isTokenRevoked(token: string): Promise<boolean> {
   const r = await getRedis();
   if (r) {
     const exists = await r.exists(`revoked:${key}`);
-    return exists === 1;
+    const revoked = exists === 1;
+    tokenRevocationChecksTotal.inc({ backend: 'redis', result: revoked ? 'revoked' : 'ok' });
+    return revoked;
   }
   const entry = denyMap.get(key);
-  if (!entry) return false;
-  if (entry.exp <= now / 1000) {
-    denyMap.delete(key); // expired -> cleanup
+  if (!entry) {
+    tokenRevocationChecksTotal.inc({ backend: 'memory', result: 'ok' });
     return false;
   }
+  if (entry.exp <= now / 1000) {
+    denyMap.delete(key); // expired -> cleanup
+    tokenRevocationChecksTotal.inc({ backend: 'memory', result: 'ok' });
+    return false;
+  }
+  tokenRevocationChecksTotal.inc({ backend: 'memory', result: 'revoked' });
   return true;
 }
 
 export async function getRevocationMetrics(): Promise<{ backend: 'redis' | 'memory'; entries: number }> {
   const r = await getRedis();
   if (r) {
-    // Counting all keys with prefix — inexpensive if small; for scale use probabilistic metrics.
-    const keys = await r.keys('revoked:*');
-    return { backend: 'redis', entries: keys.length };
+    const count = await r.pfCount('revoked:hll');
+    return { backend: 'redis', entries: count };
   }
   return { backend: 'memory', entries: denyMap.size };
+}
+
+export function getMemoryRevokedCount(): number {
+  return denyMap.size;
 }
 
 /**
