@@ -195,6 +195,31 @@ Variables supplémentaires:
 | `OTEL_ENABLE` | Active traces | `0` |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | URL collecteur OTLP (avec ou sans /v1/traces) | `http://localhost:4318/v1/traces` |
 
+### Sauvegarde (branch/tag backup automatisé)
+
+Scripts fournis pour créer rapidement une branche + tag de sauvegarde horodatés avant opérations risquées (refactor massif, réécriture d'historique, etc.).
+
+PowerShell (Windows):
+```
+npm run backup
+```
+
+Bash (Linux/macOS):
+```
+npm run backup:sh
+```
+
+Effet:
+- Crée une branche `backup/YYYYMMDD-HHMM` pointant sur HEAD.
+- Crée un tag `backup-pre-push-YYYYMMDD-HHMM`.
+- Push séparé à faire manuellement si nécessaire (ou adapter le script pour auto-push).
+
+Préconditions:
+- Arbre git propre (aucun changement non commit). Sinon le script s'arrête.
+
+Personnalisation:
+- Vous pouvez passer un préfixe custom au script bash: `npm run backup:sh -- customprefix` (adapter selon gestion des arguments npm) ou directement `bash scripts/backup/create-backup.sh myprefix`.
+
 ### Révocation de token (Denylist en mémoire)
 
 Deux fonctions disponibles dans `src/auth/token-revocation.service.ts` :

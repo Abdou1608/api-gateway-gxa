@@ -12,7 +12,9 @@
     "test:ci": "jest --runInBand --ci --coverage",
     "test:watch": "jest --watch",
     "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix"
+  "lint:fix": "eslint . --ext .ts --fix",
+  "backup": "powershell -ExecutionPolicy Bypass -File ./scripts/backup/create-backup.ps1",
+  "backup:sh": "bash ./scripts/backup/create-backup.sh"
   },
   "dependencies": {
     "@fastify/compress": "^8.1.0",
