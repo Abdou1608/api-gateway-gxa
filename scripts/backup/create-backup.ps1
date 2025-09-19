@@ -4,7 +4,13 @@ Param(
 
 $ErrorActionPreference = 'Stop'
 $timestamp = Get-Date -Format 'yyyyMMdd-HHmm'
-$branch = "${Prefix}/$timestamp"
+$baseBranch = "${Prefix}/$timestamp"
+$branch = $baseBranch
+$i = 1
+while (git rev-parse --verify $branch 2>$null) {
+  $branch = "$baseBranch-$i"
+  $i += 1
+}
 
 Write-Host "Creating backup branch $branch"
 
@@ -20,7 +26,13 @@ git branch $branch
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 # Create tag (standardized name)
-$tag = "${Prefix}-pre-push-$timestamp"
+$baseTag = "${Prefix}-pre-push-$timestamp"
+$tag = $baseTag
+$j = 1
+while (git rev-parse -q --verify "refs/tags/$tag") {
+  $tag = "$baseTag-$j"
+  $j += 1
+}
 Write-Host "Creating tag $tag"
 
 git tag $tag

@@ -220,6 +220,17 @@ Préconditions:
 Personnalisation:
 - Vous pouvez passer un préfixe custom au script bash: `npm run backup:sh -- customprefix` (adapter selon gestion des arguments npm) ou directement `bash scripts/backup/create-backup.sh myprefix`.
 
+Collision handling:
+- Si une branche ou un tag avec le même horodatage existe déjà (exécutions multiples la même minute), un suffixe incrémental `-1`, `-2`, ... est ajouté automatiquement.
+
+Rotation / purge:
+- Scripts de nettoyage: `npm run backup:prune` (PowerShell) / `npm run backup:prune:sh` (Bash) suppriment les branches `backup/` et tags `backup-pre-push-` plus vieux que 30 jours (valeur par défaut; paramètre personnalisable dans les scripts).
+- Une GitHub Action planifiée (`.github/workflows/backup-prune.yml`) exécute chaque nuit (02:00 UTC) la purge des backups >30 jours.
+
+Auto-tagging hook:
+- Le hook `.husky/pre-push` crée automatiquement un tag de backup s'il manque lorsque le nombre de commits locaux dépasse le seuil (par défaut 10) ou en cas de push potentiellement force.
+- Variable d'environnement pour changer le seuil: `COMMIT_REWRITE_THRESHOLD`.
+
 ### Révocation de token (Denylist en mémoire)
 
 Deux fonctions disponibles dans `src/auth/token-revocation.service.ts` :

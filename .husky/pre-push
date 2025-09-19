@@ -33,8 +33,21 @@ fi
 
 if [ $AHEAD -ge $THRESHOLD ] || $IS_FORCE; then
   echo "[INFO] $AHEAD commits locaux en avance (seuil: $THRESHOLD)." >&2
-  echo "[HINT] Créez un tag de sauvegarde avant push: git tag backup-pre-push-$(date +%Y%m%d-%H%M%S)" >&2
-  echo "Continuer le push ? (y/N)" >&2
+  # Auto-create a backup tag if none exists for current HEAD
+  if ! git tag --points-at HEAD | grep -q '^backup-pre-push'; then
+    TS=$(date +%Y%m%d-%H%M%S)
+    BASE="backup-pre-push-$TS"
+    TAG="$BASE"
+    i=1
+    while git rev-parse -q --verify "refs/tags/$TAG" >/dev/null 2>&1; do
+      TAG="${BASE}-$i"; i=$((i+1));
+    done
+    git tag "$TAG"
+    echo "[AUTO] Tag de sauvegarde créé: $TAG" >&2
+  else
+    echo "[INFO] Tag backup déjà présent sur HEAD: $(git tag --points-at HEAD | tr '\n' ' ')" >&2
+  fi
+  echo "[HINT] Vérifiez le tag backup avant push (auto-créé si absent). Continuer le push ? (y/N)" >&2
   read ans
   if [ "${ans}" != "y" ] && [ "${ans}" != "Y" ]; then
     echo "Push annulé." >&2

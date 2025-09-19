@@ -14,7 +14,9 @@
     "lint": "eslint . --ext .ts",
   "lint:fix": "eslint . --ext .ts --fix",
   "backup": "powershell -ExecutionPolicy Bypass -File ./scripts/backup/create-backup.ps1",
-  "backup:sh": "bash ./scripts/backup/create-backup.sh"
+  "backup:sh": "bash ./scripts/backup/create-backup.sh",
+  "backup:prune": "powershell -ExecutionPolicy Bypass -File ./scripts/backup/prune-backups.ps1",
+  "backup:prune:sh": "bash ./scripts/backup/prune-backups.sh"
   },
   "dependencies": {
     "@fastify/compress": "^8.1.0",
