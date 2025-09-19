@@ -7,6 +7,7 @@
 - Service de révocation de token (`invalidateToken`, `isTokenRevoked`) avec denylist en mémoire + intégration sur la route `profile`.
  - Support optionnel Redis pour la denylist (`REDIS_URL`).
  - Middleware global `tokenRevocationPrecheck` appliqué aux routes protégées.
+ - Endpoints admin `/api/admin/revoke` et `/api/admin/revocation-metrics` (header `x-admin-secret`).
 
 ### Changed
 - Source d'autorité du Session ID: le JWT (champ `sid`). Les valeurs fournies dans le body sont ignorées si différentes.

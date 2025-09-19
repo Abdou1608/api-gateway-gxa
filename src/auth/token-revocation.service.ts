@@ -105,6 +105,16 @@ export async function isTokenRevoked(token: string): Promise<boolean> {
   return true;
 }
 
+export async function getRevocationMetrics(): Promise<{ backend: 'redis' | 'memory'; entries: number }> {
+  const r = await getRedis();
+  if (r) {
+    // Counting all keys with prefix — inexpensive if small; for scale use probabilistic metrics.
+    const keys = await r.keys('revoked:*');
+    return { backend: 'redis', entries: keys.length };
+  }
+  return { backend: 'memory', entries: denyMap.size };
+}
+
 /**
  * Attempts a lightweight verification / decode to extract claims. Falls back silently if fails.
  */

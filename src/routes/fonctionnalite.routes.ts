@@ -30,6 +30,8 @@ import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
 import riskrouter from './risque.routes';
 import list_des_tecrants from './liste_des_tecrants.routes';
+import sinrouter from './sinistre.routes';
+import admin from './admin.routes';
 
 
 
@@ -42,6 +44,8 @@ export function registerRoutes(app: express.Application) {
   // Public
   app.use("/api/login", login);
   app.use("/api/logout", logout);
+  // Admin (header-guarded)
+  app.use("/api/admin", admin);
   // Protected (auth middleware first)
   app.use("/api/ajout_piece_au_contrat", authMiddleware, tokenRevocationPrecheck, ajout_piece_au_contrat);
   app.use("/api/check_session", authMiddleware, tokenRevocationPrecheck, check_session);
@@ -60,6 +64,7 @@ export function registerRoutes(app: express.Application) {
   app.use("/api/liste_des_types_ecrans", authMiddleware, tokenRevocationPrecheck, list_des_tecrants);
   app.use("/api/liste_des_quittances", authMiddleware, tokenRevocationPrecheck, liste_des_quittances);
   app.use("/api/projects", authMiddleware, tokenRevocationPrecheck, router);
+  app.use("/api/sinistres", authMiddleware, tokenRevocationPrecheck, sinrouter);
   app.use("/api/tabs", authMiddleware, tokenRevocationPrecheck, tabrouter);
   app.use("/api/risk", authMiddleware, tokenRevocationPrecheck, riskrouter);
   app.use("/api/profile", authMiddleware, tokenRevocationPrecheck, profile);

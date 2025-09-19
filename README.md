@@ -169,6 +169,17 @@ Middleware global:
 - `tokenRevocationPrecheck` appliqué avant les routes protégées (après `authMiddleware`).
 - La route `profile` n'effectue plus de pré-check local (centralisation).
 
+### Endpoints Admin (revocation & métriques)
+
+Sous le préfixe `/api/admin` (protégé par l'en-tête `x-admin-secret` = `ADMIN_SECRET` dans l'environnement) :
+
+| Méthode | Chemin | Description |
+|---------|--------|-------------|
+| POST | /api/admin/revoke | Body `{ "token": "..." }` – force la révocation (idempotent). |
+| GET | /api/admin/revocation-metrics | Retourne `{ backend: 'memory'|'redis', entries: number }`. |
+
+Remarque: Si Redis est actif (`REDIS_URL`), `backend` = `redis`, sinon `memory`.
+
 Intégration route `profile` (voir `src/routes/profile.routes.ts`):
 - Vérification initiale: si `isTokenRevoked(...)` => 401.
 - Après récupération du profil: si résultat vide ou erreur => `invalidateToken` + logout de la session (SID) => 401.
