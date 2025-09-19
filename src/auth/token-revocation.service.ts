@@ -1,5 +1,28 @@
 import { createHash } from 'crypto';
 import AuthService from './auth.service';
+import type { RedisClientType } from 'redis';
+
+let redisClient: RedisClientType | undefined;
+let redisInitPromise: Promise<void> | undefined;
+
+async function getRedis(): Promise<RedisClientType | undefined> {
+  if (!process.env.REDIS_URL) return undefined;
+  if (redisClient) return redisClient;
+  if (!redisInitPromise) {
+    redisInitPromise = (async () => {
+      const { createClient } = await import('redis');
+      const client: RedisClientType = createClient({ url: process.env.REDIS_URL });
+      client.on('error', (e) => {
+        // Silent degrade to in-memory; do not throw
+        redisClient = undefined;
+      });
+      await client.connect();
+      redisClient = client;
+    })();
+  }
+  try { await redisInitPromise; } catch { /* ignore */ }
+  return redisClient;
+}
 
 /**
  * In-memory denylist entry.
@@ -47,10 +70,17 @@ export async function invalidateToken(token: string): Promise<void> {
   // We only need partial decode (no need for verified claims for jti/exp usage if already validated upstream)
   const keyMaterial = await safeDecode(token);
   const { key, exp } = tokenKey(token, keyMaterial?.payload || {});
-  if (!denyMap.has(key)) {
-    const effectiveExp = exp ?? Math.floor(now / 1000) + 300; // 5 minutes fallback
-    denyMap.set(key, { exp: effectiveExp });
+  const effectiveExp = exp ?? Math.floor(now / 1000) + 300; // 5 minutes fallback
+  const r = await getRedis();
+  if (r) {
+    const ttl = effectiveExp - Math.floor(now / 1000);
+    if (ttl > 0) {
+      // NX ensure idempotent add; value is minimal payload (json) if needed later
+      await r.set(`revoked:${key}`, '1', { EX: ttl, NX: true });
+    }
+    return;
   }
+  if (!denyMap.has(key)) denyMap.set(key, { exp: effectiveExp });
 }
 
 /**
@@ -61,6 +91,11 @@ export async function isTokenRevoked(token: string): Promise<boolean> {
   sweepExpired(now);
   const keyMaterial = await safeDecode(token);
   const { key } = tokenKey(token, keyMaterial?.payload || {});
+  const r = await getRedis();
+  if (r) {
+    const exists = await r.exists(`revoked:${key}`);
+    return exists === 1;
+  }
   const entry = denyMap.get(key);
   if (!entry) return false;
   if (entry.exp <= now / 1000) {

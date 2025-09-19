@@ -160,9 +160,14 @@ Deux fonctions disponibles dans `src/auth/token-revocation.service.ts` :
 - `isTokenRevoked(token: string): Promise<boolean>` retourne `true` si le token est encore listé et non expiré.
 
 Implémentation:
-- Stockage en mémoire (Map) avec nettoyage paresseux (intervalle ~60s).
+- Stockage en mémoire (Map) avec nettoyage paresseux (intervalle ~60s) OU Redis si `REDIS_URL` est défini.
+- Clé Redis: `revoked:<jti|hash>` avec TTL = exp - now.
 - Fallback TTL 5 min si le token ne contient pas `exp`.
-- TODO présent dans le code pour brancher Redis en environnement distribué.
+- Dégradation silencieuse vers mémoire si Redis indisponible.
+
+Middleware global:
+- `tokenRevocationPrecheck` appliqué avant les routes protégées (après `authMiddleware`).
+- La route `profile` n'effectue plus de pré-check local (centralisation).
 
 Intégration route `profile` (voir `src/routes/profile.routes.ts`):
 - Vérification initiale: si `isTokenRevoked(...)` => 401.
