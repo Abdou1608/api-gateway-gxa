@@ -8,8 +8,7 @@ services:
     build: .
     ports:
       - "3000:3000"
-    networks: 
-      - app-net
+    networks: [app-net]
     environment:
       - PORT=${PORT}
     env_file:
