@@ -5,10 +5,11 @@
 echo "🧬 Exporting system variables..."
 echo 'SOAP_URL=http://10.0.46.11' | sudo tee /etc/profile.d/soap-url.sh > /dev/null
 echo 'SOAP_PORT=8080' | sudo tee /etc/profile.d/soap-port.sh > /dev/null
+echo 'PORT=3000'
 sudo chmod +x /etc/profile.d/soap-url.sh /etc/profile.d/soap-port.sh
 
 # Variables
-CONTAINER_NAME=soap-rest-gateway
+CONTAINER_NAME=api-gateway
 IMAGE_NAME=soap-api-image
 PROJECT_DIR=/home/ec2-user/soap-rest-gateway
 PORT=3000
