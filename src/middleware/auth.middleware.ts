@@ -6,7 +6,7 @@ const BEARER = /^Bearer\s+(.+)$/i;
 const authService = new AuthService();
 
 function extractToken(req: Request): string | undefined {
-  const h = req.header('authorization');
+  const h = req.header('Authorization') ?? req.header('authorization');
   if (h) {
     const m = h.match(BEARER);
     if (m) return m[1];
@@ -50,6 +50,6 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
     next();
   } catch (err) {
     console.warn('[authMiddleware] token invalid', err instanceof Error ? err.message : String(err));
-    return res.status(401).json({ error: 'Unauthorized, Authentication needed to process' });
+    return res.status(401).json( { error: { detail: 'Unauthorized, Authentication needed to process', message: err instanceof Error ? err.message : String(err) } });
   }
 }
