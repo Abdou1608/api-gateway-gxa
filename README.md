@@ -235,6 +235,22 @@ npm run backup:full
 ```
 Enchaîne création d'un backup puis purge (avec paramètres par défaut).
 
+Index & compression des archives:
+- Chaque bundle supprimé est archivé en `.bundle.gz` (ou `.bundle.gz` simulé sous Windows) dans le répertoire d'archive.
+- Un fichier `index.json` liste les métadonnées: type (`branch|tag`), ref, sha, date de création, date d'archivage, taille.
+- Paramètre optionnel de limite cumulée: `maxTotalSizeMB` (Bash) / `-MaxTotalSizeMB` (PowerShell); les archives les plus anciennes sont retirées jusqu'à revenir sous le seuil.
+
+Restauration:
+PowerShell:
+```
+npm run backup:restore -- -Bundle path\to\backup_20250919-0906.bundle.gz -NewBranch restore/test
+```
+Bash:
+```
+npm run backup:restore:sh -- scripts/backup/archives/backup_20250919-0906.bundle.gz restore/test
+```
+Le script extrait (gunzip/unzip si nécessaire), vérifie le bundle, et crée une branche locale à partir du contenu.
+
 Auto-tagging hook:
 - Le hook `.husky/pre-push` crée automatiquement un tag de backup s'il manque lorsque le nombre de commits locaux dépasse le seuil (par défaut 10) ou en cas de push potentiellement force.
 - Variable d'environnement pour changer le seuil: `COMMIT_REWRITE_THRESHOLD`.
