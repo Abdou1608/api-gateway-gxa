@@ -12,7 +12,7 @@ router.post('/', validateBody(api_Create_tierValidator), async (req, res) => {
   try {
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
-    _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
+    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
 
   const  typtiers=req.body.typtiers
 	const nature =req.body.nature

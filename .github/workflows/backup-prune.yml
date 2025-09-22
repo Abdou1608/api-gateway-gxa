@@ -1,0 +1,33 @@
+name: Backup Prune
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # 02:00 UTC daily
+  workflow_dispatch: {}
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Configure Git user
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+      - name: Prune old backup branches/tags (>30 days) with archive & size limit
+        run: |
+          mkdir -p backup-archives
+          # args: days prefix protectCount archiveDir maxTotalSizeMB
+          bash scripts/backup/prune-backups.sh 30 backup 5 backup-archives 500
+      - name: Upload archive artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backup-archives
+          path: backup-archives
+      - name: Push deletions
+        run: |
+          git push --prune origin

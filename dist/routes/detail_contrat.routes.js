@@ -10,7 +10,7 @@ router.post('/', (0, zodValidator_1.validateBody)(api_detail_contratValidator_1.
     try {
         const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         _BasSecurityContext.IsAuthenticated = true;
-        _BasSecurityContext.SessionId = req.body.BasSecurityContext?._SessionId;
+        _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
         const result = await (0, cont_details_service_1.cont_details)(req.body, _BasSecurityContext);
         res.json(result);
     }

@@ -10,7 +10,7 @@ router.post('/', (0, zodValidator_1.validateBody)(validators_1.api_Create_tierVa
     try {
         const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         _BasSecurityContext.IsAuthenticated = true;
-        _BasSecurityContext.SessionId = req.body.BasSecurityContext?._SessionId;
+        _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
         const typtiers = req.body.typtiers;
         const nature = req.body.nature;
         const numtiers = req.body.numtiers ?? null;

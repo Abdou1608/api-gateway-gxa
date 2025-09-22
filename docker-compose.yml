@@ -1,10 +1,17 @@
 version: '3.8'
+networks:
+  app-net:
+    name: app-net
+    external: true
+    driver: bridge
 services:
-  soap-api:
-    container_name: soap-rest-gateway
+  api-gateway:
+    container_name: soap-api-gateway
     build: .
     ports:
       - "3000:3000"
+    networks:
+      - app-net
     environment:
       - PORT=${PORT}
     env_file:

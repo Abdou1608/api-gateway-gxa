@@ -12,7 +12,7 @@ router.post('/', validateBody(api_create_quittanceValidator), async (req, res) =
   try {
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
-    _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
+    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
    const contrat=req.body.contrat
    const piece= req.body.piece 
    const bordereau= req.body.bordereau 
@@ -29,7 +29,7 @@ router.post('/autocalcule', validateBody(api_create_quittanceValidator), async (
   try {
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
-    _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
+    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
    const contrat=req.body.contrat
    const piece= req.body.piece 
    const bordereau= req.body.bordereau 

@@ -12,7 +12,7 @@ router.post('/', validateBody(api_liste_des_bransValidator), async (req, res) =>
   try {
   const _BasSecurityContext= new BasSecurityContext()
   _BasSecurityContext.IsAuthenticated=true
-  _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
+  _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
 
 //console.log("-----------------------------Données Reccus Route listedesbrans req.body.BasSecurityContext =="+JSON.stringify( req.body.BasSecurityContext))
  

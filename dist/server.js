@@ -3,6 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// (Doit être importé avant express pour permettre le patching des auto-instrumentations)
+require("./observability/otel");
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
@@ -12,9 +14,11 @@ const fonctionnalite_routes_1 = require("./routes/fonctionnalite.routes");
 const Apply_Middlewares_1 = require("./middleware/Apply-Middlewares");
 const env_1 = __importDefault(require("./config/env"));
 const error_handler_1 = require("./middleware/error-handler");
+const metrics_1 = require("./observability/metrics");
 const app = (0, express_1.default)();
-// Application des middlewares globaux
+// Application des middlewares globaux + instrumentation métriques
 (0, Apply_Middlewares_1.applyGlobalMiddleware)(app);
+app.use(metrics_1.metricsInstrumentation);
 // Documentation OpenAPI (lecture du YAML principal)
 const openapiPathCandidates = [
     path_1.default.join(__dirname, 'middleware', 'openapi.yaml'),
@@ -39,6 +43,8 @@ if (openapiDoc) {
 else {
     console.warn('⚠️  Fichier OpenAPI non trouvé, /docs désactivé');
 }
+// Endpoint metrics (protégé via header si METRICS_SECRET configuré)
+app.get('/metrics', metrics_1.metricsHandler);
 // Enregistrement des routes applicatives
 (0, fonctionnalite_routes_1.registerRoutes)(app);
 // 404 handler

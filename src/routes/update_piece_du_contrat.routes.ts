@@ -13,7 +13,7 @@ router.post('/', validateBody(api_update_piece_contratValidator), async (req, re
   try {
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
-    _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
+    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
     const contrat = req.body.contrat
      const produit=req.body.produit ? req.body.produit :undefined
     const piece=req.body.piece

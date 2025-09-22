@@ -10,7 +10,7 @@ router.post('/', (0, zodValidator_1.validateBody)(api_contrat_updateValidator_1.
     try {
         const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         _BasSecurityContext.IsAuthenticated = true;
-        _BasSecurityContext.SessionId = req.body.BasSecurityContext?._SessionId;
+        _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
         const contrat = req.body.contrat;
         const piece = req.body.piece;
         const effet = req.body.effet;

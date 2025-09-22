@@ -26,3 +26,8 @@ export * from "./api_projects_project_updateValidator";
 export * from "./api_projects_project_validateofferValidator";
 export * from "./api_tiers_searchValidator";
 export * from "./api_update_piece_contratValidator";
+// export * from "./api_update_tierValidator"; // Removed: file does not exist
+export * from "./api_sinistres_sinistre_createValidator";
+export * from "./api_sinistres_sinistre_detailValidator";
+export * from "./api_sinistres_sinistre_listitemsValidator";
+export * from "./api_sinistres_sinistre_updateValidator";

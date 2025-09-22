@@ -12,7 +12,7 @@ router.post('/', validateBody(api_detail_quittanceValidator), async (req, res) =
   try {
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
-    _BasSecurityContext.SessionId=req.body.BasSecurityContext?._SessionId
+    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
     const quittance=req.body.quittance
     const details=req.body.details ?? true
     const garanties= req.body.garanties ?? true

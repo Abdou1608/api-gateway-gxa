@@ -132,6 +132,162 @@ PORT=3000
 
 Schéma `bearerAuth` (JWT) défini dans l'OpenAPI. Les endpoints publics sont marqués avec `security: []`. Les autres héritent de la sécurité globale.
 
+### Normalisation du Session ID (SID)
+
+Depuis l'introduction du middleware JWT (`authMiddleware`), la source d'autorité unique du SID est le token décodé (`req.auth.sid`).
+
+Compatibilité (Option B active):
+- Si le client n'envoie plus `BasSecurityContext` ni `SessionID`, le middleware injecte automatiquement `req.body.BasSecurityContext._SessionId` avec la valeur du SID.
+- Les anciens champs (`SessionID`, `_SessionID`, `sessionId`, `_sessionId`) sont aussi auto-renseignés si absents.
+
+Implications:
+- Les validateurs n'ont plus besoin d'exiger que le client fournisse `BasSecurityContext._SessionId` (nettoyage progressif en cours).
+- Le client ne doit pas faire confiance à une valeur saisie coté utilisateur: toute valeur fournie est ignorée si le JWT dit autre chose.
+- Prochaine étape (Option A future): supprimer totalement `BasSecurityContext` des schémas pour simplifier la surface publique.
+
+Bonnes pratiques:
+- Toujours envoyer `Authorization: Bearer <token>` sur les routes protégées.
+- Ne pas logger le token ni le SID en production.
+- Clé `JWS_KEY` >= 32 chars (aléatoire) obligatoire côté serveur.
+
+État de migration: phase de transition – compatibilité maintenue, suppression future annoncée dans CHANGELOG.
+
+### Observabilité: Métriques Prometheus
+
+Exposition sur `GET /metrics` (format Prometheus). Sécurisé par l'en-tête `x-metrics-secret: <METRICS_SECRET>` si la variable est définie. Sans ce header (ou si incorrect) => 403.
+
+Métriques clés:
+- `http_requests_total{method,route,status}`
+- `http_request_duration_seconds_bucket|sum|count`
+- `token_revocations_total{backend,reason}` (incrémenté lors d'une révocation)
+- `token_revocation_checks_total{backend,result}` (chaque vérification de denylist)
+- `token_revoked_memory_current` (taille exacte de la denylist en mémoire)
+- `token_revoked_redis_cardinality` (cardinalité approximative via HyperLogLog lorsque Redis actif)
+
+Activation HyperLogLog (Redis):
+- Fournir `REDIS_URL` pour activer le backend Redis.
+- Chaque révocation exécute `PFADD revoked:hll <key>`.
+- La cardinalité est lue via `PFCOUNT revoked:hll` et reflétée dans `token_revoked_redis_cardinality`.
+
+### Observabilité: Traces OpenTelemetry (optionnel)
+
+Activation:
+```env
+OTEL_ENABLE=1
+OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:4318 # (optionnel, défaut http://localhost:4318/v1/traces)
+```
+
+Comportement:
+- Si `OTEL_ENABLE` est absent ou différent de `1|true` => aucune surcharge.
+- Ignoré en environnement de test (`NODE_ENV=test`).
+- Auto-instrumentations Node (HTTP, Express, etc.).
+- Export OTLP HTTP (`/v1/traces`).
+
+Arrêt propre: signaux `SIGINT/SIGTERM` déclenchent `sdk.shutdown()`.
+
+Variables supplémentaires:
+| Variable | Description | Défaut |
+|----------|-------------|--------|
+| `METRICS_SECRET` | Active protection de `/metrics` | (désactivé) |
+| `ADMIN_SECRET` | Protection endpoints admin | (obligatoire pour admin) |
+| `JWS_KEY` | Clé HS256 JWT (>=32 chars) | (aucun) |
+| `REDIS_URL` | Active backend Redis + HLL | (mémoire) |
+| `OTEL_ENABLE` | Active traces | `0` |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | URL collecteur OTLP (avec ou sans /v1/traces) | `http://localhost:4318/v1/traces` |
+
+### Sauvegarde (branch/tag backup automatisé)
+
+Scripts fournis pour créer rapidement une branche + tag de sauvegarde horodatés avant opérations risquées (refactor massif, réécriture d'historique, etc.).
+
+PowerShell (Windows):
+```
+npm run backup
+```
+
+Bash (Linux/macOS):
+```
+npm run backup:sh
+```
+
+Effet:
+- Crée une branche `backup/YYYYMMDD-HHMM` pointant sur HEAD.
+- Crée un tag `backup-pre-push-YYYYMMDD-HHMM`.
+- Push séparé à faire manuellement si nécessaire (ou adapter le script pour auto-push).
+
+Préconditions:
+- Arbre git propre (aucun changement non commit). Sinon le script s'arrête.
+
+Personnalisation:
+- Vous pouvez passer un préfixe custom au script bash: `npm run backup:sh -- customprefix` (adapter selon gestion des arguments npm) ou directement `bash scripts/backup/create-backup.sh myprefix`.
+
+Collision handling:
+- Si une branche ou un tag avec le même horodatage existe déjà (exécutions multiples la même minute), un suffixe incrémental `-1`, `-2`, ... est ajouté automatiquement.
+
+Rotation / purge:
+- Scripts de nettoyage: `npm run backup:prune` (PowerShell) / `npm run backup:prune:sh` (Bash) suppriment les branches `backup/` et tags `backup-pre-push-` plus vieux que 30 jours (valeur par défaut; paramètre personnalisable dans les scripts).
+- Une GitHub Action planifiée (`.github/workflows/backup-prune.yml`) exécute chaque nuit (02:00 UTC) la purge des backups >30 jours.
+ - Les scripts conservent toujours les N derniers (par défaut 5) même s'ils dépassent le seuil (paramètre protectCount / Protect).
+ - Possibilité d'archiver (bundle git + README extrait) avant suppression via argument `archiveDir` (Bash) ou `-ArchiveDir` (PowerShell).
+
+Commande complète:
+```
+npm run backup:full
+```
+Enchaîne création d'un backup puis purge (avec paramètres par défaut).
+
+Index & compression des archives:
+- Chaque bundle supprimé est archivé en `.bundle.gz` (ou `.bundle.gz` simulé sous Windows) dans le répertoire d'archive.
+- Un fichier `index.json` liste les métadonnées: type (`branch|tag`), ref, sha, date de création, date d'archivage, taille.
+- Paramètre optionnel de limite cumulée: `maxTotalSizeMB` (Bash) / `-MaxTotalSizeMB` (PowerShell); les archives les plus anciennes sont retirées jusqu'à revenir sous le seuil.
+
+Restauration:
+PowerShell:
+```
+npm run backup:restore -- -Bundle path\to\backup_20250919-0906.bundle.gz -NewBranch restore/test
+```
+Bash:
+```
+npm run backup:restore:sh -- scripts/backup/archives/backup_20250919-0906.bundle.gz restore/test
+```
+Le script extrait (gunzip/unzip si nécessaire), vérifie le bundle, et crée une branche locale à partir du contenu.
+
+Auto-tagging hook:
+- Le hook `.husky/pre-push` crée automatiquement un tag de backup s'il manque lorsque le nombre de commits locaux dépasse le seuil (par défaut 10) ou en cas de push potentiellement force.
+- Variable d'environnement pour changer le seuil: `COMMIT_REWRITE_THRESHOLD`.
+
+### Révocation de token (Denylist en mémoire)
+
+Deux fonctions disponibles dans `src/auth/token-revocation.service.ts` :
+
+- `invalidateToken(token: string): Promise<void>` ajoute le JWT (par `jti` si présent, sinon hash SHA-256) dans une denylist avec son `exp`.
+- `isTokenRevoked(token: string): Promise<boolean>` retourne `true` si le token est encore listé et non expiré.
+
+Implémentation:
+- Stockage en mémoire (Map) avec nettoyage paresseux (intervalle ~60s) OU Redis si `REDIS_URL` est défini.
+- Clé Redis: `revoked:<jti|hash>` avec TTL = exp - now.
+- Fallback TTL 5 min si le token ne contient pas `exp`.
+- Dégradation silencieuse vers mémoire si Redis indisponible.
+
+Middleware global:
+- `tokenRevocationPrecheck` appliqué avant les routes protégées (après `authMiddleware`).
+- La route `profile` n'effectue plus de pré-check local (centralisation).
+
+### Endpoints Admin (revocation & métriques)
+
+Sous le préfixe `/api/admin` (protégé par l'en-tête `x-admin-secret` = `ADMIN_SECRET` dans l'environnement) :
+
+| Méthode | Chemin | Description |
+|---------|--------|-------------|
+| POST | /api/admin/revoke | Body `{ "token": "..." }` – force la révocation (idempotent). |
+| GET | /api/admin/revocation-metrics | Retourne `{ backend: 'memory'|'redis', entries: number }`. |
+
+Remarque: Si Redis est actif (`REDIS_URL`), `backend` = `redis`, sinon `memory`.
+
+Intégration route `profile` (voir `src/routes/profile.routes.ts`):
+- Vérification initiale: si `isTokenRevoked(...)` => 401.
+- Après récupération du profil: si résultat vide ou erreur => `invalidateToken` + logout de la session (SID) => 401.
+- Lignes clés: pré-check juste après l'entrée handler (~15+), logique post-fetch juste avant l'envoi de la réponse.
+
 ## 🧼 Erreurs standardisées
 
 Réponses communes:

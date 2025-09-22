@@ -1,0 +1,24 @@
+# Changelog
+
+## Unreleased
+### Added
+- Injection automatique de `BasSecurityContext._SessionId` par le `authMiddleware` à partir de `req.auth.sid` (JWT) pour compatibilité.
+- Tests d'intégration confirmant qu'un corps sans `BasSecurityContext` fonctionne avec un Bearer valide.
+- Service de révocation de token (`invalidateToken`, `isTokenRevoked`) avec denylist en mémoire + intégration sur la route `profile`.
+ - Support optionnel Redis pour la denylist (`REDIS_URL`).
+ - Middleware global `tokenRevocationPrecheck` appliqué aux routes protégées.
+ - Endpoints admin `/api/admin/revoke` et `/api/admin/revocation-metrics` (header `x-admin-secret`).
+ - Endpoint `/metrics` (Prometheus) avec compteurs, histogramme et gauges (HTTP + révocation).
+ - HyperLogLog Redis pour cardinalité approximative des tokens révoqués (`token_revoked_redis_cardinality`).
+ - Gauge mémoire `token_revoked_memory_current` pour suivi exact en mode mémoire.
+ - Tracing OpenTelemetry optionnel (auto-instrumentations) activé via `OTEL_ENABLE` + export OTLP (`OTEL_EXPORTER_OTLP_ENDPOINT`).
+ - Protection `/metrics` via en-tête `x-metrics-secret` (`METRICS_SECRET`).
+
+### Changed
+- Source d'autorité du Session ID: le JWT (champ `sid`). Les valeurs fournies dans le body sont ignorées si différentes.
+
+### Deprecated (phase de transition)
+- Usage explicite de `BasSecurityContext` dans les validateurs: sera supprimé (Option A) dans une prochaine version. Les clients peuvent déjà cesser d'envoyer cet objet.
+
+### Security
+- Rappel: définir `JWS_KEY` (>=32 chars) en production, ne pas logger les tokens.
