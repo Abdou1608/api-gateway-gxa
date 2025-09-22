@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1758261314006" clover="3.2.0">
-  <project timestamp="1758261314006" name="All files">
-    <metrics statements="218" coveredstatements="166" conditionals="98" coveredconditionals="53" methods="23" coveredmethods="19" elements="339" coveredelements="238" complexity="0" loc="218" ncloc="218" packages="4" files="6" classes="6"/>
+<coverage generated="1758568827211" clover="3.2.0">
+  <project timestamp="1758568827211" name="All files">
+    <metrics statements="218" coveredstatements="166" conditionals="102" coveredconditionals="55" methods="23" coveredmethods="19" elements="343" coveredelements="240" complexity="0" loc="218" ncloc="218" packages="4" files="6" classes="6"/>
     <package name="auth">
       <metrics statements="128" coveredstatements="88" conditionals="59" coveredconditionals="32" methods="16" coveredmethods="12"/>
       <file name="auth.service.ts" path="C:\gxa\Api-gateway\src\auth\auth.service.ts">
@@ -154,14 +154,14 @@
       </file>
     </package>
     <package name="middleware">
-      <metrics statements="48" coveredstatements="42" conditionals="21" coveredconditionals="12" methods="3" coveredmethods="3"/>
+      <metrics statements="48" coveredstatements="42" conditionals="25" coveredconditionals="14" methods="3" coveredmethods="3"/>
       <file name="auth.middleware.ts" path="C:\gxa\Api-gateway\src\middleware\auth.middleware.ts">
-        <metrics statements="37" coveredstatements="32" conditionals="19" coveredconditionals="11" methods="2" coveredmethods="2"/>
+        <metrics statements="37" coveredstatements="32" conditionals="23" coveredconditionals="13" methods="2" coveredmethods="2"/>
         <line num="2" count="5" type="stmt"/>
         <line num="3" count="5" type="stmt"/>
         <line num="5" count="5" type="stmt"/>
         <line num="6" count="5" type="stmt"/>
-        <line num="9" count="10" type="stmt"/>
+        <line num="9" count="10" type="cond" truecount="2" falsecount="0"/>
         <line num="10" count="10" type="cond" truecount="1" falsecount="0"/>
         <line num="11" count="8" type="stmt"/>
         <line num="12" count="8" type="cond" truecount="1" falsecount="0"/>
@@ -193,7 +193,7 @@
         <line num="48" count="7" type="stmt"/>
         <line num="50" count="7" type="stmt"/>
         <line num="52" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="53" count="0" type="stmt"/>
+        <line num="53" count="0" type="cond" truecount="0" falsecount="2"/>
       </file>
       <file name="token-revocation-precheck.middleware.ts" path="C:\gxa\Api-gateway\src\middleware\token-revocation-precheck.middleware.ts">
         <metrics statements="11" coveredstatements="10" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1"/>
