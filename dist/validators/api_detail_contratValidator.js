@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.api_detail_contratValidator = void 0;
 const zod_1 = require("zod");
 exports.api_detail_contratValidator = zod_1.z.object({
-    contrat: zod_1.z.number(),
+    contrat: zod_1.z.any(),
     Allpieces: zod_1.z.boolean().optional(),
     pieces: zod_1.z.any().optional(),
     DetailAdh: zod_1.z.boolean().optional(),

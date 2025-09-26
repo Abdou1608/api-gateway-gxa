@@ -79,7 +79,7 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
    // }
    else if (sid=="prod"){
     return parseProdSoapResponse(response)
-   } else if (sid==="contrat" || sid==="cont_" ){
+   } else if (sid==="contrat" || sid==="cont_"  ){
     return  parseTabRowsXml(response)
    }
    else if (sid==="tab"){
@@ -88,7 +88,7 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
    // console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======"+ response);
     return await parseSoapEmbeddedXmlToJson(response,"offers")
     //return parseSoapXmlToJson(response,sid)
-   }else if((sid==="projects") || (sid==="project") || (sid==="Project")){
+   }else if((sid==="projects") || (sid==="project") || (sid==="Project") ){
    // console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======"+ response);
     return await parseSoapEmbeddedXmlToJson(response,sid)
   }else if( sid==="project-detail" ){

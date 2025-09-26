@@ -2,7 +2,6 @@ import { AuthenticationHelper } from "../../Model/Model-BasAuth/BasAuthHelper";
 import { BasSoapClient } from "../../Model/Model-BasSoapClient/BasSoapClient";
 import { SessionStorage } from "../../Model/Model-SessionStorage/SessionStorage";
 import { AppConfigService } from "../AppConfigService/app-config.service";
-import { sendSoapRequest } from "../soap.service";
 
 
 export async function closesession_(bassecuritycontext: string) {

@@ -11,7 +11,7 @@ router.post('/', (0, zodValidator_1.validateBody)(api_liste_des_contrats_d_un_ti
         const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         _BasSecurityContext.IsAuthenticated = true;
         _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
-        const dossier = req.body.dossier;
+        const dossier = req.body.dossier ?? req.body.Dossier;
         const includeall = req.body.includeall ?? true;
         const defaut = req.body.defaut ?? false;
         const result = await (0, cont_listitems_service_1.cont_listitems)(dossier, includeall, defaut, _BasSecurityContext);

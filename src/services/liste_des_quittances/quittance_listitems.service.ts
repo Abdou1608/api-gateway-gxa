@@ -6,8 +6,12 @@ export async function quittance_listitems(dossier:any,
 contrat: any,BasSecurityContext:BasSecurityContext,) {
   const params=new BasParams()
 params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())
-params.AddInt("contrat",JSON.parse( contrat))
- params.AddInt("dossier",JSON.parse(dossier))
+if (contrat){
+  const contratId = typeof contrat === 'string' ? Number(contrat) : contrat;
+params.AddInt("contrat",contratId)}
+if(dossier){
+  const dossierId = typeof dossier === 'string' ? Number(dossier) : dossier;
+ params.AddInt("dossier",dossierId)}
  
 //   disponible ?  params.AddBool("disponible",disponible) :null
 

@@ -12,9 +12,13 @@ router.post('/', (0, zodValidator_1.validateBody)(api_tiers_searchValidator_1.ap
         _BasSecurityContext.IsAuthenticated = true;
         _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
         const reference = req.body.reference ?? "";
-        const dppname = req.body.dppname ?? reference;
+        const dppname = req.body.dppname ?? null;
+        const ntel = req.body.ntel ?? null;
+        const datenais = req.body.datenais ?? null;
+        const typetiers = req.body.typetiers ?? null;
+        const rsociale = req.body.rsociale ?? null;
         //console.log("-----------------------------Données Reccus dans Recherche Tier Route req.body.SessionId =="+ req.body.BasSecurityContext._SessionId)
-        const result = await (0, tiers_search_service_1.tiers_search)(_BasSecurityContext, reference, dppname);
+        const result = await (0, tiers_search_service_1.tiers_search)(_BasSecurityContext, reference, dppname, ntel, datenais, typetiers, rsociale);
         res.json(result);
     }
     catch (error) {

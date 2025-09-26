@@ -13,7 +13,8 @@ router.post('/', validateBody(api_liste_des_contrats_d_un_tierValidator), async 
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
     _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-    const dossier=req.body.dossier
+   
+    const dossier=req.body.dossier ?? req.body.Dossier
     const includeall=req.body.includeall ?? true
     const defaut= req.body.defaut ?? false
     const result = await cont_listitems(dossier,includeall,defaut,_BasSecurityContext);

@@ -15,12 +15,17 @@ try {
   _BasSecurityContext.IsAuthenticated=true
   _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
   const reference=req.body.reference ?? ""
-  const dppname=req.body.dppname ?? reference
+  const dppname=req.body.dppname ?? null
+  const ntel =req.body.ntel ?? null
+  const datenais= req.body.datenais ?? null
+  const typetiers=req.body.typetiers ?? null
+  const rsociale=req.body.rsociale ?? null
+  
   
 //console.log("-----------------------------Données Reccus dans Recherche Tier Route req.body.SessionId =="+ req.body.BasSecurityContext._SessionId)
 
 
-  const result = await tiers_search(_BasSecurityContext,reference,dppname);
+  const result = await tiers_search(_BasSecurityContext,reference,dppname,ntel,datenais,typetiers,rsociale);
   res.json(result);
 } catch (error:any) {
  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });}

@@ -11,16 +11,16 @@ const router = Router();
 router.post('/', validateBody(api_detail_tierValidator), async (req, res) => {
   
   try {
-    const _BasSecurityContext= new BasSecurityContext()
+   const _BasSecurityContext= new BasSecurityContext()
   _BasSecurityContext.IsAuthenticated=true
-  _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId ?? req.body.BasSecurityContext?.SessionId 
-  const Dossier=req.body.Dossier ?? null
+  _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId ?? req.body.BasSecurityContext?.SessionId
+  const Dossier=req.body.Dossier ?? req.body.dossier 
   const comp= req.body.composition ?? true
   const ext=false
     const result = await tiers_details(_BasSecurityContext,Dossier,comp,ext);
     res.json(result);
   } catch (error:any) {
-    res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
+    res.status(error.status ?? 502).json({ error: error?.message, detail: JSON.stringify(error) });
   }
 });
 

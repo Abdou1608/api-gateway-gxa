@@ -13,7 +13,7 @@ router.post('/', validateBody(api_liste_des_contratsValidator), async (req, res)
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
     _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-  const reference=req.body.reference ?? ""
+    const reference=req.body.reference ?? ""
     const detailorigine=req.body.detailorigine
     const origine= req.body.origine 
     const codefic=req.body.codefic ?? ""

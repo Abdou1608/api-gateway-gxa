@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const api_detail_contratValidator = z.object({
-  contrat: z.number(),
+  contrat: z.any(),
   Allpieces: z.boolean().optional(),
   pieces: z.any().optional(),
 

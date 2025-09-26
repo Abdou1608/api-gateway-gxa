@@ -11,8 +11,8 @@ router.post('/', (0, zodValidator_1.validateBody)(api_liste_des_quittancesValida
         const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         _BasSecurityContext.IsAuthenticated = true;
         _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
-        const dossier = req.body.dossier;
-        const contrat = req.body.contrat;
+        const dossier = req.body.dossier ?? req.body.Dossier ?? null;
+        const contrat = req.body.contrat ?? req.body.Contrat ?? null;
         //console.log("dossier==="+dossier)
         const result = await (0, quittance_listitems_service_1.quittance_listitems)(dossier, contrat, _BasSecurityContext);
         res.json(result);

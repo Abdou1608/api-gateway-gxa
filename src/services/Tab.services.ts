@@ -9,7 +9,7 @@ export async function Tab_ListValues(req: Request, res: Response) {
   const params=new BasParams()
   //const params = req.body;
     const basSecurityContext = new BasSecurityContext()
-    basSecurityContext.SessionId=req.body?.BasSecurityContext._SessionId
+    basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
     basSecurityContext.IsAuthenticated=true
   params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
    params.AddString("tabcode",req.body.tabcode)
@@ -28,8 +28,8 @@ export async function Tab_ListItems(req: Request, res: Response) {
   try {
   const params=new BasParams()
   const basSecurityContext = new BasSecurityContext()
-    basSecurityContext.SessionId=req.body?.BasSecurityContext._SessionId
-    basSecurityContext.IsAuthenticated=true
+  basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
+  basSecurityContext.IsAuthenticated=true
   params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
    if(req.body.filtre){
   params.AddString("filtre",req.body.filtre ) }
@@ -47,7 +47,7 @@ export async function Tab_GetValue(req: Request, res: Response) {
   const params=new BasParams()
   //const params = req.body;
     const basSecurityContext = new BasSecurityContext()
-    basSecurityContext.SessionId=req.body?.BasSecurityContext._SessionId
+    basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
     basSecurityContext.IsAuthenticated=true
   params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
    params.AddString("tabcode",req.body?.tabcode)

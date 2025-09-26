@@ -6,8 +6,14 @@ const soap_service_1 = require("../soap.service");
 async function quittance_listitems(dossier, contrat, BasSecurityContext) {
     const params = new BasParams_1.BasParams();
     params.AddStr("BasSecurityContext", BasSecurityContext.ToSoapVar());
-    params.AddInt("contrat", JSON.parse(contrat));
-    params.AddInt("dossier", JSON.parse(dossier));
+    if (contrat) {
+        const contratId = typeof contrat === 'string' ? Number(contrat) : contrat;
+        params.AddInt("contrat", contratId);
+    }
+    if (dossier) {
+        const dossierId = typeof dossier === 'string' ? Number(dossier) : dossier;
+        params.AddInt("dossier", dossierId);
+    }
     //   disponible ?  params.AddBool("disponible",disponible) :null
     params.AddString("datanode", "quit");
     const result = await (0, soap_service_1.sendSoapRequest)(params, "Quittance_ListItems", BasSecurityContext);

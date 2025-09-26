@@ -10,7 +10,8 @@ export async function Project_ListItemsHandler(req: Request, res: Response) {
     const params=new BasParams()
     //const params = req.body;
       const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.body?.BasSecurityContext._SessionId
+      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
+
       basSecurityContext.IsAuthenticated=true
     params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
      params.AddInt("dossier",req.body.dossier)
@@ -26,7 +27,7 @@ export async function Project_OfferListItemsHandler(req: Request, res: Response)
     const params=new BasParams()
     //const params = req.body;
       const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.body?.BasSecurityContext._SessionId
+      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
       basSecurityContext.IsAuthenticated=true
     params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
      params.AddInt("idproj",req.body.idproj)
@@ -46,7 +47,7 @@ export async function Project_DetailHandler(req: Request, res: Response) {
     const params=new BasParams()
     //const params = req.body;
       const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.body?.BasSecurityContext._SessionId
+      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
       basSecurityContext.IsAuthenticated=true
     params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
      params.AddInt("idproj",req.body.idproj)
@@ -65,7 +66,7 @@ export async function Project_CreateHandler(req: Request, res: Response) {
     const params=new BasParams()
     //const params = req.body;
       const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.body?.BasSecurityContext._SessionId
+      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
       basSecurityContext.IsAuthenticated=true
     params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
     req.body.contrat ? params.AddInt("contrat",req.body.contrat) :null
@@ -85,7 +86,7 @@ export async function Project_updateHandler(req: Request, res: Response) {
     const params=new BasParams()
     //const params = req.body;
       const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.body?.BasSecurityContext._SessionId
+      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
       basSecurityContext.IsAuthenticated=true
     params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
      params.AddInt("idproj",req.body.idproj)
@@ -103,7 +104,7 @@ export async function Project_AddOfferHandler(req: Request, res: Response) {
     const params=new BasParams()
     //const params = req.body;
       const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.body?.BasSecurityContext._SessionId
+      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
       basSecurityContext.IsAuthenticated=true
     params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
     params.AddInt("idproj",req.body.idproj)
@@ -122,7 +123,7 @@ export async function Project_DeleteOfferHandler(req: Request, res: Response) {
     const params=new BasParams()
     //const params = req.body;
       const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.body?.BasSecurityContext._SessionId
+      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
       basSecurityContext.IsAuthenticated=true
     params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
     params.AddInt("idproj",req.body.idproj)
@@ -140,7 +141,7 @@ export async function Project_ValidateOfferHandler(req: Request, res: Response) 
     const params=new BasParams()
     //const params = req.body;
       const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.body?.BasSecurityContext._SessionId
+      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
       basSecurityContext.IsAuthenticated=true
     params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
     params.AddInt("idproj",req.body.idproj)

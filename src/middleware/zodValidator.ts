@@ -10,7 +10,7 @@ export function validateBody(schema: ZodTypeAny) {
         champ: issue.path.join("."),
         message: issue.message, // déjà localisé par tes .min(1, "...") etc.
       }));
-      return res.status(400).json({
+      return res.status(501).json({
         erreur: "Le corps de la requête est invalide.",
         details: erreurs,
       });

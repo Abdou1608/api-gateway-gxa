@@ -16,12 +16,20 @@ async function Sinistre_ListItemsHandler(req, res) {
         const params = new BasParams_1.BasParams();
         //const params = req.body;
         const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.body?.BasSecurityContext._SessionId;
+        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
         basSecurityContext.IsAuthenticated = true;
         params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
-        params.AddInt("dossier", req.body.dossier);
-        params.AddInt("contrat", req.body.contrat);
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Sinistre_ListItems", basSecurityContext, "sinistres");
+        const dossierId = typeof req.body.dossier === 'string' ? Number(req.body.dossier) : req.body.dossier;
+        if (dossierId && dossierId > 0) {
+            params.AddInt("dossier", dossierId);
+        }
+        const contraId = typeof req.body.contrat === 'string' ? Number(req.body.contrat) : req.body.contrat;
+        const contrat = contraId;
+        if (contrat && contrat > 0) {
+            params.AddInt("contrat", req.body.contrat);
+        }
+        ;
+        const result = await (0, soap_service_1.sendSoapRequest)(params, "Sin_Listitems", basSecurityContext, "sinistres");
         res.json(result);
     }
     catch (error) {
@@ -35,11 +43,14 @@ async function Sinistre_DetailHandler(req, res) {
         const params = new BasParams_1.BasParams();
         //const params = req.body;
         const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.body?.BasSecurityContext._SessionId;
+        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
         basSecurityContext.IsAuthenticated = true;
         params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
-        params.AddInt("sinistre", req.body.sinistre);
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Sinistre_Detail", basSecurityContext, "sinistre");
+        const sinistre = req.body.sinistre ?? 0;
+        if (sinistre && sinistre > 0) {
+            params.AddInt("sinistre", req.body.sinistre);
+        }
+        const result = await (0, soap_service_1.sendSoapRequest)(params, "Sin_Details", basSecurityContext, "sinistre");
         const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
         res.json(grouped);
     }
@@ -53,7 +64,7 @@ async function Sinistre_CreateHandler(req, res) {
         const params = new BasParams_1.BasParams();
         //const params = req.body;
         const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.body?.BasSecurityContext._SessionId;
+        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
         basSecurityContext.IsAuthenticated = true;
         params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
         req.body.contrat ? params.AddInt("contrat", req.body.contrat) : null;
@@ -61,7 +72,7 @@ async function Sinistre_CreateHandler(req, res) {
         params.AddString("produit", req.body.produit);
         params.AddString("libelle", req.body.libelle);
         const data = req.body.data;
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Sinistre_Create", basSecurityContext, "Sinistre", data);
+        const result = await (0, soap_service_1.sendSoapRequest)(params, "Sin_Create", basSecurityContext, "Sinistre", data);
         res.json(result);
     }
     catch (error) {
@@ -74,13 +85,13 @@ async function Sinistre_updateHandler(req, res) {
         const params = new BasParams_1.BasParams();
         //const params = req.body;
         const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.body?.BasSecurityContext._SessionId;
+        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
         basSecurityContext.IsAuthenticated = true;
         params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
         params.AddInt("idproj", req.body.idproj);
         params.AddString("libelle", req.body.libelle);
         const data = req.body.data;
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Sinistre_update", basSecurityContext, "Sinistre", data);
+        const result = await (0, soap_service_1.sendSoapRequest)(params, "Sin_update", basSecurityContext, "Sinistre", data);
         res.json(result);
     }
     catch (error) {

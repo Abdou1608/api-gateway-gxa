@@ -11,7 +11,7 @@ async function Risk_ListItems(req, res) {
         const params = new BasParams_1.BasParams();
         //const params = req.body;
         const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.body?.BasSecurityContext._SessionId;
+        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
         basSecurityContext.IsAuthenticated = true;
         params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
         params.AddInt("contrat", req.body.contrat);
@@ -30,7 +30,7 @@ async function Risk_Create(req, res) {
     try {
         const params = new BasParams_1.BasParams();
         const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.body?.BasSecurityContext._SessionId;
+        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
         basSecurityContext.IsAuthenticated = true;
         params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
         if (req.body.contrat) {
@@ -57,7 +57,7 @@ async function Risk_Update(req, res) {
         const params = new BasParams_1.BasParams();
         //const params = req.body;
         const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.body?.BasSecurityContext._SessionId;
+        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
         basSecurityContext.IsAuthenticated = true;
         params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
         if (req.body.contrat) {

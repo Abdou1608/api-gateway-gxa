@@ -8,7 +8,7 @@ export async function Risk_ListItems(req: Request, res: Response) {
   const params=new BasParams()
   //const params = req.body;
     const basSecurityContext = new BasSecurityContext()
-    basSecurityContext.SessionId=req.body?.BasSecurityContext._SessionId
+    basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
     basSecurityContext.IsAuthenticated=true
   params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
    params.AddInt("contrat",req.body.contrat)
@@ -26,8 +26,8 @@ export async function Risk_Create(req: Request, res: Response) {
   try {
   const params=new BasParams()
   const basSecurityContext = new BasSecurityContext()
-    basSecurityContext.SessionId=req.body?.BasSecurityContext._SessionId
-    basSecurityContext.IsAuthenticated=true
+  basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
+  basSecurityContext.IsAuthenticated=true
   params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
    if(req.body.contrat){
   params.AddInt("contrat",req.body.contrat ) }
@@ -49,7 +49,7 @@ export async function Risk_Update(req: Request, res: Response) {
   const params=new BasParams()
   //const params = req.body;
     const basSecurityContext = new BasSecurityContext()
-    basSecurityContext.SessionId=req.body?.BasSecurityContext._SessionId
+    basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
     basSecurityContext.IsAuthenticated=true
   params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
   if(req.body.contrat){

@@ -11,7 +11,8 @@ async function tiers_details(BasSecurityContext, Dossier, composition, extension
     // const soapBody = {BasSecurityContext:BasSec.ToSoapVar(),Dossier,composition,extensions}
     const params = new BasParams_1.BasParams();
     params.AddStr("BasSecurityContext", BasSecurityContext.ToSoapVar());
-    params.AddInt("Dossier", Dossier);
+    const DossierId = typeof Dossier === 'string' ? Number(Dossier) : Dossier;
+    params.AddInt("Dossier", DossierId);
     // params.AddBool("composition",composition ?? false) 
     params.AddBool("composition", true);
     params.AddBool("extensions", extensions ?? false);

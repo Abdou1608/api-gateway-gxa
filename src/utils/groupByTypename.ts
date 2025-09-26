@@ -9,6 +9,54 @@ export type GroupedByTypename<T> = Record<string, T | T[]> & {
   Produit?: T[]; // toujours un tableau pour les "unknown"
 };
 
+/** Essaie d’extraire un tableau d’objets depuis diverses formes d’entrée */
+function normalizeToArray<T extends HasTypename>(
+  input: unknown
+): T[] {
+  // 1) Déserialiser si string JSON
+  let value: unknown = input;
+  if (typeof input === 'string') {
+    try {
+      value = JSON.parse(input);
+    } catch {
+      return [];
+    }
+  }
+
+  // 2) Si c’est déjà un tableau
+  if (Array.isArray(value)) return value as T[];
+
+  // 3) Si c’est un objet
+  if (value && typeof value === 'object') {
+    const obj = value as Record<string, unknown>;
+
+    // 3.a) Cas "objet direct" avec typename / __typename
+    if ('typename' in obj || '__typename' in obj) {
+      return [obj as T];
+    }
+
+    // 3.b) Cas "objet imbriqué" : chercher une propriété qui est un array d’objets
+    const arrayChild = Object.values(obj).find(v => Array.isArray(v));
+    if (Array.isArray(arrayChild)) {
+      return arrayChild as T[];
+    }
+
+    // 3.c) Chercher une propriété qui est un objet avec typename
+    const objectChild = Object.values(obj).find(
+      v => v && typeof v === 'object' && ('typename' in (v as any) || '__typename' in (v as any))
+    );
+    if (objectChild && typeof objectChild === 'object') {
+      return [objectChild as T];
+    }
+
+    // 3.d) Dernier recours : envelopper l’objet lui-même
+    return [obj as T];
+  }
+
+  // 4) Sinon, rien à traiter
+  return [];
+}
+
 /**
  * Regroupe les objets par leur typename.
  * - Le 1er élément d'un groupe est stocké directement (objet)
@@ -16,40 +64,24 @@ export type GroupedByTypename<T> = Record<string, T | T[]> & {
  * - Pour les éléments sans typename (si keepUnknown=true), on les place dans Produit (toujours un array)
  */
 export default function groupByTypename<T extends HasTypename>(
-  input: T[] | string,
+  input: T[] | T | Record<string, unknown> | string,
   opts: { keepUnknown?: boolean } = {}
 ): GroupedByTypename<T> {
   const { keepUnknown = false } = opts;
 
-  // 1) Normaliser l'entrée en tableau T[]
-  let arr: T[];
-  if (typeof input === 'string') {
-    try {
-      const parsed = JSON.parse(input);
-      if (Array.isArray(parsed)) {
-        arr = parsed as T[];
-      } else if (parsed && typeof parsed === 'object') {
-        arr = [parsed as T];
-      } else {
-        arr = [];
-      }
-    } catch {
-      arr = [];
-    }
-  } else {
-    arr = input;
-  }
+  // Normaliser en tableau
+  const arr = normalizeToArray<T>(input);
 
-  // 2) Réduction
   const result: GroupedByTypename<T> = {};
 
   for (const item of arr) {
     if (!item || typeof item !== 'object') continue;
 
-    const key = (item.typename ?? (item as any).__typename) as string | undefined;
+    const key =
+      (item.typename as string | undefined) ??
+      ((item as any).__typename as string | undefined);
 
     if (!key) {
-      // Pas de typename
       if (keepUnknown) {
         if (!Array.isArray(result.Produit)) result.Produit = [];
         (result.Produit as T[]).push(item as T);
@@ -59,13 +91,10 @@ export default function groupByTypename<T extends HasTypename>(
 
     const existing = result[key];
     if (existing === undefined) {
-      // 1er élément pour ce typename → on stocke l'objet lui-même
       result[key] = item as T;
     } else if (Array.isArray(existing)) {
-      // Déjà un tableau → on empile
       existing.push(item as T);
     } else {
-      // Était un objet unique → on convertit en tableau
       result[key] = [existing as T, item as T];
     }
   }

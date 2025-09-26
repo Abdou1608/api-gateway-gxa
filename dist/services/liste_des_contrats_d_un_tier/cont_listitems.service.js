@@ -8,7 +8,8 @@ async function cont_listitems(dossier, includeall, defaut, BasSecurityContext) {
     const soapBody = { dossier, includeall, defaut, BasSecurityContext };
     const params = new BasParams_1.BasParams();
     params.AddStr("BasSecurityContext", BasSecurityContext.ToSoapVar());
-    params.AddInt("dossier", dossier);
+    const dossierId = typeof dossier === 'string' ? Number(dossier) : dossier;
+    params.AddInt("dossier", dossierId);
     // params.AddBool("composition",composition ?? false) 
     params.AddBool("includeall", includeall ?? true);
     params.AddBool("defaut", defaut ?? false);

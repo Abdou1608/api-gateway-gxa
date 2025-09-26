@@ -7,7 +7,8 @@ import { sendSoapRequest } from "../soap.service";
 export async function cont_details(body:any,bss:BasSecurityContext) {
   const params=new BasParams()
   params.AddStr("BasSecurityContext",bss.ToSoapVar())
-   params.AddInt("contrat",body.contrat)
+  const contratId = typeof body.contrat === 'string' ? Number(body.contrat) : body.contrat;
+   params.AddInt("contrat",contratId)
    params.AddBool("allpieces",body.allpieces ?? true) 
  params.AddBool("detailadh",body.detailadh ?? true)
 params.AddBool("garanties",body.garanties ?? true) 

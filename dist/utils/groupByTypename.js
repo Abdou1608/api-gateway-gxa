@@ -1,6 +1,44 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = groupByTypename;
+/** Essaie d’extraire un tableau d’objets depuis diverses formes d’entrée */
+function normalizeToArray(input) {
+    // 1) Déserialiser si string JSON
+    let value = input;
+    if (typeof input === 'string') {
+        try {
+            value = JSON.parse(input);
+        }
+        catch {
+            return [];
+        }
+    }
+    // 2) Si c’est déjà un tableau
+    if (Array.isArray(value))
+        return value;
+    // 3) Si c’est un objet
+    if (value && typeof value === 'object') {
+        const obj = value;
+        // 3.a) Cas "objet direct" avec typename / __typename
+        if ('typename' in obj || '__typename' in obj) {
+            return [obj];
+        }
+        // 3.b) Cas "objet imbriqué" : chercher une propriété qui est un array d’objets
+        const arrayChild = Object.values(obj).find(v => Array.isArray(v));
+        if (Array.isArray(arrayChild)) {
+            return arrayChild;
+        }
+        // 3.c) Chercher une propriété qui est un objet avec typename
+        const objectChild = Object.values(obj).find(v => v && typeof v === 'object' && ('typename' in v || '__typename' in v));
+        if (objectChild && typeof objectChild === 'object') {
+            return [objectChild];
+        }
+        // 3.d) Dernier recours : envelopper l’objet lui-même
+        return [obj];
+    }
+    // 4) Sinon, rien à traiter
+    return [];
+}
 /**
  * Regroupe les objets par leur typename.
  * - Le 1er élément d'un groupe est stocké directement (objet)
@@ -9,36 +47,15 @@ exports.default = groupByTypename;
  */
 function groupByTypename(input, opts = {}) {
     const { keepUnknown = false } = opts;
-    // 1) Normaliser l'entrée en tableau T[]
-    let arr;
-    if (typeof input === 'string') {
-        try {
-            const parsed = JSON.parse(input);
-            if (Array.isArray(parsed)) {
-                arr = parsed;
-            }
-            else if (parsed && typeof parsed === 'object') {
-                arr = [parsed];
-            }
-            else {
-                arr = [];
-            }
-        }
-        catch {
-            arr = [];
-        }
-    }
-    else {
-        arr = input;
-    }
-    // 2) Réduction
+    // Normaliser en tableau
+    const arr = normalizeToArray(input);
     const result = {};
     for (const item of arr) {
         if (!item || typeof item !== 'object')
             continue;
-        const key = (item.typename ?? item.__typename);
+        const key = item.typename ??
+            item.__typename;
         if (!key) {
-            // Pas de typename
             if (keepUnknown) {
                 if (!Array.isArray(result.Produit))
                     result.Produit = [];
@@ -48,15 +65,12 @@ function groupByTypename(input, opts = {}) {
         }
         const existing = result[key];
         if (existing === undefined) {
-            // 1er élément pour ce typename → on stocke l'objet lui-même
             result[key] = item;
         }
         else if (Array.isArray(existing)) {
-            // Déjà un tableau → on empile
             existing.push(item);
         }
         else {
-            // Était un objet unique → on convertit en tableau
             result[key] = [existing, item];
         }
     }
