@@ -195,6 +195,33 @@ Variables supplémentaires:
 | `OTEL_ENABLE` | Active traces | `0` |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | URL collecteur OTLP (avec ou sans /v1/traces) | `http://localhost:4318/v1/traces` |
 
+### Observer les erreurs (clients)
+
+Consultez la documentation détaillée: `docs/errors.md`.
+
+En pratique côté client:
+- Lisez le JSON d'erreur standardisé dans `response.body.error` (type, code, message, details, requestId, timestamp).
+- Inspectez les en-têtes pour un diagnostic rapide: `X-Error-Type`, `X-Error-Code`, et `X-SOAP-FAULT` quand présent.
+
+Exemple (TypeScript/Fetch):
+```ts
+try {
+	const res = await fetch('/api/endpoint', { method: 'POST', body: JSON.stringify(data), headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } });
+	if (!res.ok) {
+		const xType = res.headers.get('X-Error-Type');
+		const xCode = res.headers.get('X-Error-Code');
+		const payload = await res.json().catch(() => ({ error: { message: res.statusText } }));
+		console.error('API error', { status: res.status, xType, xCode, err: payload.error });
+		throw new Error(payload?.error?.message || `${xType}:${xCode}`);
+	}
+	const json = await res.json();
+	return json;
+} catch (e) {
+	// Ajoutez ici votre logique de retry/alerting/telemetry
+	throw e;
+}
+```
+
 ### Sauvegarde (branch/tag backup automatisé)
 
 Scripts fournis pour créer rapidement une branche + tag de sauvegarde horodatés avant opérations risquées (refactor massif, réécriture d'historique, etc.).

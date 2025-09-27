@@ -8,9 +8,9 @@ import { validateBody } from '../middleware/zodValidator';
 
 const router = Router();
 
-router.post('/', validateBody(api_liste_des_produitsValidator), async (req, res) => {
+router.post('/', validateBody(api_liste_des_produitsValidator), async (req, res, next) => {
   try {
-    const _BasSecurityContext= new BasSecurityContext()
+    let _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
     _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
  const branche =req.body.branche  ?? null
@@ -24,8 +24,8 @@ console.log("-----------------------------Données Reccus Route listedesproduits
     const result = await produit_listitems(typeecran,branche,disponible,_BasSecurityContext);
     res.json(result);
   }  catch (error:any) {
-   const e=error ? error :null
-  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });}
+   return next(error);
+  }
 });
 
 export default router;

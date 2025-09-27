@@ -6,9 +6,9 @@ const BasSecurityContext_1 = require("../Model/BasSoapObject/BasSecurityContext"
 const api_liste_des_contratsValidator_1 = require("../validators/api_liste_des_contratsValidator");
 const zodValidator_1 = require("../middleware/zodValidator");
 const router = (0, express_1.Router)();
-router.post('/', (0, zodValidator_1.validateBody)(api_liste_des_contratsValidator_1.api_liste_des_contratsValidator), async (req, res) => {
+router.post('/', (0, zodValidator_1.validateBody)(api_liste_des_contratsValidator_1.api_liste_des_contratsValidator), async (req, res, next) => {
     try {
-        const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
+        let _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         _BasSecurityContext.IsAuthenticated = true;
         _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
         const reference = req.body.reference ?? "";
@@ -20,7 +20,7 @@ router.post('/', (0, zodValidator_1.validateBody)(api_liste_des_contratsValidato
         res.json(result);
     }
     catch (error) {
-        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
+        return next(error);
     }
 });
 exports.default = router;

@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">23.8% </span>
+                <span class="strong">25% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/21</span>
+                <span class='fraction'>3/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">23.8% </span>
+                <span class="strong">25% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/21</span>
+                <span class='fraction'>3/12</span>
             </div>
         
             
@@ -83,54 +83,60 @@
 <a name='L18'></a><a href='#L18'>18</a>
 <a name='L19'></a><a href='#L19'>19</a>
 <a name='L20'></a><a href='#L20'>20</a>
-<a name='L21'></a><a href='#L21'>21</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { BasParams } from '../../Model/BasSoapObject/BasParams';
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { BasParams } from '../../Model/BasSoapObject/BasParams';
 import { BasSecurityContext } from '../../Model/BasSoapObject/BasSecurityContext';
+import groupByTypename from '../../utils/groupByTypename';
 import { sendSoapRequest } from '../soap.service';
 &nbsp;
-export <span class="fstat-no" title="function not covered" >async function produit_listitems(typeecran? : string,</span>
-<span class="cstat-no" title="statement not covered" >	branche? : string,</span>
-<span class="cstat-no" title="statement not covered" >	disponible? : boolean, BasSecurityContext?:BasSecurityContext) {</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      </span>
-<span class="cstat-no" title="statement not covered" >  const soapBody = {typeecran,branche,disponible,BasSecurityContext}</span>
-<span class="cstat-no" title="statement not covered" >  const params=new BasParams()</span>
+export async function <span class="fstat-no" title="function not covered" >produit_listitems(</span>typeecran? : string,
+	branche? : string,
+	disponible? : boolean, BasSecurityContext?:BasSecurityContext) {
+&nbsp;
+      
+  const soapBody = <span class="cstat-no" title="statement not covered" >{typeecran,branche,disponible,BasSecurityContext}</span>
+  const params=<span class="cstat-no" title="statement not covered" >new BasParams()</span>
 <span class="cstat-no" title="statement not covered" >  BasSecurityContext ? params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar()) :null</span>
 <span class="cstat-no" title="statement not covered" >  typeecran ? params.AddString("typeecran",typeecran) :null</span>
 <span class="cstat-no" title="statement not covered" >   branche? params.AddString("branche",branche):null</span>
 <span class="cstat-no" title="statement not covered" >   disponible ?  params.AddBool("disponible",disponible) :null</span>
-<span class="cstat-no" title="statement not covered" ></span>
+&nbsp;
 <span class="cstat-no" title="statement not covered" >   params.AddString("datanode","prod")</span>
-<span class="cstat-no" title="statement not covered" >  const result = await sendSoapRequest(params, "Produit_ListItems",BasSecurityContext,"prod");</span>
+  const result = <span class="cstat-no" title="statement not covered" >await sendSoapRequest(params, "Produit_ListItems",BasSecurityContext,"prod");</span>
+ //const grouped = groupByTypename(result, { keepUnknown: true }); 
 <span class="cstat-no" title="statement not covered" >  return result;</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >}</span></pre></td></tr></table></pre>
+&nbsp;
+}</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-14T20:55:48.215Z
+                at 2025-09-27T11:02:49.311Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

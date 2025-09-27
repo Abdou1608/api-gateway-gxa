@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.1% </span>
+                <span class="strong">40% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>27/29</span>
+                <span class='fraction'>8/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/3</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.1% </span>
+                <span class="strong">40% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>27/29</span>
+                <span class='fraction'>8/20</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -97,30 +97,30 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Router } from 'express';
 import { cont_search } from '../services/liste_des_contrats/cont_search.service';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
@@ -131,21 +131,21 @@ import { validateBody } from '../middleware/zodValidator';
 &nbsp;
 const router = Router();
 &nbsp;
-router.post('/', validateBody(api_liste_des_contratsValidator), async (req, res) =&gt; {
-  try {
-    const _BasSecurityContext= new BasSecurityContext()
-    _BasSecurityContext.IsAuthenticated=true
-    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-  const reference=req.body.reference<span class="branch-0 cbranch-no" title="branch not covered" > ?? ""</span>
-    const detailorigine=req.body.detailorigine
-    const origine= req.body.origine 
-    const codefic=req.body.codefic ?? ""
-    const nomchamp=req.body.nomchamp ??""
-    const result = await cont_search(reference,detailorigine,origine,codefic,nomchamp,_BasSecurityContext);
-    res.json(result);
-  } <span class="branch-0 cbranch-no" title="branch not covered" >catch (error:any) {</span>
-<span class="cstat-no" title="statement not covered" >    res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
+router.post('/', validateBody(api_liste_des_contratsValidator), <span class="fstat-no" title="function not covered" >async </span>(req, res, next) =&gt; {
+<span class="cstat-no" title="statement not covered" >  try {</span>
+    let _BasSecurityContext= <span class="cstat-no" title="statement not covered" >new BasSecurityContext()</span>
+<span class="cstat-no" title="statement not covered" >    _BasSecurityContext.IsAuthenticated=true</span>
+<span class="cstat-no" title="statement not covered" >    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId</span>
+  const reference=<span class="cstat-no" title="statement not covered" >req.body.reference ?? ""</span>
+    const detailorigine=<span class="cstat-no" title="statement not covered" >req.body.detailorigine</span>
+    const origine= <span class="cstat-no" title="statement not covered" >req.body.origine </span>
+    const codefic=<span class="cstat-no" title="statement not covered" >req.body.codefic ?? ""</span>
+    const nomchamp=<span class="cstat-no" title="statement not covered" >req.body.nomchamp ??""</span>
+    const result = <span class="cstat-no" title="statement not covered" >await cont_search(reference,detailorigine,origine,codefic,nomchamp,_BasSecurityContext);</span>
+<span class="cstat-no" title="statement not covered" >    res.json(result);</span>
+  } catch (error:any) {
+<span class="cstat-no" title="statement not covered" >    return next(error);</span>
+  }
 });
 &nbsp;
 export default router;
@@ -157,7 +157,7 @@ export default router;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-14T20:55:48.215Z
+                at 2025-09-27T11:02:49.311Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -4,7 +4,7 @@ const express_1 = require("express");
 const tiers_update_service_1 = require("../services/update_tier/tiers_update.service");
 const BasSecurityContext_1 = require("../Model/BasSoapObject/BasSecurityContext");
 const router = (0, express_1.Router)();
-router.put('/', async (req, res) => {
+router.put('/', async (req, res, next) => {
     const dossier = JSON.parse(req.body.dossier);
     try {
         const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
@@ -17,7 +17,7 @@ router.put('/', async (req, res) => {
         res.json(result);
     }
     catch (error) {
-        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
+        return next(error);
     }
 });
 exports.default = router;

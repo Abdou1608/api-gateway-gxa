@@ -8,7 +8,7 @@ import { validateBody } from '../middleware/zodValidator';
 
 const router = Router();
 
-router.post('/', validateBody(api_check_sessionValidator), async (req, res) => {
+router.post('/', validateBody(api_check_sessionValidator), async (req, res, next) => {
   try {
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
@@ -16,8 +16,7 @@ router.post('/', validateBody(api_check_sessionValidator), async (req, res) => {
     const result = await checksession_(_BasSecurityContext);
     res.json(result);
   } catch (error:any) {
-    res.status(error.status ?? 401).json({ error: error?.message, detail: JSON.stringify(error)
-      });
+    return next(error);
   }
 });
 

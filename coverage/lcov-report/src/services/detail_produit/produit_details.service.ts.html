@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">30.43% </span>
+                <span class="strong">28.57% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/23</span>
+                <span class='fraction'>4/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/6</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">30.43% </span>
+                <span class="strong">28.57% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/23</span>
+                <span class='fraction'>4/14</span>
             </div>
         
             
@@ -86,12 +86,20 @@
 <a name='L21'></a><a href='#L21'>21</a>
 <a name='L22'></a><a href='#L22'>22</a>
 <a name='L23'></a><a href='#L23'>23</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -99,44 +107,36 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { BasParams } from "../../Model/BasSoapObject/BasParams";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { BasParams } from "../../Model/BasSoapObject/BasParams";
 import { BasSecurityContext } from "../../Model/BasSoapObject/BasSecurityContext";
 import groupByTypename from "../../utils/groupByTypename";
 import { sendSoapRequest } from "../soap.service";
 &nbsp;
 &nbsp;
-export <span class="fstat-no" title="function not covered" >async function produit_details(code : string,BasSecurityContext:BasSecurityContext,</span>
-<span class="cstat-no" title="statement not covered" >	options? : boolean,</span>
-<span class="cstat-no" title="statement not covered" >	basecouvs?: boolean,</span>
-<span class="cstat-no" title="statement not covered" >	clauses? : boolean) {</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const params=new BasParams()</span>
+export async function <span class="fstat-no" title="function not covered" >produit_details(</span>code : string,BasSecurityContext:BasSecurityContext,
+	options? : boolean,
+	basecouvs?: boolean,
+	clauses? : boolean) {
+&nbsp;
+  const params=<span class="cstat-no" title="statement not covered" >new BasParams()</span>
 <span class="cstat-no" title="statement not covered" >  params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())</span>
 <span class="cstat-no" title="statement not covered" >   params.AddString("code",code)</span>
-<span class="cstat-no" title="statement not covered" >  // params.AddBool("composition",composition ?? false) </span>
+  // params.AddBool("composition",composition ?? false) 
 <span class="cstat-no" title="statement not covered" >   params.AddBool("options",options ?? true)</span>
 <span class="cstat-no" title="statement not covered" >params.AddBool("basecouv",basecouvs ?? true) </span>
 <span class="cstat-no" title="statement not covered" > params.AddBool("clauses",clauses ?? true)</span>
 <span class="cstat-no" title="statement not covered" >console.log("Paramettres du Detail du produit requis==="+JSON.stringify(params))</span>
-<span class="cstat-no" title="statement not covered" >  const result = await sendSoapRequest(params,"Produit_Details",BasSecurityContext,"newprod");</span>
-<span class="cstat-no" title="statement not covered" >  const grouped = groupByTypename(result, { keepUnknown: true });</span>
+  const result = <span class="cstat-no" title="statement not covered" >await sendSoapRequest(params,"Produit_Details",BasSecurityContext,"newprod");</span>
+  const grouped = <span class="cstat-no" title="statement not covered" >groupByTypename(result, { keepUnknown: true});</span>
 <span class="cstat-no" title="statement not covered" >  return grouped;</span>
-<span class="cstat-no" title="statement not covered" >}</span></pre></td></tr></table></pre>
+}</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-14T20:55:48.215Z
+                at 2025-09-27T11:02:49.311Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

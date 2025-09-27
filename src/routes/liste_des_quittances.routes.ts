@@ -3,25 +3,27 @@ import { quittance_listitems } from '../services/liste_des_quittances/quittance_
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 import { api_liste_des_quittancesValidator } from '../validators/api_liste_des_quittancesValidator';
 import { validateBody } from '../middleware/zodValidator';
+import groupByTypename from '../utils/groupByTypename';
 
 
 
 const router = Router();
 
-router.post('/', validateBody(api_liste_des_quittancesValidator), async (req, res) => {
+router.post('/', validateBody(api_liste_des_quittancesValidator), async (req, res, next) => {
   try {
-    const _BasSecurityContext= new BasSecurityContext()
-  _BasSecurityContext.IsAuthenticated=true
-  _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-
+    let _BasSecurityContext= new BasSecurityContext()
+    _BasSecurityContext.IsAuthenticated=true
+    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
+ 
  const dossier =req.body.dossier ?? req.body.Dossier ?? null
  const contrat=req.body.contrat ?? req.body.Contrat ?? null
  //console.log("dossier==="+dossier)
 
     const result = await quittance_listitems(dossier,contrat,_BasSecurityContext);
-    res.json(result);
+    const grouped = groupByTypename(result, { keepUnknown: true }); 
+    res.json(grouped);
   } catch (error:any) {
-    res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
+    return next(error);
   }
 });
 

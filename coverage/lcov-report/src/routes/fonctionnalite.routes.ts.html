@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>72/72</span>
+                <span class='fraction'>62/62</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>72/72</span>
+                <span class='fraction'>62/62</span>
             </div>
         
             
@@ -134,7 +134,9 @@
 <a name='L69'></a><a href='#L69'>69</a>
 <a name='L70'></a><a href='#L70'>70</a>
 <a name='L71'></a><a href='#L71'>71</a>
-<a name='L72'></a><a href='#L72'>72</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -151,6 +153,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -166,12 +169,21 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -197,16 +209,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">import express from 'express';
-import { jwtAuth } from '../middleware/auth';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import express from 'express';
+import { authMiddleware } from '../middleware/auth.middleware';
 import ajout_piece_au_contrat from './ajout_piece_au_contrat.routes';
 import check_session from './check_session.routes';
 import create_contrat from './create_contrat.routes';
@@ -236,6 +240,8 @@ import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
 import riskrouter from './risque.routes';
 import list_des_tecrants from './liste_des_tecrants.routes';
+import sinrouter from './sinistre.routes';
+import admin from './admin.routes';
 &nbsp;
 &nbsp;
 &nbsp;
@@ -245,37 +251,37 @@ import list_des_tecrants from './liste_des_tecrants.routes';
 export function registerRoutes(app: express.Application) {
   const swaggerDocument = YAML.load("./openapi.fr.ex.custom.yaml");
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-  // Public routes (no auth)
+  // Public
   app.use("/api/login", login);
   app.use("/api/logout", logout);
-  // Protected (JWT)
-  const protect = jwtAuth();
-  app.use("/api/profile", protect, profile);
-  app.use("/api/ajout_piece_au_contrat", protect, ajout_piece_au_contrat);
-  app.use("/api/check_session", protect, check_session);
-  app.use("/api/create_contrat", protect, create_contrat);
-  app.use("/api/create_quittance", protect, create_quittance);
-  app.use("/api/create_reglement", protect, create_reglement);
-  app.use("/api/create_tier", protect, create_tier);
-  app.use("/api/detail_contrat", protect, detail_contrat);
-  app.use("/api/detail_adhesion", protect, detail_adhesion);
-  app.use("/api/detail_produit", protect, detail_produit);
-  app.use("/api/detail_quittance", protect, detail_quittance);
-  app.use("/api/detail_tier", protect, detail_tier);
-  app.use("/api/liste_des_contrats", protect, liste_des_contrats);
-  app.use("/api/liste_des_contrats_d_un_tier", protect, liste_des_contrats_d_un_tier);
-  app.use("/api/liste_des_produits", protect, liste_des_produits);
-  app.use("/api/liste_des_types_ecrans", protect, list_des_tecrants);
-  app.use("/api/liste_des_quittances", protect, liste_des_quittances);
-  app.use("/api/projects", protect, router);
-  app.use("/api/tabs", protect, tabrouter);
-  app.use("/api/risk", protect, riskrouter);
-  app.use("/api/login", login);
-  app.use("/api/logout", logout);
-  app.use("/api/Tiers_Search", protect, recherche_tier);
-  app.use("/api/Contrat_Update", protect, update_contrat);
-  app.use("/api/Tiers_Update", protect, update_tier);
-  app.use("/api/update_piece_contrat", protect, update_piece_au_contrat);
+  // Admin (header-guarded)
+  app.use("/api/admin", admin);
+  // Protected (auth middleware first)
+  app.use("/api/ajout_piece_au_contrat", authMiddleware, ajout_piece_au_contrat);
+  app.use("/api/check_session", authMiddleware, check_session);
+  app.use("/api/create_contrat", authMiddleware, create_contrat);
+  app.use("/api/create_quittance", authMiddleware, create_quittance);
+  app.use("/api/create_reglement", authMiddleware, create_reglement);
+  app.use("/api/create_tier", authMiddleware, create_tier);
+  app.use("/api/detail_contrat", authMiddleware, detail_contrat);
+  app.use("/api/detail_adhesion", authMiddleware, detail_adhesion);
+  app.use("/api/detail_produit", authMiddleware, detail_produit);
+  app.use("/api/detail_quittance", authMiddleware, detail_quittance);
+  app.use("/api/detail_tier", authMiddleware, detail_tier);
+  app.use("/api/liste_des_contrats", authMiddleware, liste_des_contrats);
+  app.use("/api/liste_des_contrats_d_un_tier", authMiddleware, liste_des_contrats_d_un_tier);
+  app.use("/api/liste_des_produits", authMiddleware, liste_des_produits);
+  app.use("/api/liste_des_types_ecrans", authMiddleware, list_des_tecrants);
+  app.use("/api/liste_des_quittances", authMiddleware, liste_des_quittances);
+  app.use("/api/projects", authMiddleware, router);
+  app.use("/api/sinistres", authMiddleware, sinrouter);
+  app.use("/api/tabs", authMiddleware, tabrouter);
+  app.use("/api/risk", authMiddleware, riskrouter);
+  app.use("/api/profile", authMiddleware, profile);
+  app.use("/api/Tiers_Search", authMiddleware, recherche_tier);
+  app.use("/api/Contrat_Update", authMiddleware, update_contrat);
+  app.use("/api/Tiers_Update", authMiddleware, update_tier);
+  app.use("/api/update_piece_contrat", authMiddleware, update_piece_au_contrat);
 }</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -283,7 +289,7 @@ export function registerRoutes(app: express.Application) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-14T20:55:48.215Z
+                at 2025-09-27T11:02:49.311Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

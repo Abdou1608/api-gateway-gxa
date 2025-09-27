@@ -3,19 +3,20 @@ import { Router } from 'express';
 import { sendSoapRequest } from '../services/soap.service';
 //import { api_update_reglementValidator } from '../validators/api_update_reglementValidator';
 import { validateBody } from '../middleware/zodValidator';
+import { InternalError } from '../common/errors';
 
 
 const router = Router();
 
 router.put('/', 
- async (req, res) => {
+ async (req, res, next) => {
   try {
     //const response = req.body;
    // res.json(response);
-   throw new Error("Fonction Non Disponible");
+   return next(new InternalError('Fonction Non Disponible'));
    
   } catch (error:any) {
-   res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });  }
+   return next(error);  }
 });
 
 export default router;

@@ -11,11 +11,13 @@ import { applyGlobalMiddleware } from './middleware/Apply-Middlewares';
 import config from './config/env';
 import { errorHandler, notFoundHandler } from './middleware/error-handler';
 import { metricsInstrumentation, metricsHandler } from './observability/metrics';
+import { requestIdMiddleware } from './common/middleware/request-id';
 
 const app = express();
 
 // Application des middlewares globaux + instrumentation métriques
 applyGlobalMiddleware(app);
+app.use(requestIdMiddleware);
 app.use(metricsInstrumentation);
 
 // Documentation OpenAPI (lecture du YAML principal)
@@ -49,6 +51,11 @@ app.use(notFoundHandler);
 // Error handler global
 app.use(errorHandler);
 
-app.listen(config.port, config.host, () => {
-  console.log(`🚀 Serveur SOAP REST Gateway démarré sur http://${config.host}:${config.port}`);
-});
+// Export app for testing; only start the server when executed directly
+export default app;
+
+if (require.main === module) {
+  app.listen(config.port, config.host, () => {
+    console.log(`🚀 Serveur SOAP REST Gateway démarré sur http://${config.host}:${config.port}`);
+  });
+}

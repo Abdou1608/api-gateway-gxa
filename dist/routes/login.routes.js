@@ -9,9 +9,10 @@ const api_loginValidator_1 = require("../validators/api_loginValidator");
 const zodValidator_1 = require("../middleware/zodValidator");
 const auth_service_1 = __importDefault(require("../auth/auth.service"));
 const env_1 = __importDefault(require("../config/env"));
+const errors_1 = require("../common/errors");
 const router = (0, express_1.Router)();
 const authService = new auth_service_1.default({ defaultTtlSeconds: 1800 });
-router.post('/', (0, zodValidator_1.validateBody)(api_loginValidator_1.api_loginValidator), async (req, res) => {
+router.post('/', (0, zodValidator_1.validateBody)(api_loginValidator_1.api_loginValidator), async (req, res, next) => {
     const logon = req.body?.login ?? req.body?.username;
     const password = req.body?.password;
     const domain = req.body?.domain;
@@ -23,12 +24,12 @@ router.post('/', (0, zodValidator_1.validateBody)(api_loginValidator_1.api_login
             const SID = (anyResult?.SessionId ?? anyResult?._SessionId);
             if (!SID) {
                 console.error('[login] Missing SessionID in upstream result');
-                return res.status(503).json({ error: 'Missing SessionID from upstream' });
+                return next(new errors_1.InternalError('Missing SessionID from upstream'));
             }
             const key = env_1.default.jwtSecret ?? '';
             if (!key) {
                 console.error('[login] Missing JWS_KEY env');
-                return res.status(503).json({ error: 'Server misconfiguration: JWS_KEY is missing' });
+                return next(new errors_1.InternalError('Server misconfiguration: JWS_KEY is missing'));
             }
             const token = await authService.get_token(key, SID);
             try {
@@ -45,11 +46,11 @@ router.post('/', (0, zodValidator_1.validateBody)(api_loginValidator_1.api_login
         catch (error) {
             const message = error instanceof Error ? error.message : 'Unknown error';
             console.error('[login] Error:', message);
-            return res.status(503).json({ error: message });
+            return next(new errors_1.InternalError(message));
         }
     }
     else {
-        return res.status(501).json({ error: 'Données manquantes ou non conforme' });
+        return next(new errors_1.AuthError('Données manquantes ou non conforme'));
     }
 });
 exports.default = router;

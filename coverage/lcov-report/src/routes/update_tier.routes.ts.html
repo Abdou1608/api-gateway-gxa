@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.85% </span>
+                <span class="strong">35.29% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>26/28</span>
+                <span class='fraction'>6/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/2</span>
+                <span class='fraction'>0/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.85% </span>
+                <span class="strong">35.29% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>26/28</span>
+                <span class='fraction'>6/17</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -93,32 +93,32 @@
 <a name='L28'></a><a href='#L28'>28</a>
 <a name='L29'></a><a href='#L29'>29</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Router } from 'express';
 import { tiers_update } from '../services/update_tier/tiers_update.service';
 //import { api_update_tierValidator } from '../validators/api_update_tierValidator';
@@ -129,20 +129,20 @@ import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 &nbsp;
 const router = Router();
 &nbsp;
-router.put('/',  async (req, res) =&gt; {
-  const dossier = JSON.parse(req.body.dossier)
-  try {
-    const _BasSecurityContext= new BasSecurityContext()
-    _BasSecurityContext.IsAuthenticated=true
-    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-const	numtiers=req.body.numtiers?? null
-const	numdpp=req.body.numdpp?? null
-const	data =req.body.data
-    const result = await tiers_update(dossier,data,_BasSecurityContext);
-    res.json(result);
-  } <span class="branch-0 cbranch-no" title="branch not covered" >catch (error:any) {</span>
-<span class="cstat-no" title="statement not covered" >    res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
+router.put('/',  <span class="fstat-no" title="function not covered" >async </span>(req, res, next) =&gt; {
+  const dossier = <span class="cstat-no" title="statement not covered" >JSON.parse(req.body.dossier)</span>
+<span class="cstat-no" title="statement not covered" >  try {</span>
+    const _BasSecurityContext= <span class="cstat-no" title="statement not covered" >new BasSecurityContext()</span>
+<span class="cstat-no" title="statement not covered" >    _BasSecurityContext.IsAuthenticated=true</span>
+<span class="cstat-no" title="statement not covered" >    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId</span>
+const	numtiers=<span class="cstat-no" title="statement not covered" >req.body.numtiers?? null</span>
+const	numdpp=<span class="cstat-no" title="statement not covered" >req.body.numdpp?? null</span>
+const	data =<span class="cstat-no" title="statement not covered" >req.body.data</span>
+    const result = <span class="cstat-no" title="statement not covered" >await tiers_update(dossier,data,_BasSecurityContext);</span>
+<span class="cstat-no" title="statement not covered" >    res.json(result);</span>
+  } catch (error:any) {
+<span class="cstat-no" title="statement not covered" >    return next(error);</span>
+  }
 });
 &nbsp;
 export default router;
@@ -154,7 +154,7 @@ export default router;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-14T20:55:48.215Z
+                at 2025-09-27T11:02:49.311Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

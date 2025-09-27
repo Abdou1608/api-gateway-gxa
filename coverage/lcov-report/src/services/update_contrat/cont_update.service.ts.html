@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20% </span>
+                <span class="strong">18.18% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/35</span>
+                <span class='fraction'>4/22</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">20% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/35</span>
+                <span class='fraction'>4/20</span>
             </div>
         
             
@@ -98,81 +98,81 @@
 <a name='L33'></a><a href='#L33'>33</a>
 <a name='L34'></a><a href='#L34'>34</a>
 <a name='L35'></a><a href='#L35'>35</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { BasParams } from '../../Model/BasSoapObject/BasParams';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { BasParams } from '../../Model/BasSoapObject/BasParams';
 import { contModelToXml } from '../create_contrat/cont_to_xml.service';
 import { sendSoapRequest } from '../soap.service';
 &nbsp;
 &nbsp;
-export <span class="fstat-no" title="function not covered" >async function cont_update(contrat:number,effet?:string,piece?:number,</span>
-<span class="cstat-no" title="statement not covered" >  data?: any,BasSecurityContext?:any,) {</span>
-<span class="cstat-no" title="statement not covered" >    const params=new BasParams()</span>
+export async function <span class="fstat-no" title="function not covered" >cont_update(</span>contrat:number,effet?:string,piece?:number,
+  data?: any,BasSecurityContext?:any,) {
+    const params=<span class="cstat-no" title="statement not covered" >new BasParams()</span>
 <span class="cstat-no" title="statement not covered" >    params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())</span>
 <span class="cstat-no" title="statement not covered" >    params.AddInt("contrat",contrat)</span>
 <span class="cstat-no" title="statement not covered" >    piece ? params.AddInt("piece",piece) : null</span>
 <span class="cstat-no" title="statement not covered" >    effet ? params.AddStrDate("effet",effet) : null</span>
-<span class="cstat-no" title="statement not covered" >  // data ? params.AddStr("data",contModelToXml(data)) :null</span>
-<span class="cstat-no" title="statement not covered" >   //console.log("££££££££===========DATA"+JSON.stringify( data))</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const result = await sendSoapRequest(params, "Cont_Update",BasSecurityContext,"cont",data );</span>
+  // data ? params.AddStr("data",contModelToXml(data)) :null
+   //console.log("££££££££===========DATA"+JSON.stringify( data))
+&nbsp;
+  const result = <span class="cstat-no" title="statement not covered" >await sendSoapRequest(params, "Cont_Update",BasSecurityContext,"cont",data );</span>
 <span class="cstat-no" title="statement not covered" >  return result;</span>
-<span class="cstat-no" title="statement not covered" >}</span>
-export <span class="fstat-no" title="function not covered" >async function cont_piece_update(contrat:number,produit:string,</span>
-<span class="cstat-no" title="statement not covered" >  piece:number,Effet?:any,</span>
-<span class="cstat-no" title="statement not covered" >  data?: any,BasSecurityContext?:any,) {</span>
-<span class="cstat-no" title="statement not covered" >    const params=new BasParams()</span>
+}
+export async function <span class="fstat-no" title="function not covered" >cont_piece_update(</span>contrat:number,produit:string,
+  piece:number,Effet?:any,
+  data?: any,BasSecurityContext?:any,) {
+    const params=<span class="cstat-no" title="statement not covered" >new BasParams()</span>
 <span class="cstat-no" title="statement not covered" >    params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())</span>
 <span class="cstat-no" title="statement not covered" >    params.AddInt("contrat",contrat)</span>
-<span class="cstat-no" title="statement not covered" >    if(piece){ params.AddInt("piece",piece)}</span>
-<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if(piece){ <span class="cstat-no" title="statement not covered" >params.AddInt("piece",piece)}</span></span>
+&nbsp;
 <span class="cstat-no" title="statement not covered" > params.AddString("produit",produit)</span>
-<span class="cstat-no" title="statement not covered" > if(Effet){params.AddDateTime("Effet",Effet )}</span>
-<span class="cstat-no" title="statement not covered" > </span>
-<span class="cstat-no" title="statement not covered" >   // effet ? params.AddDateTime("effet",effet) : null</span>
+<span class="cstat-no" title="statement not covered" > <span class="missing-if-branch" title="if path not taken" >I</span>if(Effet){<span class="cstat-no" title="statement not covered" >params.AddDateTime("Effet",Effet )}</span></span>
+ 
+   // effet ? params.AddDateTime("effet",effet) : null
 <span class="cstat-no" title="statement not covered" >   data ? params.AddString("data",data) : null</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const result = await sendSoapRequest(params, "Cont_Updatepiece",BasSecurityContext, "piec",data);</span>
+&nbsp;
+  const result = <span class="cstat-no" title="statement not covered" >await sendSoapRequest(params, "Cont_Updatepiece",BasSecurityContext, "piec",data);</span>
 <span class="cstat-no" title="statement not covered" >  return result;</span>
-<span class="cstat-no" title="statement not covered" >}</span></pre></td></tr></table></pre>
+}</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-14T20:55:48.215Z
+                at 2025-09-27T11:02:49.311Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

@@ -7,5 +7,5 @@ exports.api_sinistres_sinistre_listitemsValidator = zod_1.z.object({
     contrat: zod_1.z.any().optional(),
     BasSecurityContext: zod_1.z.object({
         _SessionId: zod_1.z.string().optional()
-    })
+    }).optional()
 });

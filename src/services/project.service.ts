@@ -24,15 +24,15 @@ export async function Project_ListItemsHandler(req: Request, res: Response) {
 
 export async function Project_OfferListItemsHandler(req: Request, res: Response) {
   try {
-    const params=new BasParams()
+  let params=new BasParams()
     //const params = req.body;
-      const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-      basSecurityContext.IsAuthenticated=true
-    params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
+    let _BasSecurityContext= new BasSecurityContext()
+    _BasSecurityContext.IsAuthenticated=true
+    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
+   params.AddStr("BasSecurityContext",_BasSecurityContext.ToSoapVar())
      params.AddInt("idproj",req.body.idproj)
     // params.AddInt("projet",req.body.projet)
-    const result = await sendSoapRequest(params,"Project_OfferListItem",basSecurityContext,"Project");
+    const result = await sendSoapRequest(params,"Project_OfferListItem",_BasSecurityContext,"Project");
     const grouped = groupByTypename(result, { keepUnknown: true });
 
     res.json(grouped);
@@ -44,9 +44,9 @@ export async function Project_OfferListItemsHandler(req: Request, res: Response)
 
 export async function Project_DetailHandler(req: Request, res: Response) {
   try {
-    const params=new BasParams()
+   let params=new BasParams()
     //const params = req.body;
-      const basSecurityContext = new BasSecurityContext()
+      let basSecurityContext = new BasSecurityContext()
       basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
       basSecurityContext.IsAuthenticated=true
     params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())

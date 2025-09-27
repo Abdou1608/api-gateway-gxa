@@ -5,13 +5,14 @@ import { api_profileValidator } from '../validators/api_profileValidator';
 import { validateBody } from '../middleware/zodValidator';
 import { invalidateToken } from '../auth/token-revocation.service';
 import { closesession_ } from '../services/logout/closesession_.service';
+import { AuthError, InternalError } from '../common/errors';
 
 
 
 
 const router = Router();
 
-router.post('/', validateBody(api_profileValidator), async (req, res) => {
+router.post('/', validateBody(api_profileValidator), async (req, res, next) => {
   try {
   // Bearer déjà validé et non révoqué par tokenRevocationPrecheck
   const authHeader = req.header('authorization');
@@ -35,7 +36,7 @@ router.post('/', validateBody(api_profileValidator), async (req, res) => {
       if (_BasSecurityContext.SessionId) {
         try { await closesession_(_BasSecurityContext.SessionId); } catch {/* ignore */}
       }
-      return res.status(401).json({ error: 'Unauthorized' });
+      return next(new AuthError('Unauthorized', { reason: 'empty profile' }));
     }
     console.log("-----------------------------Données de profile Route renvoyer au CLIENT----------------------------------- =="+JSON.stringify( result))
     console.warn("----------------------------------------------------------------")
@@ -54,7 +55,7 @@ router.post('/', validateBody(api_profileValidator), async (req, res) => {
     if (req.auth?.sid) {
       try { await closesession_(req.auth.sid); } catch {/* ignore */}
     }
-    res.status(401).json({ error: 'Unauthorized' });
+    return next(new AuthError('Unauthorized'));
   }
 });
 

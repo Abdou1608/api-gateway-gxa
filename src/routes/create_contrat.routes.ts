@@ -8,7 +8,7 @@ import { validateBody } from '../middleware/zodValidator';
 
 const router = Router();
 
-router.post('/', validateBody(api_create_contratValidator), async (req, res) => {
+router.post('/', validateBody(api_create_contratValidator), async (req, res, next) => {
   try {
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
@@ -20,7 +20,7 @@ router.post('/', validateBody(api_create_contratValidator), async (req, res) => 
     const result = await cont_create(dossier,produit,effet,data,_BasSecurityContext);
     res.json(result);
   } catch (error:any) {
-   res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
+   return next(error);
    // res.status(500).json({ error: error?.message, detail: JSON.stringify(error) --- IGNORE ---
       }
 });

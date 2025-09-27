@@ -9,7 +9,7 @@ import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 
 const router = Router();
 
-router.post('/', validateBody(api_update_piece_contratValidator), async (req, res) => {
+router.post('/', validateBody(api_update_piece_contratValidator), async (req, res, next) => {
   try {
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
@@ -22,7 +22,7 @@ router.post('/', validateBody(api_update_piece_contratValidator), async (req, re
     const response = await cont_piece_update( contrat,produit,piece,Effet,data,_BasSecurityContext ?? req.body.basSecurityContext );
     res.json(response);
   } catch (error:any) {
-   res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });  }
+   return next(error);  }
 });
 
 export default router;

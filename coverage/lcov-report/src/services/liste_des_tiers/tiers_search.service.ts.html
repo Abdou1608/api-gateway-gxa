@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">30% </span>
+                <span class="strong">13.04% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/20</span>
+                <span class='fraction'>3/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/24</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">30% </span>
+                <span class="strong">16.66% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/20</span>
+                <span class='fraction'>3/18</span>
             </div>
         
             
@@ -82,12 +82,25 @@
 <a name='L17'></a><a href='#L17'>17</a>
 <a name='L18'></a><a href='#L18'>18</a>
 <a name='L19'></a><a href='#L19'>19</a>
-<a name='L20'></a><a href='#L20'>20</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -95,39 +108,47 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { sendSoapRequest } from '../soap.service';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { sendSoapRequest } from '../soap.service';
 import { BasSecurityContext } from '../../Model/BasSoapObject/BasSecurityContext';
 import { BasParams } from '../../Model/BasSoapObject/BasParams';
 import { Tier } from '../../Model/tier.model';
 &nbsp;
-export <span class="fstat-no" title="function not covered" >async function tiers_search(BasSecurityContext:BasSecurityContext,reference: string,</span>
-<span class="cstat-no" title="statement not covered" >dppname:string, typetiers? : string,codp ?: string, datenais?: string) {</span>
-<span class="cstat-no" title="statement not covered" >  const params=new BasParams()</span>
+export async function <span class="fstat-no" title="function not covered" >tiers_search(</span>BasSecurityContext: BasSecurityContext, reference: string, dppname: string, typetiers?: string, ntel?: string, datenais?: string, rsociale?: any) {
+  const params=<span class="cstat-no" title="statement not covered" >new BasParams()</span>
 <span class="cstat-no" title="statement not covered" >  params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())</span>
-<span class="cstat-no" title="statement not covered" >   params.AddString("reference",reference)</span>
-<span class="cstat-no" title="statement not covered" >   params.AddString("dppname",dppname)</span>
-<span class="cstat-no" title="statement not covered" >    const _typetiers = typetiers?? "" </span>
-<span class="cstat-no" title="statement not covered" >     params.AddString("typetiers",_typetiers)</span>
-<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  <span class="missing-if-branch" title="if path not taken" >I</span>if(reference!="" &amp;&amp; reference!=null){<span class="cstat-no" title="statement not covered" >params.AddString("reference",reference)}</span></span>
+<span class="cstat-no" title="statement not covered" >   <span class="missing-if-branch" title="if path not taken" >I</span>if(rsociale!="" &amp;&amp; rsociale!=null){<span class="cstat-no" title="statement not covered" >params.AddString("rsociale",rsociale)}</span></span>
+<span class="cstat-no" title="statement not covered" >   <span class="missing-if-branch" title="if path not taken" >I</span>if(dppname!="" &amp;&amp; dppname!=null){<span class="cstat-no" title="statement not covered" >params.AddString("dppname",dppname)}</span></span>
+   
+    const _typetiers = <span class="cstat-no" title="statement not covered" >typetiers?? "" </span>
+    const _ntel = <span class="cstat-no" title="statement not covered" >ntel?? "" </span>
+    const _datenais = <span class="cstat-no" title="statement not covered" >datenais?? ""</span>
+<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if(_typetiers!=="" &amp;&amp; _typetiers!==null){ <span class="cstat-no" title="statement not covered" >params.AddString("typetiers","_typetiers") }</span></span>
+<span class="cstat-no" title="statement not covered" >   <span class="missing-if-branch" title="if path not taken" >I</span>if(_ntel!=="" &amp;&amp; _ntel!==null){ <span class="cstat-no" title="statement not covered" >params.AddString("ntel",_ntel) }</span></span>
+<span class="cstat-no" title="statement not covered" >   <span class="missing-if-branch" title="if path not taken" >I</span>if(_datenais!=="" &amp;&amp; _datenais!==null) {</span>
+<span class="cstat-no" title="statement not covered" >    params.AddString("datenais",_datenais)}</span>
+   //  params.AddString("typetiers",_typetiers)
+&nbsp;
 <span class="cstat-no" title="statement not covered" >   params.AddString("datanode","")</span>
-<span class="cstat-no" title="statement not covered" > // const soapBody = {reference,dppname,typetiers,codp,datenais}</span>
-<span class="cstat-no" title="statement not covered" >  let result:[Tier],Tier</span>
-<span class="cstat-no" title="statement not covered" >  result = await sendSoapRequest(params, "Tiers_Search", BasSecurityContext);</span>
+ // const soapBody = {reference,dppname,typetiers,codp,datenais}
+  let result:[Tier] 
+<span class="cstat-no" title="statement not covered" >   result = await sendSoapRequest(params, "Tiers_Search", BasSecurityContext);</span>
 <span class="cstat-no" title="statement not covered" >  return result;</span>
-<span class="cstat-no" title="statement not covered" >}</span></pre></td></tr></table></pre>
+}</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-14T20:55:48.215Z
+                at 2025-09-27T11:02:49.311Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

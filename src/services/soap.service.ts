@@ -3,11 +3,13 @@ import { BasAction } from '../Model/Model-BasAction/BasAction';
 import { BasSoapClient } from '../Model/Model-BasSoapClient/BasSoapClient';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 
-import {  new_parseSoapXmlToJson, parseProdSoapResponse, parseSoapEmbeddedXmlToJson, parseSoapXmlToJson, parseTabRowsXml } from '../utils/soap-parser.service';
-import { BasParam } from '../Model/BasSoapObject/BasParam';
+import {  parseProdSoapResponse, parseSoapEmbeddedXmlToJson, parseSoapXmlToJson, parseTabRowsXml } from '../utils/soap-parser.service';
 import { objectToCustomXML, objectToXML } from '../utils/xml-parser';
 import { contModelToXml } from './create_contrat/cont_to_xml.service';
+import { BasSoapFault } from '../Model/BasSoapObject/BasSoapFault';
+import { ValidationError, TransformError, SoapServerError, InternalError } from '../common/errors';
 //import {  parseSoapOffersToRows } from '../utils/new-soap-parser.service';
+
 
 const clhttp = require('http')
 const config =new AppConfigService
@@ -27,9 +29,8 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
   let sid = _sid ?? "";
   let xmldata:string=""
   if (!basSecurityContext) {
-   // console.warn("⚠️ Aucune SessionId fournie dans les paramètres !");
-    throw new Error("Aucune Identité n'est fournie")
-  }else{
+    throw new ValidationError("Aucune identité n'est fournie", [{ path: 'BasSecurityContext', message: 'manquant' }]);
+  } else {
     console.log("✅ Inside ----------------------------------------------------------------");
 
     if (data && data !== ""){
@@ -48,7 +49,7 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
         console.log("_____________________________________________________________________")
     
       }
-      else{
+  else{
       xmldata = objectToCustomXML(data,sid)
       console.log("----------------------------xmldata = objectToCustomXML(data)-------------------------------------------")
         console.log("Data envoyé="+xmldata)
@@ -67,43 +68,54 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
   console.log("✅ Inside SENDSOAPREQUEST - sid:", sid);
   const an= actionName ? actionName: ""
     
-    const result= await runBasAct.RunAction(an, params,basSecurityContext ? basSecurityContext : new BasSecurityContext(), xmldata).then( async response=>{
+  const result = await runBasAct.RunAction(
+    an,
+    params,
+    basSecurityContext ? basSecurityContext : new BasSecurityContext(),
+    xmldata
+  )
+    .then(async (response) => {
+      if (BasSoapFault.IsBasError(response)) {
+        const f = BasSoapFault.ParseBasErrorDetailed(response);
+        throw new SoapServerError(
+          'SOAP.FAULT',
+          f.faultstring || 'SOAP Fault',
+          { soapFault: { faultcode: f.faultcode, faultstring: f.faultstring, detail: f.details, state: f.state } }
+        );
+      }
+  
       console.log("✅ Inside runBasAct - actionName====", actionName);
       console.log("✅ Inside runBasAct - response====", response);
-      if (sid=="produit" ){
-       // console.log("✅ Inside runBasAct - reponse du SOAP avant parser====", response);
-        return await parseProdSoapResponse(response) 
+  
+      // Si aucune erreur, on traite les données selon le `sid`
+      if (sid === "produit") {
+        return { success: true, data: await parseProdSoapResponse(response) };
+      } else if (sid === "prod") {
+        return { success: true, data: parseProdSoapResponse(response) };
+      } else if (sid === "contrat" || sid === "cont_") {
+        return { success: true, data: parseTabRowsXml(response) };
+      } else if (sid === "tab") {
+        return { success: true, data: parseTabRowsXml(response) };
+      } else if (["offers", "offer", "Offer"].includes(sid)) {
+        return { success: true, data: await parseSoapEmbeddedXmlToJson(response, "offers") };
+      } else if (["projects", "project", "Project"].includes(sid)) {
+        return { success: true, data: await parseSoapEmbeddedXmlToJson(response, sid) };
+      } else if (sid === "project-detail") {
+        return { success: true, data: parseSoapEmbeddedXmlToJson(response, "Tarc0") };
+      } else {
+        return { success: true, data: await parseSoapXmlToJson(response, sid) };
       }
-    //  if (actionName === "Xtlog_Get"){
-  //  return  parseSoapXmlToJson(response,sid)
-   // }
-   else if (sid=="prod"){
-    return parseProdSoapResponse(response)
-   } else if (sid==="contrat" || sid==="cont_"  ){
-    return  parseTabRowsXml(response)
-   }
-   else if (sid==="tab"){
-    return parseTabRowsXml(response)
-   }else if((sid==="offers") || (sid==="offer")|| (sid==="Offer")){
-   // console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======"+ response);
-    return await parseSoapEmbeddedXmlToJson(response,"offers")
-    //return parseSoapXmlToJson(response,sid)
-   }else if((sid==="projects") || (sid==="project") || (sid==="Project") ){
-   // console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======"+ response);
-    return await parseSoapEmbeddedXmlToJson(response,sid)
-  }else if( sid==="project-detail" ){
-    parseSoapEmbeddedXmlToJson(response,"Tarc0")
-   }else{
-    return await parseSoapXmlToJson(response,sid)
-   }
-     
-    }).catch(e => {return "Erreur d'extraction des données :"+e})
-   
-   //parser.parseStringPromise(response);
+    })
+    .catch((e) => {
+      // Laisser l'erreur typer remonter, sinon rewrap en TransformError
+      if (e instanceof SoapServerError || e instanceof ValidationError) throw e;
+      throw new TransformError("Erreur d'extraction des données", { step: 'parse', inputSnippet: (typeof data==='string'? data.slice(0,200): undefined) }, e);
+    });
 
-if (JSON.stringify( result).includes("Erreur d'extraction des données :")) {
-  throw new Error(JSON.stringify( result))
-} else {return result}
+  if ('data' in result) {
+    return result.data;
+  }
+  throw new InternalError("Unexpected result structure: missing 'data' property.");
  
  /*
   //* ✅ Construction de la requête SOAP

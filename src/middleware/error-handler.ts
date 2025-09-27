@@ -1,35 +1,52 @@
 import { NextFunction, Request, Response } from 'express';
-
-// Central application error representation
-export class AppError extends Error {
-  status: number;
-  details?: unknown;
-  constructor(message: string, status = 500, details?: unknown) {
-    super(message);
-    this.status = status;
-    this.details = details;
-  }
-}
+import { BaseAppError, errorHttpStatus, InternalError } from '../common/errors';
 
 export function notFoundHandler(req: Request, res: Response, _next: NextFunction) {
-  res.status(404).json({ error: 'Not Found', path: req.originalUrl });
+  const now = new Date().toISOString();
+  const requestId = res.locals.requestId || (req as any).requestId;
+  res.status(404).json({
+    error: {
+      type: 'INTERNAL_ERROR',
+      code: 'HTTP.NOT_FOUND',
+      message: 'Not Found',
+      details: { path: req.originalUrl },
+      requestId,
+      timestamp: now,
+    }
+  });
 }
 
-export function errorHandler(err: any, _req: Request, res: Response, _next: NextFunction) { // eslint-disable-line
-  const status = err instanceof AppError ? err.status : 500;
-  const payload: any = {
-    error: err.message || 'Internal Server Error',
-  };
-  if (err.details) payload.details = err.details;
-  // Ajout d'un header d'observabilité si c'est une fault SOAP normalisée
-  if (err.details && (err.details.faultcode || err.details.errorCode)) {
-    try { res.setHeader('X-SOAP-FAULT', '1'); } catch { /* ignore */ }
-    if (err.details.errorCode) {
-      try { res.setHeader('X-ERROR-CODE', String(err.details.errorCode)); } catch { /* ignore */ }
+export function errorHandler(err: any, req: Request, res: Response, _next: NextFunction) { // eslint-disable-line
+  const now = new Date().toISOString();
+  const requestId = res.locals.requestId || (req as any).requestId;
+
+  const appErr: BaseAppError = err instanceof BaseAppError
+    ? err
+    : new InternalError(err?.message || 'Internal error');
+
+  const status = errorHttpStatus(appErr);
+  const body: any = {
+    error: {
+      type: appErr.type,
+      code: appErr.code,
+      message: appErr.message,
+      details: appErr.details,
+      requestId,
+      timestamp: now,
     }
+  };
+
+  // Observability headers (avoid leaking details)
+  try { res.setHeader('X-Error-Type', appErr.type); } catch {}
+  try { res.setHeader('X-Error-Code', appErr.code); } catch {}
+  if (appErr.type === 'SOAP_ERROR') {
+    try { res.setHeader('X-SOAP-FAULT', '1'); } catch {}
   }
-  if (process.env.NODE_ENV !== 'production') {
-    payload.stack = err.stack;
+
+  // Include stack in non-production to help debugging
+  if (process.env.NODE_ENV !== 'production' && err?.stack) {
+    body.error.stack = err.stack;
   }
-  res.status(status).json(payload);
+
+  res.status(status).json(body);
 }

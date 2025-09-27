@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">36% </span>
+                <span class="strong">24.32% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>18/50</span>
+                <span class='fraction'>9/37</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">36% </span>
+                <span class="strong">24.32% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>18/50</span>
+                <span class='fraction'>9/37</span>
             </div>
         
             
@@ -111,18 +111,16 @@
 <a name='L46'></a><a href='#L46'>46</a>
 <a name='L47'></a><a href='#L47'>47</a>
 <a name='L48'></a><a href='#L48'>48</a>
-<a name='L49'></a><a href='#L49'>49</a>
-<a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L49'></a><a href='#L49'>49</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -136,11 +134,10 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -156,13 +153,12 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Router } from 'express';
 import { quittance_create } from '../services/create_quittance/quittance_create.service';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
@@ -173,42 +169,40 @@ import { validateBody } from '../middleware/zodValidator';
 &nbsp;
 const router = Router();
 &nbsp;
-router.post('/', validateBody(api_create_quittanceValidator), async (req, res) =&gt; {
+router.post('/', validateBody(api_create_quittanceValidator), <span class="fstat-no" title="function not covered" >async </span>(req, res, next) =&gt; {
 <span class="cstat-no" title="statement not covered" >  try {</span>
-<span class="cstat-no" title="statement not covered" >    const _BasSecurityContext= new BasSecurityContext()</span>
+    const _BasSecurityContext= <span class="cstat-no" title="statement not covered" >new BasSecurityContext()</span>
 <span class="cstat-no" title="statement not covered" >    _BasSecurityContext.IsAuthenticated=true</span>
 <span class="cstat-no" title="statement not covered" >    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId</span>
-<span class="cstat-no" title="statement not covered" >   const contrat=req.body.contrat</span>
-<span class="cstat-no" title="statement not covered" >   const piece= req.body.piece </span>
-<span class="cstat-no" title="statement not covered" >   const bordereau= req.body.bordereau </span>
-<span class="cstat-no" title="statement not covered" >   const autocalcul=false </span>
-<span class="cstat-no" title="statement not covered" >   const affectation=true</span>
-<span class="cstat-no" title="statement not covered" >   const data= req.body.data</span>
-<span class="cstat-no" title="statement not covered" >    const result = await quittance_create(contrat,piece,bordereau,autocalcul,affectation,data, _BasSecurityContext);</span>
+   const contrat=<span class="cstat-no" title="statement not covered" >req.body.contrat</span>
+   const piece= <span class="cstat-no" title="statement not covered" >req.body.piece </span>
+   const bordereau= <span class="cstat-no" title="statement not covered" >req.body.bordereau </span>
+   const autocalcul=<span class="cstat-no" title="statement not covered" >false </span>
+   const affectation=<span class="cstat-no" title="statement not covered" >true</span>
+   const data= <span class="cstat-no" title="statement not covered" >req.body.data</span>
+    const result = <span class="cstat-no" title="statement not covered" >await quittance_create(contrat,piece,bordereau,autocalcul,affectation,data, _BasSecurityContext);</span>
 <span class="cstat-no" title="statement not covered" >    res.json(result);</span>
-<span class="cstat-no" title="statement not covered" >  } catch (error:any) {</span>
-<span class="cstat-no" title="statement not covered" >    res.status(500).json({ error: error.message, details:JSON.stringify( error) });</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
+  } catch (error:any) {
+<span class="cstat-no" title="statement not covered" >   return next(error); </span> }
 });
 &nbsp;
-router.post('/autocalcule', validateBody(api_create_quittanceValidator), async (req, res) =&gt; {
+router.post('/autocalcule', validateBody(api_create_quittanceValidator), <span class="fstat-no" title="function not covered" >async </span>(req, res, next) =&gt; {
 <span class="cstat-no" title="statement not covered" >  try {</span>
-<span class="cstat-no" title="statement not covered" >    const _BasSecurityContext= new BasSecurityContext()</span>
+    const _BasSecurityContext= <span class="cstat-no" title="statement not covered" >new BasSecurityContext()</span>
 <span class="cstat-no" title="statement not covered" >    _BasSecurityContext.IsAuthenticated=true</span>
 <span class="cstat-no" title="statement not covered" >    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId</span>
-<span class="cstat-no" title="statement not covered" >   const contrat=req.body.contrat</span>
-<span class="cstat-no" title="statement not covered" >   const piece= req.body.piece </span>
-<span class="cstat-no" title="statement not covered" >   const bordereau= req.body.bordereau </span>
-<span class="cstat-no" title="statement not covered" >   const autocalcul=true </span>
-<span class="cstat-no" title="statement not covered" >   const affectation=true</span>
-<span class="cstat-no" title="statement not covered" >   const data= req.body.data</span>
-<span class="cstat-no" title="statement not covered" >   const datedebut= req.body.datedebut</span>
-<span class="cstat-no" title="statement not covered" >   const datedefin= req.body.datedefin</span>
-<span class="cstat-no" title="statement not covered" >    const result = await quittance_create(contrat,piece,bordereau,autocalcul,affectation,data, _BasSecurityContext,datedebut,datedefin);</span>
+   const contrat=<span class="cstat-no" title="statement not covered" >req.body.contrat</span>
+   const piece= <span class="cstat-no" title="statement not covered" >req.body.piece </span>
+   const bordereau= <span class="cstat-no" title="statement not covered" >req.body.bordereau </span>
+   const autocalcul=<span class="cstat-no" title="statement not covered" >true </span>
+   const affectation=<span class="cstat-no" title="statement not covered" >true</span>
+   const data= <span class="cstat-no" title="statement not covered" >req.body.data</span>
+   const datedebut= <span class="cstat-no" title="statement not covered" >req.body.datedebut</span>
+   const datedefin= <span class="cstat-no" title="statement not covered" >req.body.datedefin</span>
+    const result = <span class="cstat-no" title="statement not covered" >await quittance_create(contrat,piece,bordereau,autocalcul,affectation,data, _BasSecurityContext,datedebut,datedefin);</span>
 <span class="cstat-no" title="statement not covered" >    res.json(result);</span>
-<span class="cstat-no" title="statement not covered" >  } catch (error:any) {</span>
-<span class="cstat-no" title="statement not covered" > res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
+  } catch (error:any) {
+<span class="cstat-no" title="statement not covered" > return next(error); </span> }
 });
 &nbsp;
 export default router;
@@ -220,7 +214,7 @@ export default router;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-14T20:55:48.215Z
+                at 2025-09-27T11:02:49.311Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

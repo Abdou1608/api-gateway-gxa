@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">29.16% </span>
+                <span class="strong">25% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/24</span>
+                <span class='fraction'>4/16</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">29.16% </span>
+                <span class="strong">25% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/24</span>
+                <span class='fraction'>4/16</span>
             </div>
         
             
@@ -87,12 +87,20 @@
 <a name='L22'></a><a href='#L22'>22</a>
 <a name='L23'></a><a href='#L23'>23</a>
 <a name='L24'></a><a href='#L24'>24</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -101,45 +109,37 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { BasParams } from "../../Model/BasSoapObject/BasParams";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { BasParams } from "../../Model/BasSoapObject/BasParams";
 import { BasSecurityContext } from "../../Model/BasSoapObject/BasSecurityContext";
 import groupByTypename from "../../utils/groupByTypename";
 import { sendSoapRequest } from "../soap.service";
 &nbsp;
 &nbsp;
-export <span class="fstat-no" title="function not covered" >async function quittance_details(quittance: number, </span>
-<span class="cstat-no" title="statement not covered" >details:boolean,garanties:boolean,addinfospqg:boolean,intervenants:boolean,addinfosqint:boolean, BasSecurityContext:BasSecurityContext,) {</span>
-<span class="cstat-no" title="statement not covered" >  const soapBody = {</span>
-<span class="cstat-no" title="statement not covered" >	quittance,details, BasSecurityContext</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-<span class="cstat-no" title="statement not covered" >  const params=new BasParams()</span>
+export async function <span class="fstat-no" title="function not covered" >quittance_details(</span>quittance: number, 
+details:boolean,garanties:boolean,addinfospqg:boolean,intervenants:boolean,addinfosqint:boolean, BasSecurityContext:BasSecurityContext,) {
+  const soapBody = <span class="cstat-no" title="statement not covered" >{</span>
+	quittance,details, BasSecurityContext
+  }
+  const params=<span class="cstat-no" title="statement not covered" >new BasParams()</span>
 <span class="cstat-no" title="statement not covered" >  params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())</span>
 <span class="cstat-no" title="statement not covered" >   params.AddInt("quittance",quittance)</span>
-<span class="cstat-no" title="statement not covered" >  // params.AddBool("composition",composition ?? false) </span>
+  // params.AddBool("composition",composition ?? false) 
 <span class="cstat-no" title="statement not covered" > params.AddBool("details",details)</span>
 <span class="cstat-no" title="statement not covered" > params.AddBool("garanties",garanties)</span>
 <span class="cstat-no" title="statement not covered" > params.AddBool("addinfospqg",addinfospqg)</span>
 <span class="cstat-no" title="statement not covered" > params.AddBool("intervenants",intervenants)</span>
 <span class="cstat-no" title="statement not covered" > params.AddBool("addinfosqint",addinfosqint)</span>
-<span class="cstat-no" title="statement not covered" >  const result = await sendSoapRequest(params, "Quittance_Details",BasSecurityContext);</span>
-<span class="cstat-no" title="statement not covered" >  const grouped = groupByTypename(result, { keepUnknown: true });</span>
+  const result = <span class="cstat-no" title="statement not covered" >await sendSoapRequest(params, "Quittance_Details",BasSecurityContext);</span>
+  const grouped = <span class="cstat-no" title="statement not covered" >groupByTypename(result, { keepUnknown: true });</span>
 <span class="cstat-no" title="statement not covered" >  return grouped;</span>
-<span class="cstat-no" title="statement not covered" >}</span></pre></td></tr></table></pre>
+}</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-14T20:55:48.215Z
+                at 2025-09-27T11:02:49.311Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

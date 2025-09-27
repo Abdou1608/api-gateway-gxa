@@ -8,7 +8,7 @@ import { validateBody } from '../middleware/zodValidator';
 
 const router = Router();
 
-router.post('/', validateBody(api_create_quittanceValidator), async (req, res) => {
+router.post('/', validateBody(api_create_quittanceValidator), async (req, res, next) => {
   try {
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
@@ -22,10 +22,10 @@ router.post('/', validateBody(api_create_quittanceValidator), async (req, res) =
     const result = await quittance_create(contrat,piece,bordereau,autocalcul,affectation,data, _BasSecurityContext);
     res.json(result);
   } catch (error:any) {
-   res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });  }
+   return next(error);  }
 });
 
-router.post('/autocalcule', validateBody(api_create_quittanceValidator), async (req, res) => {
+router.post('/autocalcule', validateBody(api_create_quittanceValidator), async (req, res, next) => {
   try {
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
@@ -41,7 +41,7 @@ router.post('/autocalcule', validateBody(api_create_quittanceValidator), async (
     const result = await quittance_create(contrat,piece,bordereau,autocalcul,affectation,data, _BasSecurityContext,datedebut,datedefin);
     res.json(result);
   } catch (error:any) {
- res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });  }
+ return next(error);  }
 });
 
 export default router;

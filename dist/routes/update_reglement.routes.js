@@ -2,15 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 // Routes pour la fonctionnalité : Update Reglement
 const express_1 = require("express");
+const errors_1 = require("../common/errors");
 const router = (0, express_1.Router)();
-router.put('/', async (req, res) => {
+router.put('/', async (req, res, next) => {
     try {
         //const response = req.body;
         // res.json(response);
-        throw new Error("Fonction Non Disponible");
+        return next(new errors_1.InternalError('Fonction Non Disponible'));
     }
     catch (error) {
-        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
+        return next(error);
     }
 });
 exports.default = router;

@@ -1,5 +1,6 @@
 import { BasParams } from '../../Model/BasSoapObject/BasParams';
 import { BasSecurityContext } from '../../Model/BasSoapObject/BasSecurityContext';
+import groupByTypename from '../../utils/groupByTypename';
 import { sendSoapRequest } from '../soap.service';
 
 export async function produit_listitems(typeecran? : string,
@@ -16,6 +17,7 @@ export async function produit_listitems(typeecran? : string,
 
    params.AddString("datanode","prod")
   const result = await sendSoapRequest(params, "Produit_ListItems",BasSecurityContext,"prod");
+ //const grouped = groupByTypename(result, { keepUnknown: true }); 
   return result;
 
 }

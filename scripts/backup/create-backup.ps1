@@ -7,7 +7,7 @@ $timestamp = Get-Date -Format 'yyyyMMdd-HHmm'
 $baseBranch = "${Prefix}/$timestamp"
 $branch = $baseBranch
 $i = 1
-while (git rev-parse --verify $branch 2>$null) {
+while (git rev-parse -q --verify "refs/heads/$branch") {
   $branch = "$baseBranch-$i"
   $i += 1
 }

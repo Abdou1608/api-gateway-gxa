@@ -7,12 +7,12 @@ import { validateBody } from '../middleware/zodValidator';
 
 const router = Router();
 
-router.post('/', validateBody(api_logoutValidator), async (req, res) => {
+router.post('/', validateBody(api_logoutValidator), async (req, res, next) => {
   try {
     const result = await closesession_(req.body);
     res.json(result);
   } catch (error:any) {
-    res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
+    return next(error);
   }
 });
 

@@ -5,14 +5,15 @@ import { BasParams } from '../Model/BasSoapObject/BasParams';
 import groupByTypename from '../utils/groupByTypename';
 
 
+
 export async function Sinistre_ListItemsHandler(req: Request, res: Response) {
   try {
-    const params=new BasParams()
+   let params=new BasParams()
     //const params = req.body;
-      const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-      basSecurityContext.IsAuthenticated=true
-  params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar());
+    let _BasSecurityContext= new BasSecurityContext()
+    _BasSecurityContext.IsAuthenticated=true
+    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
+  params.AddStr("BasSecurityContext",_BasSecurityContext.ToSoapVar());
   const dossierId = typeof req.body.dossier === 'string' ? Number(req.body.dossier) : req.body.dossier;
   
   if(dossierId && dossierId>0){
@@ -22,10 +23,11 @@ export async function Sinistre_ListItemsHandler(req: Request, res: Response) {
   const contrat = contraId;
   if(contrat && contrat>0){params.AddInt("contrat",req.body.contrat)}
   ;
-    const result = await sendSoapRequest(params,"Sin_Listitems",basSecurityContext,"sinistres");
-    res.json(result);
+    const result = await sendSoapRequest(params,"Sin_Listitems",_BasSecurityContext,"sins");
+   const grouped = groupByTypename(result, { keepUnknown: true });
+    res.json(grouped);
   } catch (error:any) {
-     const e=error ? error :null
+     
   res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });  }
 };
 
@@ -42,7 +44,7 @@ export async function Sinistre_DetailHandler(req: Request, res: Response) {
     if(sinistre && sinistre>0){
      params.AddInt("sinistre",req.body.sinistre)}
      
-    const result = await sendSoapRequest(params,"Sin_Details",basSecurityContext, "sinistre");
+    const result = await sendSoapRequest(params,"Sin_Details",basSecurityContext, "sin");
     const grouped = groupByTypename(result, { keepUnknown: true });
 
     res.json(grouped);

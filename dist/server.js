@@ -15,9 +15,11 @@ const Apply_Middlewares_1 = require("./middleware/Apply-Middlewares");
 const env_1 = __importDefault(require("./config/env"));
 const error_handler_1 = require("./middleware/error-handler");
 const metrics_1 = require("./observability/metrics");
+const request_id_1 = require("./common/middleware/request-id");
 const app = (0, express_1.default)();
 // Application des middlewares globaux + instrumentation métriques
 (0, Apply_Middlewares_1.applyGlobalMiddleware)(app);
+app.use(request_id_1.requestIdMiddleware);
 app.use(metrics_1.metricsInstrumentation);
 // Documentation OpenAPI (lecture du YAML principal)
 const openapiPathCandidates = [
@@ -51,6 +53,10 @@ app.get('/metrics', metrics_1.metricsHandler);
 app.use(error_handler_1.notFoundHandler);
 // Error handler global
 app.use(error_handler_1.errorHandler);
-app.listen(env_1.default.port, env_1.default.host, () => {
-    console.log(`🚀 Serveur SOAP REST Gateway démarré sur http://${env_1.default.host}:${env_1.default.port}`);
-});
+// Export app for testing; only start the server when executed directly
+exports.default = app;
+if (require.main === module) {
+    app.listen(env_1.default.port, env_1.default.host, () => {
+        console.log(`🚀 Serveur SOAP REST Gateway démarré sur http://${env_1.default.host}:${env_1.default.port}`);
+    });
+}

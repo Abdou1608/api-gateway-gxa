@@ -1,14 +1,14 @@
 import { BasSoapFault, BasFaultInfo } from '../Model/BasSoapObject/BasSoapFault';
-import { AppError } from '../middleware/error-handler';
+import { SoapServerError } from '../common/errors';
 
 /**
  * Mapping des faultcode / state vers des statuts HTTP.
  * Guidelines d'ajustement:
- *  - Client/Sender => 400 (erreur d'appel / validation)
+ *  - Client/Sender => 405 (erreur d'appel / validation)
  *  - Server/Receiver => 502 (erreur côté service distant)
  *  - SOAP-ENV:<number> :
  *       * si faultstring contient 'session expired' => 440 (Login Timeout non standard, adapter à 401 si souhaité)
- *       * sinon 400 par défaut (on considère une erreur d'usage)
+ *       * sinon 405 par défaut (on considère une erreur d'usage)
  *  - state (champ applicatif) peut raffiner (ex: state=0 pour session expirée -> 440/401)
  * Procédé d'extension:
  *  1. Observer logs [SOAP-FAULT] produits (faultcode, state) en environnement de test.
@@ -16,17 +16,17 @@ import { AppError } from '../middleware/error-handler';
  *  3. Garder la règle de fallback 500 pour ne rien masquer.
  */
 const FAULTCODE_HTTP_MAP: Record<string, number> = {
-  client: 400,
-  sender: 400,
+  client: 405,
+  sender: 405,
   server: 502,
   receiver: 502,
-  'soap-env:client': 400,
-  'soap-env:server': 502,
+  'soap-env:client': 405,
+  'soap-env:server': 503,
   // Ajouts fréquents potentiels
-  'soap:client': 400,
-  'soap:server': 502,
-  'env:client': 400,
-  'env:server': 502,
+  'soap:client': 405,
+  'soap:server': 504,
+  'env:client': 405,
+  'env:server': 505,
 };
 
 /** Mapping optionnel d'états applicatifs BAS (state) -> HTTP. Ajuster selon la sémantique métier. */
@@ -72,7 +72,7 @@ export function normalizeBasFault(fault: BasFaultInfo): NormalizedSoapFaultError
       if (/session\s+expired/i.test(fault.faultstring || '')) {
         status = 440; // code non standard
         errorCode = 'soap.sessionExpired';
-      } else status = 400;
+      } else status = 405;
     }
   }
 
@@ -88,7 +88,7 @@ export function normalizeBasFault(fault: BasFaultInfo): NormalizedSoapFaultError
   }
 
   // 3. Heuristiques de message si non présent
-  const message = fault.shortMessage || fault.faultstring || fault.reasonText || 'SOAP Fault';
+  const message = fault.shortMessage || fault.faultstring || fault.reasonText || fault.details || 'SOAP Fault';
 
   const norm: NormalizedSoapFaultError = { httpStatus: status, message, errorCode, fault };
   pushFault(errorCode, fault);
@@ -110,12 +110,11 @@ export function handleSoapResponse(rawXml: string, logger?: { debug: (...a: any[
         logger.debug?.('[SOAP-FAULT]', { status: norm.httpStatus, faultcode: info.faultcode, state: info.state, msg: norm.message });
       } catch { /* ignore logging failure */ }
     }
-    throw new AppError(norm.message, norm.httpStatus, {
-      faultcode: info.faultcode,
-      state: info.state,
-      details: info.details,
-      errorCode: norm.errorCode,
-    });
+    throw new SoapServerError(
+      norm.errorCode,
+      norm.message,
+      { soapFault: { faultcode: info.faultcode, faultstring: info.faultstring, detail: info.details, state: info.state } }
+    );
   }
   return rawXml;
 }

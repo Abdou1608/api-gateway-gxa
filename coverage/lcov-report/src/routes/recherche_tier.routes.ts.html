@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">51.61% </span>
+                <span class="strong">38.09% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>16/31</span>
+                <span class='fraction'>8/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">51.61% </span>
+                <span class="strong">38.09% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>16/31</span>
+                <span class='fraction'>8/21</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -94,17 +94,22 @@
 <a name='L29'></a><a href='#L29'>29</a>
 <a name='L30'></a><a href='#L30'>30</a>
 <a name='L31'></a><a href='#L31'>31</a>
-<a name='L32'></a><a href='#L32'>32</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -116,15 +121,20 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Router } from 'express';
 &nbsp;
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
@@ -136,22 +146,27 @@ import { validateBody } from '../middleware/zodValidator';
 &nbsp;
 const router = Router();
 &nbsp;
-router.post('/', validateBody(api_tiers_searchValidator), async (req, res) =&gt; {
+router.post('/', validateBody(api_tiers_searchValidator), <span class="fstat-no" title="function not covered" >async </span>(req, res, next) =&gt; {
 <span class="cstat-no" title="statement not covered" >try {</span>
-<span class="cstat-no" title="statement not covered" >    const _BasSecurityContext= new BasSecurityContext()</span>
+  let _BasSecurityContext= <span class="cstat-no" title="statement not covered" >new BasSecurityContext()</span>
 <span class="cstat-no" title="statement not covered" >  _BasSecurityContext.IsAuthenticated=true</span>
 <span class="cstat-no" title="statement not covered" >  _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId</span>
-<span class="cstat-no" title="statement not covered" >  const reference=req.body.reference ?? ""</span>
-<span class="cstat-no" title="statement not covered" >  const dppname=req.body.dppname ?? reference</span>
-<span class="cstat-no" title="statement not covered" >  </span>
-<span class="cstat-no" title="statement not covered" >//console.log("-----------------------------Données Reccus dans Recherche Tier Route req.body.SessionId =="+ req.body.BasSecurityContext._SessionId)</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const result = await tiers_search(_BasSecurityContext,reference,dppname);</span>
+const reference=<span class="cstat-no" title="statement not covered" >req.body.reference ?? ""</span>
+  const dppname=<span class="cstat-no" title="statement not covered" >req.body.dppname ?? null</span>
+  const ntel =<span class="cstat-no" title="statement not covered" >req.body.ntel ?? null</span>
+  const datenais= <span class="cstat-no" title="statement not covered" >req.body.datenais ?? null</span>
+  const typetiers=<span class="cstat-no" title="statement not covered" >req.body.typetiers ?? null</span>
+  const rsociale=<span class="cstat-no" title="statement not covered" >req.body.rsociale ?? null</span>
+  
+  
+//console.log("-----------------------------Données Reccus dans Recherche Tier Route req.body.SessionId =="+ req.body.BasSecurityContext._SessionId)
+&nbsp;
+&nbsp;
+  const result = <span class="cstat-no" title="statement not covered" >await tiers_search(_BasSecurityContext,reference,dppname,ntel,datenais,typetiers,rsociale);</span>
 <span class="cstat-no" title="statement not covered" >  res.json(result);</span>
-<span class="cstat-no" title="statement not covered" >} catch (error:any) {</span>
-<span class="cstat-no" title="statement not covered" >  res.status(500).json({message:error.message, detail: error });</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+} catch (error:any) {
+<span class="cstat-no" title="statement not covered" > return next(error);</span>
+}
 });
 &nbsp;
 export default router;
@@ -163,7 +178,7 @@ export default router;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-14T20:55:48.215Z
+                at 2025-09-27T11:02:49.311Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -9,12 +9,12 @@ import { validateBody } from '../middleware/zodValidator';
 
 const router = Router();
 
-router.post('/', validateBody(api_tiers_searchValidator), async (req, res) => {
+router.post('/', validateBody(api_tiers_searchValidator), async (req, res, next) => {
 try {
-    const _BasSecurityContext= new BasSecurityContext()
+  let _BasSecurityContext= new BasSecurityContext()
   _BasSecurityContext.IsAuthenticated=true
   _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-  const reference=req.body.reference ?? ""
+const reference=req.body.reference ?? ""
   const dppname=req.body.dppname ?? null
   const ntel =req.body.ntel ?? null
   const datenais= req.body.datenais ?? null
@@ -28,7 +28,8 @@ try {
   const result = await tiers_search(_BasSecurityContext,reference,dppname,ntel,datenais,typetiers,rsociale);
   res.json(result);
 } catch (error:any) {
- res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });}
+ return next(error);
+}
 });
 
 export default router;

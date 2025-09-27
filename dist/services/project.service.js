@@ -35,15 +35,15 @@ async function Project_ListItemsHandler(req, res) {
 ;
 async function Project_OfferListItemsHandler(req, res) {
     try {
-        const params = new BasParams_1.BasParams();
+        let params = new BasParams_1.BasParams();
         //const params = req.body;
-        const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
-        basSecurityContext.IsAuthenticated = true;
-        params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
+        let _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
+        _BasSecurityContext.IsAuthenticated = true;
+        _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
+        params.AddStr("BasSecurityContext", _BasSecurityContext.ToSoapVar());
         params.AddInt("idproj", req.body.idproj);
         // params.AddInt("projet",req.body.projet)
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_OfferListItem", basSecurityContext, "Project");
+        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_OfferListItem", _BasSecurityContext, "Project");
         const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
         res.json(grouped);
     }
@@ -54,9 +54,9 @@ async function Project_OfferListItemsHandler(req, res) {
 }
 async function Project_DetailHandler(req, res) {
     try {
-        const params = new BasParams_1.BasParams();
+        let params = new BasParams_1.BasParams();
         //const params = req.body;
-        const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
+        let basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
         basSecurityContext.IsAuthenticated = true;
         params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());

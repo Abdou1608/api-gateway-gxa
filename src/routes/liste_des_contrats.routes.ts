@@ -8,12 +8,12 @@ import { validateBody } from '../middleware/zodValidator';
 
 const router = Router();
 
-router.post('/', validateBody(api_liste_des_contratsValidator), async (req, res) => {
+router.post('/', validateBody(api_liste_des_contratsValidator), async (req, res, next) => {
   try {
-    const _BasSecurityContext= new BasSecurityContext()
+    let _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
     _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-    const reference=req.body.reference ?? ""
+  const reference=req.body.reference ?? ""
     const detailorigine=req.body.detailorigine
     const origine= req.body.origine 
     const codefic=req.body.codefic ?? ""
@@ -21,7 +21,7 @@ router.post('/', validateBody(api_liste_des_contratsValidator), async (req, res)
     const result = await cont_search(reference,detailorigine,origine,codefic,nomchamp,_BasSecurityContext);
     res.json(result);
   } catch (error:any) {
-    res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
+    return next(error);
   }
 });
 

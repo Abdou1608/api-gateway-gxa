@@ -6,7 +6,7 @@ const api_detail_adhesionValidator_1 = require("../validators/api_detail_adhesio
 const zodValidator_1 = require("../middleware/zodValidator");
 const adh_details_service_1 = require("../services/detail_adhesion/adh_details.service");
 const router = (0, express_1.Router)();
-router.post('/', (0, zodValidator_1.validateBody)(api_detail_adhesionValidator_1.api_detail_adhesionValidator), async (req, res) => {
+router.post('/', (0, zodValidator_1.validateBody)(api_detail_adhesionValidator_1.api_detail_adhesionValidator), async (req, res, next) => {
     try {
         const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         _BasSecurityContext.IsAuthenticated = true;
@@ -15,7 +15,7 @@ router.post('/', (0, zodValidator_1.validateBody)(api_detail_adhesionValidator_1
         res.json(result);
     }
     catch (error) {
-        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
+        return next(error);
     }
 });
 exports.default = router;

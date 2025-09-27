@@ -6,7 +6,7 @@ const BasSecurityContext_1 = require("../Model/BasSoapObject/BasSecurityContext"
 const api_create_quittanceValidator_1 = require("../validators/api_create_quittanceValidator");
 const zodValidator_1 = require("../middleware/zodValidator");
 const router = (0, express_1.Router)();
-router.post('/', (0, zodValidator_1.validateBody)(api_create_quittanceValidator_1.api_create_quittanceValidator), async (req, res) => {
+router.post('/', (0, zodValidator_1.validateBody)(api_create_quittanceValidator_1.api_create_quittanceValidator), async (req, res, next) => {
     try {
         const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         _BasSecurityContext.IsAuthenticated = true;
@@ -21,10 +21,10 @@ router.post('/', (0, zodValidator_1.validateBody)(api_create_quittanceValidator_
         res.json(result);
     }
     catch (error) {
-        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
+        return next(error);
     }
 });
-router.post('/autocalcule', (0, zodValidator_1.validateBody)(api_create_quittanceValidator_1.api_create_quittanceValidator), async (req, res) => {
+router.post('/autocalcule', (0, zodValidator_1.validateBody)(api_create_quittanceValidator_1.api_create_quittanceValidator), async (req, res, next) => {
     try {
         const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         _BasSecurityContext.IsAuthenticated = true;
@@ -41,7 +41,7 @@ router.post('/autocalcule', (0, zodValidator_1.validateBody)(api_create_quittanc
         res.json(result);
     }
     catch (error) {
-        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
+        return next(error);
     }
 });
 exports.default = router;

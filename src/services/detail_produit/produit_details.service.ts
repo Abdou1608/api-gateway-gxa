@@ -19,5 +19,5 @@ params.AddBool("basecouv",basecouvs ?? true)
 console.log("Paramettres du Detail du produit requis==="+JSON.stringify(params))
   const result = await sendSoapRequest(params,"Produit_Details",BasSecurityContext,"newprod");
   const grouped = groupByTypename(result, { keepUnknown: true});
-  return result;
+  return grouped;
 }

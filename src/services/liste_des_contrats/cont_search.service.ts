@@ -1,5 +1,6 @@
 import { BasParams } from "../../Model/BasSoapObject/BasParams";
 import { BasSecurityContext } from "../../Model/BasSoapObject/BasSecurityContext";
+import groupByTypename from "../../utils/groupByTypename";
 import { sendSoapRequest } from "../soap.service";
 
 
@@ -34,6 +35,8 @@ codefic:string,nomchamp: string, BasSecurityContext:BasSecurityContext) {
     </soapenv:Envelope>
   `;
 */
-  const result = await sendSoapRequest(params,"Cont_Search",BasSecurityContext);
+  const result = await sendSoapRequest(params,"Cont_Search",BasSecurityContext, "Conts");
+  const grouped = groupByTypename(result, { keepUnknown: true });
+  return grouped;
   return result;
 }

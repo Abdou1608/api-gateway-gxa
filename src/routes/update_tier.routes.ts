@@ -8,7 +8,7 @@ import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 
 const router = Router();
 
-router.put('/',  async (req, res) => {
+router.put('/',  async (req, res, next) => {
   const dossier = JSON.parse(req.body.dossier)
   try {
     const _BasSecurityContext= new BasSecurityContext()
@@ -20,7 +20,7 @@ const	data =req.body.data
     const result = await tiers_update(dossier,data,_BasSecurityContext);
     res.json(result);
   } catch (error:any) {
-    res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
+    return next(error);
   }
 });
 

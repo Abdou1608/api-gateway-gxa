@@ -12,5 +12,6 @@ async function produit_listitems(typeecran, branche, disponible, BasSecurityCont
     disponible ? params.AddBool("disponible", disponible) : null;
     params.AddString("datanode", "prod");
     const result = await (0, soap_service_1.sendSoapRequest)(params, "Produit_ListItems", BasSecurityContext, "prod");
+    //const grouped = groupByTypename(result, { keepUnknown: true }); 
     return result;
 }

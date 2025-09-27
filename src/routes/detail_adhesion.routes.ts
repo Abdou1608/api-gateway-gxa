@@ -8,7 +8,7 @@ import { adh_details } from '../services/detail_adhesion/adh_details.service';
 
 const router = Router();
 
-router.post('/', validateBody(api_detail_adhesionValidator), async (req, res) => {
+router.post('/', validateBody(api_detail_adhesionValidator), async (req, res, next) => {
   try {
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
@@ -16,7 +16,7 @@ router.post('/', validateBody(api_detail_adhesionValidator), async (req, res) =>
     const result = await adh_details(req.body,_BasSecurityContext);
     res.json(result);
   } catch (error:any) {
-    res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
+    return next(error);
   }
 });
 

@@ -4,13 +4,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const soap_service_1 = require("../services/soap.service");
 const router = (0, express_1.Router)();
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
     try {
         const response = await (0, soap_service_1.sendSoapRequest)(req.body);
         res.json(response);
     }
     catch (error) {
-        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
+        return next(error);
     }
 });
 exports.default = router;

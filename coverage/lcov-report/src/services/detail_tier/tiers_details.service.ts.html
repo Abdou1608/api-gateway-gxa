@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">28.57% </span>
+                <span class="strong">26.66% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/21</span>
+                <span class='fraction'>4/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/4</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">28.57% </span>
+                <span class="strong">26.66% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/21</span>
+                <span class='fraction'>4/15</span>
             </div>
         
             
@@ -83,54 +83,57 @@
 <a name='L18'></a><a href='#L18'>18</a>
 <a name='L19'></a><a href='#L19'>19</a>
 <a name='L20'></a><a href='#L20'>20</a>
-<a name='L21'></a><a href='#L21'>21</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { sendSoapRequest } from '../soap.service';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { sendSoapRequest } from '../soap.service';
 import { BasSecurityContext } from '../../Model/BasSoapObject/BasSecurityContext';
 import { BasParams } from '../../Model/BasSoapObject/BasParams';
 import groupByTypename from '../../utils/groupByTypename';
 &nbsp;
-export <span class="fstat-no" title="function not covered" >async function tiers_details( BasSecurityContext:BasSecurityContext,Dossier:number, composition?:boolean, </span>
-<span class="cstat-no" title="statement not covered" >extensions?:boolean) {</span>
-<span class="cstat-no" title="statement not covered" > // const soapBody = {BasSecurityContext:BasSec.ToSoapVar(),Dossier,composition,extensions}</span>
-<span class="cstat-no" title="statement not covered" >  const params=new BasParams()</span>
+export async function <span class="fstat-no" title="function not covered" >tiers_details(</span> BasSecurityContext:BasSecurityContext,Dossier:any, composition?:boolean, 
+extensions?:boolean) {
+ // const soapBody = {BasSecurityContext:BasSec.ToSoapVar(),Dossier,composition,extensions}
+  const params=<span class="cstat-no" title="statement not covered" >new BasParams()</span>
 <span class="cstat-no" title="statement not covered" >  params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())</span>
-<span class="cstat-no" title="statement not covered" >   params.AddInt("Dossier",Dossier)</span>
-<span class="cstat-no" title="statement not covered" >  // params.AddBool("composition",composition ?? false) </span>
+  const DossierId = <span class="cstat-no" title="statement not covered" >typeof Dossier === 'string' ? Number(Dossier) : Dossier;</span>
+<span class="cstat-no" title="statement not covered" >   params.AddInt("Dossier",DossierId)</span>
+  // params.AddBool("composition",composition ?? false) 
 <span class="cstat-no" title="statement not covered" >  params.AddBool("composition",true)</span>
 <span class="cstat-no" title="statement not covered" >   params.AddBool("extensions",extensions ?? false) </span>
 <span class="cstat-no" title="statement not covered" >   params.AddString("ListeEntites","CLI, SAL,DPP")</span>
 <span class="cstat-no" title="statement not covered" >   params.AddString("datanode","Tiers")</span>
-<span class="cstat-no" title="statement not covered" >//console.log("BasSecurityContext in tiers_detail service ===="+JSON.stringify( BasSecurityContext))</span>
-<span class="cstat-no" title="statement not covered" >  const result = await sendSoapRequest(params, "Tiers_Details",BasSecurityContext,"Tiers");</span>
-<span class="cstat-no" title="statement not covered" >  const grouped = groupByTypename(result, { keepUnknown: true });</span>
+//console.log("BasSecurityContext in tiers_detail service ===="+JSON.stringify( BasSecurityContext))
+  const result = <span class="cstat-no" title="statement not covered" >await sendSoapRequest(params, "Tiers_Details",BasSecurityContext,"Tiers");</span>
+  const grouped = <span class="cstat-no" title="statement not covered" >groupByTypename(result, { keepUnknown: true });</span>
 <span class="cstat-no" title="statement not covered" >  return grouped;</span>
-<span class="cstat-no" title="statement not covered" >}</span></pre></td></tr></table></pre>
+}</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-14T20:55:48.215Z
+                at 2025-09-27T11:02:49.311Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

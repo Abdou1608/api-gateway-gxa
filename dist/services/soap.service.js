@@ -8,6 +8,8 @@ const BasSecurityContext_1 = require("../Model/BasSoapObject/BasSecurityContext"
 const soap_parser_service_1 = require("../utils/soap-parser.service");
 const xml_parser_1 = require("../utils/xml-parser");
 const cont_to_xml_service_1 = require("./create_contrat/cont_to_xml.service");
+const BasSoapFault_1 = require("../Model/BasSoapObject/BasSoapFault");
+const errors_1 = require("../common/errors");
 //import {  parseSoapOffersToRows } from '../utils/new-soap-parser.service';
 const clhttp = require('http');
 const config = new app_config_service_1.AppConfigService;
@@ -23,8 +25,7 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
     let sid = _sid ?? "";
     let xmldata = "";
     if (!basSecurityContext) {
-        // console.warn("⚠️ Aucune SessionId fournie dans les paramètres !");
-        throw new Error("Aucune Identité n'est fournie");
+        throw new errors_1.ValidationError("Aucune identité n'est fournie", [{ path: 'BasSecurityContext', message: 'manquant' }]);
     }
     else {
         console.log("✅ Inside ----------------------------------------------------------------");
@@ -59,48 +60,50 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
         // console.log("✅ Inside SENDSOAPREQUEST - actionName:", actionName);
         console.log("✅ Inside SENDSOAPREQUEST - sid:", sid);
         const an = actionName ? actionName : "";
-        const result = await runBasAct.RunAction(an, params, basSecurityContext ? basSecurityContext : new BasSecurityContext_1.BasSecurityContext(), xmldata).then(async (response) => {
+        const result = await runBasAct.RunAction(an, params, basSecurityContext ? basSecurityContext : new BasSecurityContext_1.BasSecurityContext(), xmldata)
+            .then(async (response) => {
+            if (BasSoapFault_1.BasSoapFault.IsBasError(response)) {
+                const f = BasSoapFault_1.BasSoapFault.ParseBasErrorDetailed(response);
+                throw new errors_1.SoapServerError('SOAP.FAULT', f.faultstring || 'SOAP Fault', { soapFault: { faultcode: f.faultcode, faultstring: f.faultstring, detail: f.details, state: f.state } });
+            }
             console.log("✅ Inside runBasAct - actionName====", actionName);
             console.log("✅ Inside runBasAct - response====", response);
-            if (sid == "produit") {
-                // console.log("✅ Inside runBasAct - reponse du SOAP avant parser====", response);
-                return await (0, soap_parser_service_1.parseProdSoapResponse)(response);
+            // Si aucune erreur, on traite les données selon le `sid`
+            if (sid === "produit") {
+                return { success: true, data: await (0, soap_parser_service_1.parseProdSoapResponse)(response) };
             }
-            //  if (actionName === "Xtlog_Get"){
-            //  return  parseSoapXmlToJson(response,sid)
-            // }
-            else if (sid == "prod") {
-                return (0, soap_parser_service_1.parseProdSoapResponse)(response);
+            else if (sid === "prod") {
+                return { success: true, data: (0, soap_parser_service_1.parseProdSoapResponse)(response) };
             }
             else if (sid === "contrat" || sid === "cont_") {
-                return (0, soap_parser_service_1.parseTabRowsXml)(response);
+                return { success: true, data: (0, soap_parser_service_1.parseTabRowsXml)(response) };
             }
             else if (sid === "tab") {
-                return (0, soap_parser_service_1.parseTabRowsXml)(response);
+                return { success: true, data: (0, soap_parser_service_1.parseTabRowsXml)(response) };
             }
-            else if ((sid === "offers") || (sid === "offer") || (sid === "Offer")) {
-                // console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======"+ response);
-                return await (0, soap_parser_service_1.parseSoapEmbeddedXmlToJson)(response, "offers");
-                //return parseSoapXmlToJson(response,sid)
+            else if (["offers", "offer", "Offer"].includes(sid)) {
+                return { success: true, data: await (0, soap_parser_service_1.parseSoapEmbeddedXmlToJson)(response, "offers") };
             }
-            else if ((sid === "projects") || (sid === "project") || (sid === "Project")) {
-                // console.log("✅ Inside runBasAct - Else sid====offres || sid===projects======"+ response);
-                return await (0, soap_parser_service_1.parseSoapEmbeddedXmlToJson)(response, sid);
+            else if (["projects", "project", "Project"].includes(sid)) {
+                return { success: true, data: await (0, soap_parser_service_1.parseSoapEmbeddedXmlToJson)(response, sid) };
             }
             else if (sid === "project-detail") {
-                (0, soap_parser_service_1.parseSoapEmbeddedXmlToJson)(response, "Tarc0");
+                return { success: true, data: (0, soap_parser_service_1.parseSoapEmbeddedXmlToJson)(response, "Tarc0") };
             }
             else {
-                return await (0, soap_parser_service_1.parseSoapXmlToJson)(response, sid);
+                return { success: true, data: await (0, soap_parser_service_1.parseSoapXmlToJson)(response, sid) };
             }
-        }).catch(e => { return "Erreur d'extraction des données :" + e; });
-        //parser.parseStringPromise(response);
-        if (JSON.stringify(result).includes("Erreur d'extraction des données :")) {
-            throw new Error(JSON.stringify(result));
+        })
+            .catch((e) => {
+            // Laisser l'erreur typer remonter, sinon rewrap en TransformError
+            if (e instanceof errors_1.SoapServerError || e instanceof errors_1.ValidationError)
+                throw e;
+            throw new errors_1.TransformError("Erreur d'extraction des données", { step: 'parse', inputSnippet: (typeof data === 'string' ? data.slice(0, 200) : undefined) }, e);
+        });
+        if ('data' in result) {
+            return result.data;
         }
-        else {
-            return result;
-        }
+        throw new errors_1.InternalError("Unexpected result structure: missing 'data' property.");
         /*
          //* ✅ Construction de la requête SOAP
          const soapEnvelope = `<?xml version="1.0" encoding="UTF-8"?>

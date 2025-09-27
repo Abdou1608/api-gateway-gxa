@@ -13,12 +13,12 @@ const BasParams_1 = require("../Model/BasSoapObject/BasParams");
 const groupByTypename_1 = __importDefault(require("../utils/groupByTypename"));
 async function Sinistre_ListItemsHandler(req, res) {
     try {
-        const params = new BasParams_1.BasParams();
+        let params = new BasParams_1.BasParams();
         //const params = req.body;
-        const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
-        basSecurityContext.IsAuthenticated = true;
-        params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
+        let _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
+        _BasSecurityContext.IsAuthenticated = true;
+        _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
+        params.AddStr("BasSecurityContext", _BasSecurityContext.ToSoapVar());
         const dossierId = typeof req.body.dossier === 'string' ? Number(req.body.dossier) : req.body.dossier;
         if (dossierId && dossierId > 0) {
             params.AddInt("dossier", dossierId);
@@ -29,11 +29,11 @@ async function Sinistre_ListItemsHandler(req, res) {
             params.AddInt("contrat", req.body.contrat);
         }
         ;
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Sin_Listitems", basSecurityContext, "sinistres");
-        res.json(result);
+        const result = await (0, soap_service_1.sendSoapRequest)(params, "Sin_Listitems", _BasSecurityContext, "sins");
+        const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
+        res.json(grouped);
     }
     catch (error) {
-        const e = error ? error : null;
         res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
     }
 }
@@ -50,7 +50,7 @@ async function Sinistre_DetailHandler(req, res) {
         if (sinistre && sinistre > 0) {
             params.AddInt("sinistre", req.body.sinistre);
         }
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Sin_Details", basSecurityContext, "sinistre");
+        const result = await (0, soap_service_1.sendSoapRequest)(params, "Sin_Details", basSecurityContext, "sin");
         const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
         res.json(grouped);
     }

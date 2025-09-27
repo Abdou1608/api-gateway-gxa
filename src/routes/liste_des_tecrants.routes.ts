@@ -8,7 +8,7 @@ import { validateBody } from '../middleware/zodValidator';
 
 const router = Router();
 
-router.post('/', validateBody(api_liste_des_bransValidator), async (req, res) => {
+router.post('/', validateBody(api_liste_des_bransValidator), async (req, res, next) => {
   try {
   const _BasSecurityContext= new BasSecurityContext()
   _BasSecurityContext.IsAuthenticated=true
@@ -21,8 +21,8 @@ router.post('/', validateBody(api_liste_des_bransValidator), async (req, res) =>
     const result = await bran_listitems(_BasSecurityContext);
     res.json(result);
   }  catch (error:any) {
-   const e=error ? error :null
-  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });}
+   return next(error);
+  }
 });
 
 export default router;

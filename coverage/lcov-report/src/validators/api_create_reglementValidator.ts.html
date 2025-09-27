@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">28.57% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>19/19</span>
+                <span class='fraction'>2/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">28.57% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>19/19</span>
+                <span class='fraction'>2/7</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -83,38 +83,38 @@
 <a name='L18'></a><a href='#L18'>18</a>
 <a name='L19'></a><a href='#L19'>19</a>
 <a name='L20'></a><a href='#L20'>20</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { z } from "zod";
 &nbsp;
 export const api_create_reglementValidator = z.object({
   typeoperation: z.string().min(1, "champ requis"),
   typeenc: z.string().min(1, "champ requis"),
   targetkind: z.string().min(1, "champ requis"),
-  targetqintid: z.string().optional().refine(v =&gt; v === undefined || v.length &gt; 0, "doit être non vide si présent"),
+  targetqintid: z.string().optional().refine(<span class="fstat-no" title="function not covered" >v </span>=&gt; <span class="cstat-no" title="statement not covered" >v === undefined || v.length &gt; 0,</span> "doit être non vide si présent"),
   montant: z.number(),
   devise: z.string().min(1, "champ requis"),
-  date: z.preprocess(val =&gt; (typeof val === "string" || val instanceof Date) ? new Date(val) : val, z.date()).optional(),
+  date: z.preprocess(<span class="fstat-no" title="function not covered" >val </span>=&gt; <span class="cstat-no" title="statement not covered" >(typeof val === "string" || val instanceof Date) ? new Date(val) : val,</span> z.date()).optional(),
   défaut: z.any(),
-  dateff: z.preprocess(val =&gt; (typeof val === "string" || val instanceof Date) ? new Date(val) : val, z.date()).optional(),
-  reference: z.string().optional().refine(v =&gt; v === undefined || v.length &gt; 0, "doit être non vide si présent"),
-  tierspayeur: z.string().optional().refine(v =&gt; v === undefined || v.length &gt; 0, "doit être non vide si présent"),
+  dateff: z.preprocess(<span class="fstat-no" title="function not covered" >val </span>=&gt; <span class="cstat-no" title="statement not covered" >(typeof val === "string" || val instanceof Date) ? new Date(val) : val,</span> z.date()).optional(),
+  reference: z.string().optional().refine(<span class="fstat-no" title="function not covered" >v </span>=&gt; <span class="cstat-no" title="statement not covered" >v === undefined || v.length &gt; 0,</span> "doit être non vide si présent"),
+  tierspayeur: z.string().optional().refine(<span class="fstat-no" title="function not covered" >v </span>=&gt; <span class="cstat-no" title="statement not covered" >v === undefined || v.length &gt; 0,</span> "doit être non vide si présent"),
   data: z.any(),
   BasSecurityContext:z.object({
     _SessionId:z.string().min(1, "champ SessionId est requis"),
@@ -127,7 +127,7 @@ export const api_create_reglementValidator = z.object({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-14T20:55:48.215Z
+                at 2025-09-27T11:02:49.311Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
