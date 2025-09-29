@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">31.57% </span>
+                <span class="strong">89.47% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/19</span>
+                <span class='fraction'>17/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>1/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">31.57% </span>
+                <span class="strong">89.47% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/19</span>
+                <span class='fraction'>17/19</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -98,19 +98,19 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -124,20 +124,20 @@ import { AppConfigService } from "../AppConfigService/app-config.service";
 import { BasSoapClient } from "../../Model/Model-BasSoapClient/BasSoapClient";
 import { SessionStorage } from '../../Model/Model-SessionStorage/SessionStorage';
 &nbsp;
-export async function <span class="fstat-no" title="function not covered" >opensession(</span>logon: string, password: string, domain?: string) {
-<span class="cstat-no" title="statement not covered" >  try {</span>
+export async function opensession(logon: string, password: string, domain?: string) {
+  try {
     
   
-    const params=<span class="cstat-no" title="statement not covered" >new BasParams()</span>
-<span class="cstat-no" title="statement not covered" >    params.AddString("logon",logon)</span>
-<span class="cstat-no" title="statement not covered" >     params.AddString("password",password)</span>
-<span class="cstat-no" title="statement not covered" >     params.AddString("domain",domain? domain :"") </span>
-     let sessionStorage = <span class="cstat-no" title="statement not covered" >new SessionStorage()</span>
-     const basSoapClient= <span class="cstat-no" title="statement not covered" >new BasSoapClient()</span>
-     const appc= <span class="cstat-no" title="statement not covered" >new AppConfigService()</span>
-const auth = <span class="cstat-no" title="statement not covered" >new AuthenticationHelper(sessionStorage,basSoapClient, appc)</span>
-  const result = <span class="cstat-no" title="statement not covered" >await  auth.AuthenticateUser(logon,password);</span>
-<span class="cstat-no" title="statement not covered" >  return result;</span>
+    const params=new BasParams()
+    params.AddString("logon",logon)
+     params.AddString("password",password)
+     params.AddString("domain",domain? <span class="branch-0 cbranch-no" title="branch not covered" >domain </span>:"") 
+     let sessionStorage = new SessionStorage()
+     const basSoapClient= new BasSoapClient()
+     const appc= new AppConfigService()
+const auth = new AuthenticationHelper(sessionStorage,basSoapClient, appc)
+  const result = await  auth.AuthenticateUser(logon,password);
+  return result;
 &nbsp;
 }   catch (error:any) {
 <span class="cstat-no" title="statement not covered" >  console.log("Erreur dans API dans opensession service=="+JSON.stringify( error))</span>
@@ -151,7 +151,7 @@ const auth = <span class="cstat-no" title="statement not covered" >new Authentic
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-27T11:02:49.311Z
+                at 2025-09-28T23:09:29.665Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

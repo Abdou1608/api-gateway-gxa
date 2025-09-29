@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.71% </span>
+                <span class="strong">14.28% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>18/21</span>
+                <span class='fraction'>3/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.33% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/12</span>
+                <span class='fraction'>0/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/2</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">16.66% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>15/18</span>
+                <span class='fraction'>3/18</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -116,9 +116,9 @@
 <a name='L51'></a><a href='#L51'>51</a>
 <a name='L52'></a><a href='#L52'>52</a>
 <a name='L53'></a><a href='#L53'>53</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -133,18 +133,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -154,18 +152,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { NextFunction, Request, Response } from 'express';
 import { BaseAppError, errorHttpStatus, InternalError } from '../common/errors';
@@ -185,16 +185,16 @@ export function <span class="fstat-no" title="function not covered" >notFoundHan
   });
 }
 &nbsp;
-export function errorHandler(err: any, req: Request, res: Response, _next: NextFunction) { // eslint-disable-line
-  const now = new Date().toISOString();
-  const requestId = res.locals.requestId || (req as any).requestId;
+export function <span class="fstat-no" title="function not covered" >errorHandler(</span>err: any, req: Request, res: Response, _next: NextFunction) { // eslint-disable-line
+  const now = <span class="cstat-no" title="statement not covered" >new Date().toISOString();</span>
+  const requestId = <span class="cstat-no" title="statement not covered" >res.locals.requestId || (req as any).requestId;</span>
 &nbsp;
-  const appErr: BaseAppError = err instanceof BaseAppError
+  const appErr: BaseAppError = <span class="cstat-no" title="statement not covered" >err instanceof BaseAppError</span>
     ? err
-    : <span class="branch-1 cbranch-no" title="branch not covered" >new InternalError(err?.message || 'Internal error');</span>
+    : new InternalError(err?.message || 'Internal error');
 &nbsp;
-  const status = errorHttpStatus(appErr);
-  const body: any = {
+  const status = <span class="cstat-no" title="statement not covered" >errorHttpStatus(appErr);</span>
+  const body: any = <span class="cstat-no" title="statement not covered" >{</span>
     error: {
       type: appErr.type,
       code: appErr.code,
@@ -206,18 +206,18 @@ export function errorHandler(err: any, req: Request, res: Response, _next: NextF
   };
 &nbsp;
   // Observability headers (avoid leaking details)
-  try { res.setHeader('X-Error-Type', appErr.type); } catch {}
-  try { res.setHeader('X-Error-Code', appErr.code); } catch {}
-  if (appErr.type === 'SOAP_ERROR') {
-    try { res.setHeader('X-SOAP-FAULT', '1'); } catch {}
+<span class="cstat-no" title="statement not covered" >  try { <span class="cstat-no" title="statement not covered" >res.setHeader('X-Error-Type', appErr.type); </span>} catch {}</span>
+<span class="cstat-no" title="statement not covered" >  try { <span class="cstat-no" title="statement not covered" >res.setHeader('X-Error-Code', appErr.code); </span>} catch {}</span>
+<span class="cstat-no" title="statement not covered" >  <span class="missing-if-branch" title="if path not taken" >I</span>if (appErr.type === 'SOAP_ERROR') {</span>
+<span class="cstat-no" title="statement not covered" >    try { <span class="cstat-no" title="statement not covered" >res.setHeader('X-SOAP-FAULT', '1'); </span>} catch {}</span>
   }
 &nbsp;
   // Include stack in non-production to help debugging
-  if (process.env.NODE_ENV !== 'production' &amp;&amp; err?.stack) {
-    body.error.stack = err.stack;
+<span class="cstat-no" title="statement not covered" >  <span class="missing-if-branch" title="if path not taken" >I</span>if (process.env.NODE_ENV !== 'production' &amp;&amp; err?.stack) {</span>
+<span class="cstat-no" title="statement not covered" >    body.error.stack = err.stack;</span>
   }
 &nbsp;
-  res.status(status).json(body);
+<span class="cstat-no" title="statement not covered" >  res.status(status).json(body);</span>
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -226,7 +226,7 @@ export function errorHandler(err: any, req: Request, res: Response, _next: NextF
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-27T11:02:49.311Z
+                at 2025-09-28T23:09:29.665Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

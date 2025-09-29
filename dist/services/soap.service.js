@@ -16,7 +16,7 @@ const config = new app_config_service_1.AppConfigService;
 const SOAP_URL = config.GetURlActionService();
 const bsc = new BasSoapClient_1.BasSoapClient();
 const runBasAct = new BasAction_1.BasAction(bsc, config);
-async function sendSoapRequest(params, actionName, basSecurityContext, _sid, data) {
+async function sendSoapRequest(params, actionName, basSecurityContext, _sid, data, ctx) {
     // let SoapParser= new SoapParserService();
     //const builder = new Builder({ headless: true });
     //const xml2js = await import('xml2js');
@@ -60,7 +60,7 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
         // console.log("✅ Inside SENDSOAPREQUEST - actionName:", actionName);
         console.log("✅ Inside SENDSOAPREQUEST - sid:", sid);
         const an = actionName ? actionName : "";
-        const result = await runBasAct.RunAction(an, params, basSecurityContext ? basSecurityContext : new BasSecurityContext_1.BasSecurityContext(), xmldata)
+        const result = await runBasAct.RunAction(an, params, basSecurityContext ? basSecurityContext : new BasSecurityContext_1.BasSecurityContext(), xmldata, ctx)
             .then(async (response) => {
             if (BasSoapFault_1.BasSoapFault.IsBasError(response)) {
                 const f = BasSoapFault_1.BasSoapFault.ParseBasErrorDetailed(response);

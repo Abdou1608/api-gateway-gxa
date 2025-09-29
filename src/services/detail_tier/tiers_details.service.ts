@@ -3,8 +3,13 @@ import { BasSecurityContext } from '../../Model/BasSoapObject/BasSecurityContext
 import { BasParams } from '../../Model/BasSoapObject/BasParams';
 import groupByTypename from '../../utils/groupByTypename';
 
-export async function tiers_details( BasSecurityContext:BasSecurityContext,Dossier:any, composition?:boolean, 
-extensions?:boolean) {
+export async function tiers_details(
+  BasSecurityContext: BasSecurityContext,
+  Dossier: any,
+  composition?: boolean,
+  extensions?: boolean,
+  ctx?: { userId?: string; domain?: string; password?: string }
+) {
  // const soapBody = {BasSecurityContext:BasSec.ToSoapVar(),Dossier,composition,extensions}
   const params=new BasParams()
   params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())
@@ -16,7 +21,7 @@ extensions?:boolean) {
    params.AddString("ListeEntites","CLI, SAL,DPP")
    params.AddString("datanode","Tiers")
 //console.log("BasSecurityContext in tiers_detail service ===="+JSON.stringify( BasSecurityContext))
-  const result = await sendSoapRequest(params, "Tiers_Details",BasSecurityContext,"Tiers");
+  const result = await sendSoapRequest(params, "Tiers_Details", BasSecurityContext, "Tiers", undefined, ctx);
   const grouped = groupByTypename(result, { keepUnknown: true });
   return grouped;
 }

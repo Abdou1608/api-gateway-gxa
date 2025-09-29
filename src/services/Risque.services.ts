@@ -4,7 +4,6 @@ import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 import { BasParams } from '../Model/BasSoapObject/BasParams';
 
 export async function Risk_ListItems(req: Request, res: Response) {
-  try {
   const params=new BasParams()
   //const params = req.body;
     const basSecurityContext = new BasSecurityContext()
@@ -15,15 +14,11 @@ export async function Risk_ListItems(req: Request, res: Response) {
    params.AddInt("piece",req.body.piece)
    params.AddString("datanode","risks")
  // const soapBody = {reference,dppname,typetiers,codp,datenais}
-  const result = await sendSoapRequest(params, "Risk_ListItems", basSecurityContext,"risks");
+  const result = await sendSoapRequest(params, "Risk_ListItems", basSecurityContext, "risks", undefined, { userId: (req as any).user?.sub, domain: req.body?.domain });
   res.json(result);
-} catch (error:any) {
-  const e=error ? error :null
-  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });}
 }
 
 export async function Risk_Create(req: Request, res: Response) {
-  try {
   const params=new BasParams()
   const basSecurityContext = new BasSecurityContext()
   basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
@@ -37,15 +32,11 @@ export async function Risk_Create(req: Request, res: Response) {
       params.AddDateTime("dateEntree",req.body.dateEntree ) }
    params.AddString("datanode","Risk")
  // const soapBody = {reference,dppname,typetiers,codp,datenais}
-  const result = await sendSoapRequest(params, "Risk_Create", basSecurityContext,"risk", req.body.data);
+  const result = await sendSoapRequest(params, "Risk_Create", basSecurityContext, "risk", req.body.data, { userId: (req as any).user?.sub, domain: req.body?.domain });
   res.json(result);
-} catch (error:any) {
-  const e=error ? error :null
-  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });}
 }
 
 export async function Risk_Update(req: Request, res: Response) {
-  try {
   const params=new BasParams()
   //const params = req.body;
     const basSecurityContext = new BasSecurityContext()
@@ -63,10 +54,6 @@ export async function Risk_Update(req: Request, res: Response) {
         params.AddInt("dateEntree",req.body.dateEntree ) }
      params.AddString("datanode","Risk")
    // const soapBody = {reference,dppname,typetiers,codp,datenais}
-    const result = await sendSoapRequest(params, "Risk_Update", basSecurityContext,"risk", req.body.data);
+  const result = await sendSoapRequest(params, "Risk_Update", basSecurityContext, "risk", req.body.data, { userId: (req as any).user?.sub, domain: req.body?.domain });
     res.json(result);
-  } catch (error:any) {
-  const e=error ? error :null
-  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
-}
 }

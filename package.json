@@ -71,6 +71,7 @@
     "eslint-plugin-import": "^2.29.1",
     "jest": "^29.7.0",
     "supertest": "^7.1.4",
+  "nock": "^13.5.4",
     "ts-jest": "^29.2.5",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.2.2"

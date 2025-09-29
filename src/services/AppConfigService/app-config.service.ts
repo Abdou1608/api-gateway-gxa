@@ -11,7 +11,7 @@ export class AppConfigService {
       throw new Error("Method not implemented.");
   }
 
-  private _baseSOAPUrl: string = "http://ec2-13-39-84-162.eu-west-3.compute.amazonaws.com";
+  private _baseSOAPUrl: string = process.env.SOAP_BASE_URL || "http://ec2-13-39-84-162.eu-west-3.compute.amazonaws.com";
   //process.env.SOAP_URL ??
   //http://10.0.46.11
   //"http://ec2-13-39-84-162.eu-west-3.compute.amazonaws.com"
@@ -26,7 +26,7 @@ export class AppConfigService {
     return this._baseSOAPUrl;
   }
 
-  private _apiEndpoint: string = "/soap/";
+  private _apiEndpoint: string = process.env.SOAP_API_PATH || "/soap/";
   public set apiEndpoint(value: string) {
     this._apiEndpoint = value;
   }
@@ -42,9 +42,9 @@ export class AppConfigService {
     return this._port;
   }
 
-  private actionService: string = "IBasActionService";
-  private webAuthService: string = "IBasWebAuthService ";
-  private authService: string = "IBasAuthService";
+  private actionService: string = process.env.SOAP_ACTION_SERVICE || "IBasActionService";
+  private webAuthService: string = process.env.SOAP_WEBAUTH_SERVICE || "IBasWebAuthService ";
+  private authService: string = process.env.SOAP_AUTH_SERVICE || "IBasAuthService";
   private b4WService: string = "IBas4WebService";
 
   constructor() { }
@@ -61,11 +61,13 @@ export class AppConfigService {
 */
   
   public GetURlAuthService(): string {
+    if (process.env.SOAP_AUTH_URL) return process.env.SOAP_AUTH_URL;
     return `${this.baseUrl}:${this.port}${this.apiEndpoint}${this.authService}`;
   }
 
 
   public GetURlActionService(): string {
+    if (process.env.SOAP_ACTION_URL) return process.env.SOAP_ACTION_URL;
     return `${this.baseUrl}:${this.port}${this.apiEndpoint}${this.actionService}`;
   }
 

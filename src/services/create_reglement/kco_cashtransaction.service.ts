@@ -15,7 +15,11 @@ targetkind:any
 ,reference?:any
 ,tierspayeur? : string
 }
-export async function kco_cashtransaction(body:any,BasSecurityContext:BasSecurityContext) {
+export async function kco_cashtransaction(
+  body: any,
+  BasSecurityContext: BasSecurityContext,
+  ctx?: { userId?: string; domain?: string; password?: string }
+) {
 let kco_body:kco = body
 kco_body.typeenc="enc"
   const soapBody =kco_body
@@ -37,6 +41,13 @@ kco_body.typeenc="enc"
   //={
   //  typeoperation,typeenc,targetkind,targetqintid,montant,devise,date,dateff,reference,tierspayeur}
  
-  const result = await sendSoapRequest(params, "Kco_CashTransaction",BasSecurityContext);
+  const result = await sendSoapRequest(
+    params,
+    "Kco_CashTransaction",
+    BasSecurityContext,
+    undefined,
+    undefined,
+    ctx
+  );
   return result;
 }

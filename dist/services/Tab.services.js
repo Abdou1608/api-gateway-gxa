@@ -11,62 +11,45 @@ const BasSecurityContext_1 = require("../Model/BasSoapObject/BasSecurityContext"
 const BasParams_1 = require("../Model/BasSoapObject/BasParams");
 const groupByTypename_1 = __importDefault(require("../utils/groupByTypename"));
 async function Tab_ListValues(req, res) {
-    try {
-        const params = new BasParams_1.BasParams();
-        //const params = req.body;
-        const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
-        basSecurityContext.IsAuthenticated = true;
-        params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
-        params.AddString("tabcode", req.body.tabcode);
-        params.AddString("datanode", "tabs");
-        // const soapBody = {reference,dppname,typetiers,codp,datenais}
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Tab_ListValues", basSecurityContext, "tabs");
-        const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
-        // return grouped;
-        res.json(grouped);
-    }
-    catch (error) {
-        const e = error ? error : null;
-        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
-    }
+    const params = new BasParams_1.BasParams();
+    //const params = req.body;
+    const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
+    basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
+    basSecurityContext.IsAuthenticated = true;
+    params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
+    params.AddString("tabcode", req.body.tabcode);
+    params.AddString("datanode", "tabs");
+    // const soapBody = {reference,dppname,typetiers,codp,datenais}
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Tab_ListValues", basSecurityContext, "tabs", undefined, { userId: req.user?.sub, domain: req.body?.domain });
+    const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
+    // return grouped;
+    res.json(grouped);
 }
 async function Tab_ListItems(req, res) {
-    try {
-        const params = new BasParams_1.BasParams();
-        const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
-        basSecurityContext.IsAuthenticated = true;
-        params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
-        if (req.body.filtre) {
-            params.AddString("filtre", req.body.filtre);
-        }
-        params.AddString("datanode", "tabs");
-        // const soapBody = {reference,dppname,typetiers,codp,datenais}
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Tab_ListItems", basSecurityContext, "tab");
-        res.json(result);
+    const params = new BasParams_1.BasParams();
+    const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
+    basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
+    basSecurityContext.IsAuthenticated = true;
+    params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
+    if (req.body.filtre) {
+        params.AddString("filtre", req.body.filtre);
     }
-    catch (error) {
-        const e = error ? error : null;
-        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
-    }
+    params.AddString("datanode", "tabs");
+    // const soapBody = {reference,dppname,typetiers,codp,datenais}
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Tab_ListItems", basSecurityContext, "tab", undefined, { userId: req.user?.sub, domain: req.body?.domain });
+    res.json(result);
 }
 async function Tab_GetValue(req, res) {
-    try {
-        const params = new BasParams_1.BasParams();
-        //const params = req.body;
-        const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
-        basSecurityContext.IsAuthenticated = true;
-        params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
-        params.AddString("tabcode", req.body?.tabcode);
-        params.AddString("tabref", req.body?.tabref);
-        params.AddString("datanode", "tabs");
-        // const soapBody = {reference,dppname,typetiers,codp,datenais}
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Tab_GetValue", basSecurityContext);
-    }
-    catch (error) {
-        const e = error ? error : null;
-        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
-    }
+    const params = new BasParams_1.BasParams();
+    //const params = req.body;
+    const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
+    basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
+    basSecurityContext.IsAuthenticated = true;
+    params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
+    params.AddString("tabcode", req.body?.tabcode);
+    params.AddString("tabref", req.body?.tabref);
+    params.AddString("datanode", "tabs");
+    // const soapBody = {reference,dppname,typetiers,codp,datenais}
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Tab_GetValue", basSecurityContext, undefined, undefined, { userId: req.user?.sub, domain: req.body?.domain });
+    res.json(result);
 }

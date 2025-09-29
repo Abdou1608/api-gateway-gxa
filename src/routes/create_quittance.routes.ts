@@ -3,13 +3,13 @@ import { quittance_create } from '../services/create_quittance/quittance_create.
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 import { api_create_quittanceValidator } from '../validators/api_create_quittanceValidator';
 import { validateBody } from '../middleware/zodValidator';
+import { asyncHandler } from '../middleware/async-handler';
 
 
 
 const router = Router();
 
-router.post('/', validateBody(api_create_quittanceValidator), async (req, res, next) => {
-  try {
+router.post('/', validateBody(api_create_quittanceValidator), asyncHandler(async (req, res) => {
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
     _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
@@ -19,14 +19,22 @@ router.post('/', validateBody(api_create_quittanceValidator), async (req, res, n
    const autocalcul=false 
    const affectation=true
    const data= req.body.data
-    const result = await quittance_create(contrat,piece,bordereau,autocalcul,affectation,data, _BasSecurityContext);
+    const result = await quittance_create(
+      contrat,
+      piece,
+      bordereau,
+      autocalcul,
+      affectation,
+      data,
+      _BasSecurityContext,
+      undefined,
+      undefined,
+      { userId: (req as any).user?.sub, domain: req.body?.domain }
+    );
     res.json(result);
-  } catch (error:any) {
-   return next(error);  }
-});
+}));
 
-router.post('/autocalcule', validateBody(api_create_quittanceValidator), async (req, res, next) => {
-  try {
+router.post('/autocalcule', validateBody(api_create_quittanceValidator), asyncHandler(async (req, res) => {
     const _BasSecurityContext= new BasSecurityContext()
     _BasSecurityContext.IsAuthenticated=true
     _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
@@ -38,11 +46,20 @@ router.post('/autocalcule', validateBody(api_create_quittanceValidator), async (
    const data= req.body.data
    const datedebut= req.body.datedebut
    const datedefin= req.body.datedefin
-    const result = await quittance_create(contrat,piece,bordereau,autocalcul,affectation,data, _BasSecurityContext,datedebut,datedefin);
+    const result = await quittance_create(
+      contrat,
+      piece,
+      bordereau,
+      autocalcul,
+      affectation,
+      data,
+      _BasSecurityContext,
+      datedebut,
+      datedefin,
+      { userId: (req as any).user?.sub, domain: req.body?.domain }
+    );
     res.json(result);
-  } catch (error:any) {
- return next(error);  }
-});
+}));
 
 export default router;
 // Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend

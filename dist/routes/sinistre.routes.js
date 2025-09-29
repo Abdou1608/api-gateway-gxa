@@ -37,11 +37,12 @@ const express_1 = require("express");
 const sinistreService = __importStar(require("../services/sinistre.service"));
 const Validators = __importStar(require("../validators"));
 const zodValidator_1 = require("../middleware/zodValidator");
+const async_handler_1 = require("../middleware/async-handler");
 const sinrouter = (0, express_1.Router)();
 // NOTE: Validators names may need sync with actual exported validator constants. Adjust if mismatch..api_sinistres_sinistre
-sinrouter.post('/sinistre_listitems', (0, zodValidator_1.validateBody)(Validators.api_sinistres_sinistre_listitemsValidator), sinistreService.Sinistre_ListItemsHandler);
-sinrouter.post('/sinistre_detail', (0, zodValidator_1.validateBody)(Validators.api_sinistres_sinistre_detailValidator), sinistreService.Sinistre_DetailHandler);
-sinrouter.post('/sinistre_create', (0, zodValidator_1.validateBody)(Validators.api_sinistres_sinistre_createValidator), sinistreService.Sinistre_CreateHandler);
-sinrouter.post('/sinistre_update', (0, zodValidator_1.validateBody)(Validators.api_sinistres_sinistre_updateValidator), sinistreService.Sinistre_updateHandler);
+sinrouter.post('/sinistre_listitems', (0, async_handler_1.asyncHandler)(sinistreService.Sinistre_ListItemsHandler));
+sinrouter.post('/sinistre_detail', (0, zodValidator_1.validateBody)(Validators.api_sinistres_sinistre_detailValidator), (0, async_handler_1.asyncHandler)(sinistreService.Sinistre_DetailHandler));
+sinrouter.post('/sinistre_create', (0, zodValidator_1.validateBody)(Validators.api_sinistres_sinistre_createValidator), (0, async_handler_1.asyncHandler)(sinistreService.Sinistre_CreateHandler));
+sinrouter.post('/sinistre_update', (0, zodValidator_1.validateBody)(Validators.api_sinistres_sinistre_updateValidator), (0, async_handler_1.asyncHandler)(sinistreService.Sinistre_updateHandler));
 exports.default = sinrouter;
 // Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend

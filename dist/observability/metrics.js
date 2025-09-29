@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.tokenRevokedRedisCardinality = exports.tokenRevokedMemoryCurrent = exports.tokenRevocationChecksTotal = exports.tokenRevocationsTotal = exports.httpRequestDurationSeconds = exports.httpRequestsTotal = exports.registry = void 0;
+exports.soapSessionReopenFailuresTotal = exports.soapSessionReopenSuccessTotal = exports.soapSessionReopenAttemptsTotal = exports.soapRequestDurationByOwnerSeconds = exports.soapRequestDurationSeconds = exports.queueSizeGauge = exports.tokenRevokedRedisCardinality = exports.tokenRevokedMemoryCurrent = exports.tokenRevocationChecksTotal = exports.tokenRevocationsTotal = exports.httpRequestDurationSeconds = exports.httpRequestsTotal = exports.registry = void 0;
+exports.recordQueueSize = recordQueueSize;
+exports.observeSoapDuration = observeSoapDuration;
+exports.observeSoapDurationLabeled = observeSoapDurationLabeled;
 exports.metricsInstrumentation = metricsInstrumentation;
 exports.metricsHandler = metricsHandler;
 const prom_client_1 = require("prom-client");
@@ -43,6 +46,59 @@ exports.tokenRevokedRedisCardinality = new prom_client_1.Gauge({
     help: 'Approximate number of revoked tokens recorded via Redis HyperLogLog',
     registers: [exports.registry]
 });
+// Pending SOAP queue metrics
+exports.queueSizeGauge = new prom_client_1.Gauge({
+    name: 'soap_pending_queue_size',
+    help: 'Current number of in-flight SOAP requests',
+    registers: [exports.registry]
+});
+exports.soapRequestDurationSeconds = new prom_client_1.Histogram({
+    name: 'soap_request_duration_seconds',
+    help: 'Duration of SOAP requests (RunAction end-to-end)',
+    labelNames: ['action'],
+    buckets: [0.025, 0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10],
+    registers: [exports.registry]
+});
+// Optional high-cardinality metrics (enable via SOAP_METRICS_LABELS=1)
+exports.soapRequestDurationByOwnerSeconds = new prom_client_1.Histogram({
+    name: 'soap_request_duration_by_owner_seconds',
+    help: 'Duration of SOAP requests partitioned by owner/domain (enable with SOAP_METRICS_LABELS=1)',
+    labelNames: ['owner', 'domain'],
+    buckets: [0.025, 0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10],
+    registers: [exports.registry]
+});
+// Session reopen metrics
+exports.soapSessionReopenAttemptsTotal = new prom_client_1.Counter({
+    name: 'soap_session_reopen_attempts_total',
+    help: 'Number of attempts to reopen SOAP session after faults',
+    labelNames: ['owner', 'domain'],
+    registers: [exports.registry]
+});
+exports.soapSessionReopenSuccessTotal = new prom_client_1.Counter({
+    name: 'soap_session_reopen_success_total',
+    help: 'Number of successful SOAP session reopen events',
+    labelNames: ['owner', 'domain'],
+    registers: [exports.registry]
+});
+exports.soapSessionReopenFailuresTotal = new prom_client_1.Counter({
+    name: 'soap_session_reopen_failures_total',
+    help: 'Number of failed SOAP session reopen events',
+    labelNames: ['owner', 'domain'],
+    registers: [exports.registry]
+});
+function recordQueueSize(size) {
+    exports.queueSizeGauge.set(size);
+}
+function observeSoapDuration(action, seconds) {
+    exports.soapRequestDurationSeconds.observe({ action }, seconds);
+}
+function observeSoapDurationLabeled(owner, domain, seconds) {
+    if (process.env.SOAP_METRICS_LABELS === '1') {
+        const o = (owner && owner.length <= 64) ? owner : (owner ? 'redacted' : 'unknown');
+        const d = (domain && domain.length <= 64) ? domain : (domain ? 'redacted' : 'unknown');
+        exports.soapRequestDurationByOwnerSeconds.observe({ owner: o, domain: d }, seconds);
+    }
+}
 // Middleware instrumentation
 function metricsInstrumentation(req, res, next) {
     const start = process.hrtime.bigint();

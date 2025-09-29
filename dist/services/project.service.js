@@ -16,156 +16,108 @@ const BasSecurityContext_1 = require("../Model/BasSoapObject/BasSecurityContext"
 const BasParams_1 = require("../Model/BasSoapObject/BasParams");
 const groupByTypename_1 = __importDefault(require("../utils/groupByTypename"));
 async function Project_ListItemsHandler(req, res) {
-    try {
-        const params = new BasParams_1.BasParams();
-        //const params = req.body;
-        const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
-        basSecurityContext.IsAuthenticated = true;
-        params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
-        params.AddInt("dossier", req.body.dossier);
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_ListItems", basSecurityContext, "projects");
-        res.json(result);
-    }
-    catch (error) {
-        const e = error ? error : null;
-        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
-    }
+    const params = new BasParams_1.BasParams();
+    //const params = req.body;
+    const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
+    basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
+    basSecurityContext.IsAuthenticated = true;
+    params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
+    params.AddInt("dossier", req.body.dossier);
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_ListItems", basSecurityContext, "projects", undefined, { userId: req.auth?.sid, domain: req.body?.domain });
+    res.json(result);
 }
 ;
 async function Project_OfferListItemsHandler(req, res) {
-    try {
-        let params = new BasParams_1.BasParams();
-        //const params = req.body;
-        let _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        _BasSecurityContext.IsAuthenticated = true;
-        _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
-        params.AddStr("BasSecurityContext", _BasSecurityContext.ToSoapVar());
-        params.AddInt("idproj", req.body.idproj);
-        // params.AddInt("projet",req.body.projet)
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_OfferListItem", _BasSecurityContext, "Project");
-        const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
-        res.json(grouped);
-    }
-    catch (error) {
-        const e = error ? error : null;
-        res.status(500).json({ error: 'SOAP Error:' + e?.message, details: JSON.stringify(e) });
-    }
+    let params = new BasParams_1.BasParams();
+    //const params = req.body;
+    let _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
+    _BasSecurityContext.IsAuthenticated = true;
+    _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
+    params.AddStr("BasSecurityContext", _BasSecurityContext.ToSoapVar());
+    params.AddInt("idproj", req.body.idproj);
+    // params.AddInt("projet",req.body.projet)
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_OfferListItem", _BasSecurityContext, "Project", undefined, { userId: req.auth?.sid, domain: req.body?.domain });
+    const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
+    res.json(grouped);
 }
 async function Project_DetailHandler(req, res) {
-    try {
-        let params = new BasParams_1.BasParams();
-        //const params = req.body;
-        let basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
-        basSecurityContext.IsAuthenticated = true;
-        params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
-        params.AddInt("idproj", req.body.idproj);
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_Detail", basSecurityContext, "project");
-        const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
-        res.json(grouped);
-    }
-    catch (error) {
-        const e = error ? error : null;
-        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
-    }
+    let params = new BasParams_1.BasParams();
+    //const params = req.body;
+    let basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
+    basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
+    basSecurityContext.IsAuthenticated = true;
+    params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
+    params.AddInt("idproj", req.body.idproj);
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_Detail", basSecurityContext, "project", undefined, { userId: req.auth?.sid, domain: req.body?.domain });
+    const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
+    res.json(grouped);
 }
 async function Project_CreateHandler(req, res) {
-    try {
-        const params = new BasParams_1.BasParams();
-        //const params = req.body;
-        const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
-        basSecurityContext.IsAuthenticated = true;
-        params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
-        req.body.contrat ? params.AddInt("contrat", req.body.contrat) : null;
-        params.AddInt("dossier", req.body.dossier);
-        params.AddString("produit", req.body.produit);
-        params.AddString("libelle", req.body.libelle);
-        const data = req.body.data;
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_Create", basSecurityContext, "Project", data);
-        res.json(result);
-    }
-    catch (error) {
-        const e = error ? error : null;
-        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
-    }
+    const params = new BasParams_1.BasParams();
+    //const params = req.body;
+    const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
+    basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
+    basSecurityContext.IsAuthenticated = true;
+    params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
+    req.body.contrat ? params.AddInt("contrat", req.body.contrat) : null;
+    params.AddInt("dossier", req.body.dossier);
+    params.AddString("produit", req.body.produit);
+    params.AddString("libelle", req.body.libelle);
+    const data = req.body.data;
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_Create", basSecurityContext, "Project", data, { userId: req.auth?.sid, domain: req.body?.domain });
+    res.json(result);
 }
 async function Project_updateHandler(req, res) {
-    try {
-        const params = new BasParams_1.BasParams();
-        //const params = req.body;
-        const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
-        basSecurityContext.IsAuthenticated = true;
-        params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
-        params.AddInt("idproj", req.body.idproj);
-        params.AddString("libelle", req.body.libelle);
-        const data = req.body.data;
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_update", basSecurityContext, "project", data);
-        res.json(result);
-    }
-    catch (error) {
-        const e = error ? error : null;
-        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
-    }
+    const params = new BasParams_1.BasParams();
+    //const params = req.body;
+    const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
+    basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
+    basSecurityContext.IsAuthenticated = true;
+    params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
+    params.AddInt("idproj", req.body.idproj);
+    params.AddString("libelle", req.body.libelle);
+    const data = req.body.data;
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_update", basSecurityContext, "project", data, { userId: req.auth?.sid, domain: req.body?.domain });
+    res.json(result);
 }
 async function Project_AddOfferHandler(req, res) {
-    try {
-        const params = new BasParams_1.BasParams();
-        //const params = req.body;
-        const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
-        basSecurityContext.IsAuthenticated = true;
-        params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
-        params.AddInt("idproj", req.body.idproj);
-        // params.AddInt("dossier",req.body.dossier)
-        params.AddString("produit", req.body.produit);
-        // params.AddString("libelle",req.body.libelle)
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_AddOffer", basSecurityContext, "offer");
-        res.json(result);
-    }
-    catch (error) {
-        const e = error ? error : null;
-        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
-    }
+    const params = new BasParams_1.BasParams();
+    //const params = req.body;
+    const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
+    basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
+    basSecurityContext.IsAuthenticated = true;
+    params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
+    params.AddInt("idproj", req.body.idproj);
+    // params.AddInt("dossier",req.body.dossier)
+    params.AddString("produit", req.body.produit);
+    // params.AddString("libelle",req.body.libelle)
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_AddOffer", basSecurityContext, "offer", undefined, { userId: req.auth?.sid, domain: req.body?.domain });
+    res.json(result);
 }
 async function Project_DeleteOfferHandler(req, res) {
-    try {
-        const params = new BasParams_1.BasParams();
-        //const params = req.body;
-        const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
-        basSecurityContext.IsAuthenticated = true;
-        params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
-        params.AddInt("idproj", req.body.idproj);
-        params.AddInt("idoffer", req.body.idoffer);
-        //  params.AddString("produit",req.body.produit)
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_DeleteOffer", basSecurityContext, "project");
-        res.json(result);
-    }
-    catch (error) {
-        const e = error ? error : null;
-        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
-    }
+    const params = new BasParams_1.BasParams();
+    //const params = req.body;
+    const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
+    basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
+    basSecurityContext.IsAuthenticated = true;
+    params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
+    params.AddInt("idproj", req.body.idproj);
+    params.AddInt("idoffer", req.body.idoffer);
+    //  params.AddString("produit",req.body.produit)
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_DeleteOffer", basSecurityContext, "project", undefined, { userId: req.user?.sub, domain: req.body?.domain });
+    res.json(result);
 }
 async function Project_ValidateOfferHandler(req, res) {
-    try {
-        const params = new BasParams_1.BasParams();
-        //const params = req.body;
-        const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
-        basSecurityContext.IsAuthenticated = true;
-        params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
-        params.AddInt("idproj", req.body.idproj);
-        params.AddInt("idoffer", req.body.idoffer);
-        params.AddString("defaut", req.body.defaut);
-        params.AddBool("Avenant", req.body.Avenant);
-        const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_ValidateOffer", basSecurityContext, "Cont");
-        res.json(result);
-    }
-    catch (error) {
-        const e = error ? error : null;
-        res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
-    }
+    const params = new BasParams_1.BasParams();
+    //const params = req.body;
+    const basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
+    basSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
+    basSecurityContext.IsAuthenticated = true;
+    params.AddStr("BasSecurityContext", basSecurityContext.ToSoapVar());
+    params.AddInt("idproj", req.body.idproj);
+    params.AddInt("idoffer", req.body.idoffer);
+    params.AddString("defaut", req.body.defaut);
+    params.AddBool("Avenant", req.body.Avenant);
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Project_ValidateOffer", basSecurityContext, "Cont", undefined, { userId: req.user?.sub, domain: req.body?.domain });
+    res.json(result);
 }

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.kco_cashtransaction = kco_cashtransaction;
 const BasParams_1 = require("../../Model/BasSoapObject/BasParams");
 const soap_service_1 = require("../soap.service");
-async function kco_cashtransaction(body, BasSecurityContext) {
+async function kco_cashtransaction(body, BasSecurityContext, ctx) {
     let kco_body = body;
     kco_body.typeenc = "enc";
     const soapBody = kco_body;
@@ -23,6 +23,6 @@ async function kco_cashtransaction(body, BasSecurityContext) {
     params.AddStr("data", body.data);
     //={
     //  typeoperation,typeenc,targetkind,targetqintid,montant,devise,date,dateff,reference,tierspayeur}
-    const result = await (0, soap_service_1.sendSoapRequest)(params, "Kco_CashTransaction", BasSecurityContext);
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Kco_CashTransaction", BasSecurityContext, undefined, undefined, ctx);
     return result;
 }

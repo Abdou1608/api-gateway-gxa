@@ -4,10 +4,14 @@ import { sendSoapRequest } from '../soap.service';
 import { contModelToXml } from './cont_to_xml.service';
 
 
-export async function cont_create(dossier:number,
-  produit?:string,
-  effet?:string,
-  data?: any,BasSecurityContext?:any ) {
+export async function cont_create(
+  dossier: number,
+  produit?: string,
+  effet?: string,
+  data?: any,
+  BasSecurityContext?: any,
+  ctx?: { userId?: string; domain?: string; password?: string }
+) {
     const params=new BasParams()
     BasSecurityContext? params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar()):null
  
@@ -17,6 +21,13 @@ export async function cont_create(dossier:number,
 
  // data ? params.AddStr("data",contModelToXml(data)) :null
   //console.log("££££££££===========DATA"+JSON.stringify( data))
-  const result = await sendSoapRequest(params, "Cont_Create", BasSecurityContext,"cont",data);
+  const result = await sendSoapRequest(
+    params,
+    "Cont_Create",
+    BasSecurityContext,
+    "cont",
+    data,
+    ctx
+  );
   return result;
 }

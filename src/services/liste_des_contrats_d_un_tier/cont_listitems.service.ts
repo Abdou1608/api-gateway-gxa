@@ -3,7 +3,7 @@ import { BasSecurityContext } from "../../Model/BasSoapObject/BasSecurityContext
 import { sendSoapRequest } from "../soap.service";
 
 
-export async function cont_listitems(dossier: number,includeall:boolean, defaut:boolean,BasSecurityContext:BasSecurityContext) {
+export async function cont_listitems(dossier: number,includeall:boolean, defaut:boolean,BasSecurityContext:BasSecurityContext, ctx?: { userId?: string; domain?: string; password?: string }) {
  defaut=true
   const soapBody ={dossier,includeall,defaut,BasSecurityContext}
   const params=new BasParams()
@@ -30,6 +30,6 @@ export async function cont_listitems(dossier: number,includeall:boolean, defaut:
   `
   */
 
-  const result = await sendSoapRequest(params,"Cont_ListItems",BasSecurityContext);
+  const result = await sendSoapRequest(params,"Cont_ListItems",BasSecurityContext, undefined, undefined, ctx);
   return result;
 }

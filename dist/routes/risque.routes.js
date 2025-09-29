@@ -35,9 +35,10 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const Riskservice = __importStar(require("../services/Risque.services"));
+const async_handler_1 = require("../middleware/async-handler");
 const riskrouter = (0, express_1.Router)();
-riskrouter.post('/risk_listitems', Riskservice.Risk_ListItems);
-riskrouter.post('/risk_create', Riskservice.Risk_Create);
-riskrouter.post('/risk_update', Riskservice.Risk_Update);
+riskrouter.post('/risk_listitems', (0, async_handler_1.asyncHandler)(Riskservice.Risk_ListItems));
+riskrouter.post('/risk_create', (0, async_handler_1.asyncHandler)(Riskservice.Risk_Create));
+riskrouter.post('/risk_update', (0, async_handler_1.asyncHandler)(Riskservice.Risk_Update));
 exports.default = riskrouter;
 // Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend

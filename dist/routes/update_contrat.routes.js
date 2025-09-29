@@ -4,23 +4,19 @@ const express_1 = require("express");
 const cont_update_service_1 = require("../services/update_contrat/cont_update.service");
 const api_contrat_updateValidator_1 = require("../validators/api_contrat_updateValidator");
 const zodValidator_1 = require("../middleware/zodValidator");
+const async_handler_1 = require("../middleware/async-handler");
 const BasSecurityContext_1 = require("../Model/BasSoapObject/BasSecurityContext");
 const router = (0, express_1.Router)();
-router.post('/', (0, zodValidator_1.validateBody)(api_contrat_updateValidator_1.api_contrat_updateValidator), async (req, res, next) => {
-    try {
-        const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
-        _BasSecurityContext.IsAuthenticated = true;
-        _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
-        const contrat = req.body.contrat;
-        const piece = req.body.piece;
-        const effet = req.body.effet;
-        const data = req.body.data;
-        const result = await (0, cont_update_service_1.cont_update)(contrat, effet, piece, data, _BasSecurityContext);
-        res.json(result);
-    }
-    catch (error) {
-        return next(error);
-    }
-});
+router.post('/', (0, zodValidator_1.validateBody)(api_contrat_updateValidator_1.api_contrat_updateValidator), (0, async_handler_1.asyncHandler)(async (req, res) => {
+    const _BasSecurityContext = new BasSecurityContext_1.BasSecurityContext();
+    _BasSecurityContext.IsAuthenticated = true;
+    _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId;
+    const contrat = req.body.contrat;
+    const piece = req.body.piece;
+    const effet = req.body.effet;
+    const data = req.body.data;
+    const result = await (0, cont_update_service_1.cont_update)(contrat, effet, piece, data, _BasSecurityContext, { userId: req.user?.sub, domain: req.body?.domain });
+    res.json(result);
+}));
 exports.default = router;
 // Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend
