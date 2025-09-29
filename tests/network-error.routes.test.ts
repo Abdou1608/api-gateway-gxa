@@ -31,7 +31,9 @@ describe('NETWORK_ERROR centralized handling', () => {
 
     expect(res.status).toBe(502);
     expect(res.headers['x-error-type']).toBe('NETWORK_ERROR');
-    expect(res.body.error.type).toBe('NETWORK_ERROR');
-    expect(res.body.error.code).toBe('NETWORK.ERROR');
+    expect(res.headers['content-type']).toMatch(/application\/problem\+json/);
+    expect(res.body.status).toBe(502);
+    expect(res.body.errorType).toBe('NETWORK_ERROR');
+    expect(res.body.code).toBe('NETWORK.ERROR');
   });
 });

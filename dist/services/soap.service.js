@@ -10,6 +10,8 @@ const xml_parser_1 = require("../utils/xml-parser");
 const cont_to_xml_service_1 = require("./create_contrat/cont_to_xml.service");
 const BasSoapFault_1 = require("../Model/BasSoapObject/BasSoapFault");
 const errors_1 = require("../common/errors");
+const user_queue_1 = require("../lib/user-queue");
+const soap_safe_1 = require("./soap-safe");
 //import {  parseSoapOffersToRows } from '../utils/new-soap-parser.service';
 const clhttp = require('http');
 const config = new app_config_service_1.AppConfigService;
@@ -60,7 +62,9 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
         // console.log("✅ Inside SENDSOAPREQUEST - actionName:", actionName);
         console.log("✅ Inside SENDSOAPREQUEST - sid:", sid);
         const an = actionName ? actionName : "";
-        const result = await runBasAct.RunAction(an, params, basSecurityContext ? basSecurityContext : new BasSecurityContext_1.BasSecurityContext(), xmldata, ctx)
+        const actionRun = () => runBasAct.RunAction(an, params, basSecurityContext ? basSecurityContext : new BasSecurityContext_1.BasSecurityContext(), xmldata, ctx);
+        const resilientCall = () => (0, soap_safe_1.callSoapWithResilience)(bsc, actionRun);
+        const result = await (0, user_queue_1.withUserQueue)(ctx?.userId, ctx?.domain, resilientCall)
             .then(async (response) => {
             if (BasSoapFault_1.BasSoapFault.IsBasError(response)) {
                 const f = BasSoapFault_1.BasSoapFault.ParseBasErrorDetailed(response);

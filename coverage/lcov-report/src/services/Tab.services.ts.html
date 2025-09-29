@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">15.55% </span>
+                <span class="strong">18.91% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/45</span>
+                <span class='fraction'>7/37</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/19</span>
+                <span class='fraction'>0/7</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">15.55% </span>
+                <span class="strong">18.91% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/45</span>
+                <span class='fraction'>7/37</span>
             </div>
         
             
@@ -112,26 +112,13 @@
 <a name='L47'></a><a href='#L47'>47</a>
 <a name='L48'></a><a href='#L48'>48</a>
 <a name='L49'></a><a href='#L49'>49</a>
-<a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a>
-<a name='L52'></a><a href='#L52'>52</a>
-<a name='L53'></a><a href='#L53'>53</a>
-<a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a>
-<a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a>
-<a name='L60'></a><a href='#L60'>60</a>
-<a name='L61'></a><a href='#L61'>61</a>
-<a name='L62'></a><a href='#L62'>62</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L50'></a><a href='#L50'>50</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -146,12 +133,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -164,12 +147,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -181,10 +160,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Request, Response } from 'express';
 import { sendSoapRequest } from './soap.service';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
@@ -192,7 +168,6 @@ import { BasParams } from '../Model/BasSoapObject/BasParams';
 import groupByTypename from '../utils/groupByTypename';
 &nbsp;
 export async function <span class="fstat-no" title="function not covered" >Tab_ListValues(</span>req: Request, res: Response) {
-<span class="cstat-no" title="statement not covered" >  try {</span>
   const params=<span class="cstat-no" title="statement not covered" >new BasParams()</span>
   //const params = req.body;
     const basSecurityContext = <span class="cstat-no" title="statement not covered" >new BasSecurityContext()</span>
@@ -206,13 +181,9 @@ export async function <span class="fstat-no" title="function not covered" >Tab_L
   const grouped = <span class="cstat-no" title="statement not covered" >groupByTypename(result, { keepUnknown: true });</span>
  // return grouped;
 <span class="cstat-no" title="statement not covered" >  res.json(grouped);</span>
-} catch (error:any) {
-   const e=<span class="cstat-no" title="statement not covered" >error ? error :null</span>
-<span class="cstat-no" title="statement not covered" >  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });}</span>
 }
 &nbsp;
 export async function <span class="fstat-no" title="function not covered" >Tab_ListItems(</span>req: Request, res: Response) {
-<span class="cstat-no" title="statement not covered" >  try {</span>
   const params=<span class="cstat-no" title="statement not covered" >new BasParams()</span>
   const basSecurityContext = <span class="cstat-no" title="statement not covered" >new BasSecurityContext()</span>
 <span class="cstat-no" title="statement not covered" >  basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId</span>
@@ -224,13 +195,9 @@ export async function <span class="fstat-no" title="function not covered" >Tab_L
  // const soapBody = {reference,dppname,typetiers,codp,datenais}
   const result = <span class="cstat-no" title="statement not covered" >await sendSoapRequest(params, "Tab_ListItems", basSecurityContext, "tab", undefined, { userId: (req as any).user?.sub, domain: req.body?.domain });</span>
 <span class="cstat-no" title="statement not covered" >  res.json(result);</span>
-} catch (error:any) {
-   const e=<span class="cstat-no" title="statement not covered" >error ? error :null</span>
-<span class="cstat-no" title="statement not covered" >  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });}</span>
 }
 &nbsp;
 export async function <span class="fstat-no" title="function not covered" >Tab_GetValue(</span>req: Request, res: Response) {
-<span class="cstat-no" title="statement not covered" >  try {</span>
   const params=<span class="cstat-no" title="statement not covered" >new BasParams()</span>
   //const params = req.body;
     const basSecurityContext = <span class="cstat-no" title="statement not covered" >new BasSecurityContext()</span>
@@ -242,10 +209,7 @@ export async function <span class="fstat-no" title="function not covered" >Tab_G
 <span class="cstat-no" title="statement not covered" >   params.AddString("datanode","tabs")</span>
  // const soapBody = {reference,dppname,typetiers,codp,datenais}
   const result = <span class="cstat-no" title="statement not covered" >await sendSoapRequest(params, "Tab_GetValue", basSecurityContext, undefined, undefined, { userId: (req as any).user?.sub, domain: req.body?.domain });</span>
-} catch (error:any) {
-   const e=<span class="cstat-no" title="statement not covered" >error ? error :null</span>
-<span class="cstat-no" title="statement not covered" >  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });</span>
-}
+<span class="cstat-no" title="statement not covered" >  res.json(result);</span>
 }</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -253,7 +217,7 @@ export async function <span class="fstat-no" title="function not covered" >Tab_G
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-28T23:09:29.665Z
+                at 2025-09-29T03:04:12.682Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

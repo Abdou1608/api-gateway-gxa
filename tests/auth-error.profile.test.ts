@@ -8,6 +8,7 @@ jest.mock('../src/services/profile/xtlog_search.service', () => ({
 import AuthService from '../src/auth/auth.service';
 
 describe('AUTH_ERROR on /profile unauthorized scenario', () => {
+  jest.setTimeout(15000);
   it('responds 401 with centralized AUTH_ERROR when profile is empty', async () => {
     // Prepare a valid token so authMiddleware passes
     const SECRET = 'test-secret-key-1234567890-ABCDEFGHIJ';
@@ -27,11 +28,11 @@ describe('AUTH_ERROR on /profile unauthorized scenario', () => {
     // Headers are set by the centralized error handler
     expect(res.headers['x-error-type']).toBe('AUTH_ERROR');
     expect(res.headers['x-error-code']).toBe('AUTH.UNAUTHORIZED');
-    expect(res.body).toHaveProperty('error');
-    expect(res.body.error.type).toBe('AUTH_ERROR');
-    expect(res.body.error.code).toBe('AUTH.UNAUTHORIZED');
-    expect(typeof res.body.error.message).toBe('string');
-    expect(res.body.error).toHaveProperty('requestId');
-    expect(res.body.error).toHaveProperty('timestamp');
+    expect(res.headers['content-type']).toMatch(/application\/problem\+json/);
+    expect(res.body.status).toBe(401);
+    expect(res.body.errorType).toBe('AUTH_ERROR');
+    expect(res.body.code).toBe('AUTH.UNAUTHORIZED');
+    expect(typeof res.body.detail).toBe('string');
+    expect(typeof res.body.requestId).toBe('string');
   });
 });

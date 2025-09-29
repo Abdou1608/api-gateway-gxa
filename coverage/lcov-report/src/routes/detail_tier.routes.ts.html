@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">44.44% </span>
+                <span class="strong">52.94% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/18</span>
+                <span class='fraction'>9/17</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">44.44% </span>
+                <span class="strong">52.94% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/18</span>
+                <span class='fraction'>9/17</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -93,21 +93,18 @@
 <a name='L28'></a><a href='#L28'>28</a>
 <a name='L29'></a><a href='#L29'>29</a>
 <a name='L30'></a><a href='#L30'>30</a>
-<a name='L31'></a><a href='#L31'>31</a>
-<a name='L32'></a><a href='#L32'>32</a>
-<a name='L33'></a><a href='#L33'>33</a>
-<a name='L34'></a><a href='#L34'>34</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L31'></a><a href='#L31'>31</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -123,24 +120,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Router } from 'express';
 import { tiers_details } from '../services/detail_tier/tiers_details.service';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 import { api_detail_tierValidator } from '../validators/api_detail_tierValidator';
 import { validateBody } from '../middleware/zodValidator';
+import { asyncHandler } from '../middleware/async-handler';
 &nbsp;
 &nbsp;
 &nbsp;
 const router = Router();
 &nbsp;
-router.post('/', validateBody(api_detail_tierValidator), <span class="fstat-no" title="function not covered" >async </span>(req, res, next) =&gt; { 
-<span class="cstat-no" title="statement not covered" >  try {</span>
+router.post('/', validateBody(api_detail_tierValidator), asyncHandler(<span class="fstat-no" title="function not covered" >async </span>(req, res) =&gt; { 
     let _BasSecurityContext= <span class="cstat-no" title="statement not covered" >new BasSecurityContext()</span>
 <span class="cstat-no" title="statement not covered" >    _BasSecurityContext.IsAuthenticated=true</span>
 <span class="cstat-no" title="statement not covered" >    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId</span>
@@ -155,10 +149,7 @@ router.post('/', validateBody(api_detail_tierValidator), <span class="fstat-no" 
       { userId: (req as any).user?.sub, domain: req.body?.domain }
     );
 <span class="cstat-no" title="statement not covered" >    res.json(result);</span>
-  } catch (error:any) {
-<span class="cstat-no" title="statement not covered" >    return next(error);</span>
-  }
-});
+}));
 &nbsp;
 export default router;
 // Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend
@@ -169,7 +160,7 @@ export default router;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-28T23:09:29.665Z
+                at 2025-09-29T03:04:12.682Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

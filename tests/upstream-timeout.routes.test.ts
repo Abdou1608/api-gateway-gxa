@@ -32,8 +32,10 @@ describe('UPSTREAM_TIMEOUT centralized handling', () => {
 
     expect(res.status).toBe(504);
     expect(res.headers['x-error-type']).toBe('UPSTREAM_TIMEOUT');
-    expect(res.body.error.type).toBe('UPSTREAM_TIMEOUT');
-    expect(res.body.error.code).toBe('UPSTREAM.TIMEOUT');
-    expect(typeof res.body.error.message).toBe('string');
+    expect(res.headers['content-type']).toMatch(/application\/problem\+json/);
+    expect(res.body.status).toBe(504);
+    expect(res.body.errorType).toBe('UPSTREAM_TIMEOUT');
+    expect(res.body.code).toBe('UPSTREAM.TIMEOUT');
+    expect(typeof res.body.detail).toBe('string');
   });
 });

@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>14/14</span>
+                <span class='fraction'>15/15</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>14/14</span>
+                <span class='fraction'>15/15</span>
             </div>
         
             
@@ -82,42 +82,45 @@
 <a name='L17'></a><a href='#L17'>17</a>
 <a name='L18'></a><a href='#L18'>18</a>
 <a name='L19'></a><a href='#L19'>19</a>
-<a name='L20'></a><a href='#L20'>20</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Router } from 'express';
 import * as ProjectService from '../services/project.service';
 import * as Validators  from '../validators';
 import { validateBody } from '../middleware/zodValidator';
+import { asyncHandler } from '../middleware/async-handler';
 &nbsp;
 &nbsp;
 &nbsp;
 const router = Router();
 &nbsp;
-router.post( '/project_listitems',validateBody(Validators.api_projects_project_listitemsValidator), ProjectService.Project_ListItemsHandler);
-router.post( '/Project_OfferListItems',validateBody(Validators.api_projects_project_offerlistitemsValidator), ProjectService.Project_OfferListItemsHandler);
-router.post( '/project_detail',validateBody(Validators.api_projects_project_detailValidator), ProjectService.Project_DetailHandler);
-router.post( '/project_create',validateBody(Validators.api_projects_project_createValidator), ProjectService.Project_CreateHandler);
-router.post( '/project_update',validateBody(Validators.api_projects_project_updateValidator), ProjectService.Project_updateHandler);
-router.post( '/project_addoffer',validateBody(Validators.api_projects_project_addofferValidator), ProjectService.Project_AddOfferHandler);
-router.post( '/project_deleteoffer',validateBody(Validators.api_projects_project_deleteofferValidator), ProjectService.Project_DeleteOfferHandler);
-router.post( '/project_validateoffer',validateBody(Validators.api_projects_project_validateofferValidator), ProjectService.Project_ValidateOfferHandler);
+router.post( '/project_listitems', validateBody(Validators.api_projects_project_listitemsValidator), asyncHandler(ProjectService.Project_ListItemsHandler));
+router.post( '/Project_OfferListItems', validateBody(Validators.api_projects_project_offerlistitemsValidator), asyncHandler(ProjectService.Project_OfferListItemsHandler));
+router.post( '/project_detail', validateBody(Validators.api_projects_project_detailValidator), asyncHandler(ProjectService.Project_DetailHandler));
+router.post( '/project_create', validateBody(Validators.api_projects_project_createValidator), asyncHandler(ProjectService.Project_CreateHandler));
+router.post( '/project_update', validateBody(Validators.api_projects_project_updateValidator), asyncHandler(ProjectService.Project_updateHandler));
+router.post( '/project_addoffer', validateBody(Validators.api_projects_project_addofferValidator), asyncHandler(ProjectService.Project_AddOfferHandler));
+router.post( '/project_deleteoffer', validateBody(Validators.api_projects_project_deleteofferValidator), asyncHandler(ProjectService.Project_DeleteOfferHandler));
+router.post( '/project_validateoffer', validateBody(Validators.api_projects_project_validateofferValidator), asyncHandler(ProjectService.Project_ValidateOfferHandler));
 export default router
 // Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend
 &nbsp;</pre></td></tr></table></pre>
@@ -127,7 +130,7 @@ export default router
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-28T23:09:29.665Z
+                at 2025-09-29T03:04:12.682Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

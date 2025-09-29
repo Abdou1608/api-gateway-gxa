@@ -11,13 +11,14 @@ import { applyGlobalMiddleware } from './middleware/Apply-Middlewares';
 import config from './config/env';
 import { errorHandler, notFoundHandler } from './middleware/error-handler';
 import { metricsInstrumentation, metricsHandler } from './observability/metrics';
-import { requestIdMiddleware } from './common/middleware/request-id';
+import { correlationId } from './middleware/correlation';
 
 const app = express();
 
 // Application des middlewares globaux + instrumentation métriques
 applyGlobalMiddleware(app);
-app.use(requestIdMiddleware);
+// Correlation id must be early
+app.use(correlationId);
 app.use(metricsInstrumentation);
 
 // Documentation OpenAPI (lecture du YAML principal)

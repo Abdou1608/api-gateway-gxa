@@ -5,6 +5,7 @@ import AuthService from '../src/auth/auth.service';
 // We'll import the app after setting envs/mocks
 
 describe('SOAP retry on session-not-found (mocked)', () => {
+  jest.setTimeout(15000);
   beforeAll(() => {
     // Point AppConfigService to a deterministic host via env-driven config
     process.env.SOAP_BASE_URL = 'http://ec2-13-39-84-162.eu-west-3.compute.amazonaws.com';
@@ -75,11 +76,7 @@ describe('SOAP retry on session-not-found (mocked)', () => {
       .send({ dossier: 123, domain: 'test-domain' });
 
     // Assert
-    if (res.status !== 200) {
-      // Debug output to understand failure
-      // eslint-disable-next-line no-console
-      console.error('Retry test failed with status', res.status, 'body:', res.text);
-    }
+    // Basic sanity checks
     expect(res.status).toBe(200);
     expect(res.body).toBeDefined();
   });

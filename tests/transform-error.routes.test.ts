@@ -31,7 +31,9 @@ describe('TRANSFORM_ERROR centralized handling', () => {
 
     expect(res.status).toBe(500);
     expect(res.headers['x-error-type']).toBe('TRANSFORM_ERROR');
-    expect(res.body.error.type).toBe('TRANSFORM_ERROR');
-    expect(res.body.error.code).toBe('TRANSFORM.FAILED');
+    expect(res.headers['content-type']).toMatch(/application\/problem\+json/);
+    expect(res.body.status).toBe(500);
+    expect(res.body.errorType).toBe('TRANSFORM_ERROR');
+    expect(res.body.code).toBe('TRANSFORM.FAILED');
   });
 });

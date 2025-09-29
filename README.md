@@ -336,3 +336,32 @@ Proposer des tests d'intégration pour chaque endpoint critique + tests unitaire
 - [ ] Middleware unifié de mapping SOAP -> erreurs HTTP.
 - [ ] Tests d'intégration.
 - [ ] Linter OpenAPI (spectral) CI.
+
+## Erreurs centralisées (RFC 9457)
+
+Toutes les erreurs HTTP sont renvoyées au format Problem Details avec `Content-Type: application/problem+json`.
+
+Champs principaux:
+- `status`: code HTTP numérique
+- `title`: catégorie courte (ex: SOAP ERROR, AUTH ERROR)
+- `detail`: message
+- `code`: code interne (ex: SOAP.FAULT, VALIDATION.INVALID_BODY)
+- `errorType`: type haut-niveau (SOAP_ERROR, AUTH_ERROR, ...)
+- `requestId`: id de corrélation (aussi dans l'en-tête `x-request-id`)
+- `details`: objet optionnel (ex: `soapFault`)
+
+En-têtes observabilité:
+- `X-Error-Type`
+- `X-Error-Code`
+- `X-SOAP-FAULT` (si faute SOAP)
+
+## Limitation de concurrence par utilisateur
+
+Les appels SOAP sont limités à 2 requêtes concurrentes par couple `user/domain` via une file d'attente interne. Paramètres:
+
+- `USER_QUEUE_CONCURRENCY` (défaut: 2)
+- `SOAP_TIMEOUT_MS` (défaut: 15000)
+- `SOAP_RETRIES` (défaut: 2)
+- `SOAP_BACKOFF_MS` (défaut: 400)
+
+Le retry ciblé s'applique aux messages contenant « Session not found » et aux timeouts SOAP.

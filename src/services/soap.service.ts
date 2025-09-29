@@ -8,6 +8,8 @@ import { objectToCustomXML, objectToXML } from '../utils/xml-parser';
 import { contModelToXml } from './create_contrat/cont_to_xml.service';
 import { BasSoapFault } from '../Model/BasSoapObject/BasSoapFault';
 import { ValidationError, TransformError, SoapServerError, InternalError } from '../common/errors';
+import { withUserQueue } from '../lib/user-queue';
+import { callSoapWithResilience } from './soap-safe';
 //import {  parseSoapOffersToRows } from '../utils/new-soap-parser.service';
 
 
@@ -68,13 +70,17 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
   console.log("✅ Inside SENDSOAPREQUEST - sid:", sid);
   const an= actionName ? actionName: ""
     
-  const result = await runBasAct.RunAction(
-    an,
-    params,
-    basSecurityContext ? basSecurityContext : new BasSecurityContext(),
-    xmldata,
-    ctx
-  )
+  const actionRun = () => runBasAct.RunAction(
+      an,
+      params,
+      basSecurityContext ? basSecurityContext : new BasSecurityContext(),
+      xmldata,
+      ctx
+    );
+
+  const resilientCall = () => callSoapWithResilience(bsc, actionRun);
+
+  const result = await withUserQueue(ctx?.userId, ctx?.domain, resilientCall)
     .then(async (response) => {
       if (BasSoapFault.IsBasError(response)) {
         const f = BasSoapFault.ParseBasErrorDetailed(response);

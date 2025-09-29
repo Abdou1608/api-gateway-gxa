@@ -28,8 +28,11 @@ describe('SOAP_ERROR centralized handling', () => {
     expect(res.status).toBe(502);
     expect(res.headers['x-error-type']).toBe('SOAP_ERROR');
     expect(res.headers['x-soap-fault']).toBe('1');
-    expect(res.body.error.type).toBe('SOAP_ERROR');
-    expect(res.body.error.code).toBe('SOAP.FAULT');
-    expect(res.body.error.details.soapFault.faultcode).toBe('Client');
+    expect(res.headers['content-type']).toMatch(/application\/problem\+json/);
+    expect(res.body.status).toBe(502);
+    expect(res.body.errorType).toBe('SOAP_ERROR');
+    expect(res.body.code).toBe('SOAP.FAULT');
+    // details are still present under extensions
+    expect(res.body.details.soapFault.faultcode).toBe('Client');
   });
 });

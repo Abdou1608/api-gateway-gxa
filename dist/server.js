@@ -15,11 +15,12 @@ const Apply_Middlewares_1 = require("./middleware/Apply-Middlewares");
 const env_1 = __importDefault(require("./config/env"));
 const error_handler_1 = require("./middleware/error-handler");
 const metrics_1 = require("./observability/metrics");
-const request_id_1 = require("./common/middleware/request-id");
+const correlation_1 = require("./middleware/correlation");
 const app = (0, express_1.default)();
 // Application des middlewares globaux + instrumentation métriques
 (0, Apply_Middlewares_1.applyGlobalMiddleware)(app);
-app.use(request_id_1.requestIdMiddleware);
+// Correlation id must be early
+app.use(correlation_1.correlationId);
 app.use(metrics_1.metricsInstrumentation);
 // Documentation OpenAPI (lecture du YAML principal)
 const openapiPathCandidates = [
