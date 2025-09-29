@@ -59,13 +59,11 @@ const logout_routes_1 = __importDefault(require("./logout.routes"));
 const profile_routes_1 = __importDefault(require("./profile.routes"));
 const recherche_tier_routes_1 = __importDefault(require("./recherche_tier.routes"));
 const update_contrat_routes_1 = __importDefault(require("./update_contrat.routes"));
-const update_tier_routes_1 = __importDefault(require("./update_tier.routes"));
 const project_routes_1 = __importDefault(require("./project.routes"));
 const update_piece_du_contrat_routes_1 = __importDefault(require("./update_piece_du_contrat.routes"));
 const tab_routes_1 = __importDefault(require("./tab.routes"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const yamljs_1 = __importDefault(require("yamljs"));
-const risque_routes_1 = __importDefault(require("./risque.routes"));
 const liste_des_tecrants_routes_1 = __importDefault(require("./liste_des_tecrants.routes"));
 const sinistre_routes_1 = __importDefault(require("./sinistre.routes"));
 const admin_routes_1 = __importStar(require("./admin.routes"));
@@ -106,10 +104,8 @@ function registerRoutes(app) {
     app.use("/api/projects", auth_middleware_1.authMiddleware, project_routes_1.default);
     app.use("/api/sinistres", auth_middleware_1.authMiddleware, sinistre_routes_1.default);
     app.use("/api/tabs", auth_middleware_1.authMiddleware, tab_routes_1.default);
-    app.use("/api/risk", auth_middleware_1.authMiddleware, risque_routes_1.default);
     app.use("/api/profile", auth_middleware_1.authMiddleware, profile_routes_1.default);
     app.use("/api/Tiers_Search", auth_middleware_1.authMiddleware, recherche_tier_routes_1.default);
     app.use("/api/Contrat_Update", auth_middleware_1.authMiddleware, update_contrat_routes_1.default);
-    app.use("/api/Tiers_Update", auth_middleware_1.authMiddleware, update_tier_routes_1.default);
     app.use("/api/update_piece_contrat", auth_middleware_1.authMiddleware, update_piece_du_contrat_routes_1.default);
 }

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.83% </span>
+                <span class="strong">12.5% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>23/24</span>
+                <span class='fraction'>3/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">62.5% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>5/8</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.5% </span>
+                <span class="strong">12.5% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>7/8</span>
+                <span class='fraction'>1/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">13.63% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>22/22</span>
+                <span class='fraction'>3/22</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -133,43 +133,43 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -187,44 +187,44 @@ class PendingQueueRegistry {
   private seq = 0;
   private pending = new Map&lt;number, PendingCallInfo&gt;();
 &nbsp;
-  register(action: string, ctx?: Ctx): PendingCallInfo {
-    const id = ++this.seq;
-    const info: PendingCallInfo = {
+<span class="fstat-no" title="function not covered" >  register(</span>action: string, ctx?: Ctx): PendingCallInfo {
+    const id = <span class="cstat-no" title="statement not covered" >++this.seq;</span>
+    const info: PendingCallInfo = <span class="cstat-no" title="statement not covered" >{</span>
       id,
       action,
       owner: ctx?.userId,
       domain: ctx?.domain,
       startedAt: Date.now(),
     };
-    this.pending.set(id, info);
-    return info;
+<span class="cstat-no" title="statement not covered" >    this.pending.set(id, info);</span>
+<span class="cstat-no" title="statement not covered" >    return info;</span>
   }
 &nbsp;
-  complete(id: number): PendingCallInfo | undefined {
-    const info = this.pending.get(id);
-    if (info) this.pending.delete(id);
-    return info;
+<span class="fstat-no" title="function not covered" >  complete(</span>id: number): PendingCallInfo | undefined {
+    const info = <span class="cstat-no" title="statement not covered" >this.pending.get(id);</span>
+<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (info) <span class="cstat-no" title="statement not covered" >this.pending.delete(id);</span></span>
+<span class="cstat-no" title="statement not covered" >    return info;</span>
   }
 &nbsp;
-  snapshot(): PendingCallInfo[] {
-    return Array.from(this.pending.values()).sort(<span class="fstat-no" title="function not covered" >(a</span>, b) =&gt; <span class="cstat-no" title="statement not covered" >a.startedAt - b.startedAt)</span>;
+<span class="fstat-no" title="function not covered" >  snapshot(</span>): PendingCallInfo[] {
+<span class="cstat-no" title="statement not covered" >    return Array.from(this.pending.values()).sort(<span class="fstat-no" title="function not covered" >(a</span>, b) =&gt; <span class="cstat-no" title="statement not covered" >a.startedAt - b.startedAt)</span>;</span>
   }
 &nbsp;
-  formatSnapshot(maxItems = 8): string {
-    const now = Date.now();
-    const items = this.snapshot();
-    const parts = items.slice(0, maxItems).map((p) =&gt; {
-      const age = Math.max(0, now - p.startedAt);
-      const s = (age / 1000).toFixed(2);
-      const owner = p.owner ? ` by ${p.owner}` : <span class="branch-1 cbranch-no" title="branch not covered" >'';</span>
-      const dom = p.domain ? <span class="branch-0 cbranch-no" title="branch not covered" >`@${p.domain}` </span>: '';
-      return `#${p.id} ${p.action}${owner}${dom} (+${s}s)`;
+<span class="fstat-no" title="function not covered" >  formatSnapshot(</span>maxItems = <span class="branch-0 cbranch-no" title="branch not covered" >8)</span>: string {
+    const now = <span class="cstat-no" title="statement not covered" >Date.now();</span>
+    const items = <span class="cstat-no" title="statement not covered" >this.snapshot();</span>
+    const parts = <span class="cstat-no" title="statement not covered" >items.slice(0, maxItems).map(<span class="fstat-no" title="function not covered" >(p</span>) =&gt; {</span>
+      const age = <span class="cstat-no" title="statement not covered" >Math.max(0, now - p.startedAt);</span>
+      const s = <span class="cstat-no" title="statement not covered" >(age / 1000).toFixed(2);</span>
+      const owner = <span class="cstat-no" title="statement not covered" >p.owner ? ` by ${p.owner}` : '';</span>
+      const dom = <span class="cstat-no" title="statement not covered" >p.domain ? `@${p.domain}` : '';</span>
+<span class="cstat-no" title="statement not covered" >      return `#${p.id} ${p.action}${owner}${dom} (+${s}s)`;</span>
     });
-    const extra = items.length &gt; maxItems ? <span class="branch-0 cbranch-no" title="branch not covered" >` …and ${items.length - maxItems} more` </span>: '';
-    return parts.join(', ') + extra;
+    const extra = <span class="cstat-no" title="statement not covered" >items.length &gt; maxItems ? ` …and ${items.length - maxItems} more` : '';</span>
+<span class="cstat-no" title="statement not covered" >    return parts.join(', ') + extra;</span>
   }
 &nbsp;
-  size(): number { return this.pending.size; }
+<span class="fstat-no" title="function not covered" >  size(</span>): number { <span class="cstat-no" title="statement not covered" >return this.pending.size; </span>}
 }
 &nbsp;
 export const PendingQueue = new PendingQueueRegistry();
@@ -235,7 +235,7 @@ export const PendingQueue = new PendingQueueRegistry();
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-29T03:04:12.682Z
+                at 2025-09-29T08:18:28.243Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

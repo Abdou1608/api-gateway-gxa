@@ -21,13 +21,11 @@ import logout from './logout.routes';
 import profile from './profile.routes';
 import recherche_tier from './recherche_tier.routes';
 import update_contrat from './update_contrat.routes';
-import update_tier from './update_tier.routes';
 import router from './project.routes';
 import update_piece_au_contrat from './update_piece_du_contrat.routes';
 import tabrouter from './tab.routes';
 import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
-import riskrouter from './risque.routes';
 import list_des_tecrants from './liste_des_tecrants.routes';
 import sinrouter from './sinistre.routes';
 import admin, { queueUiRouter, auditUiRouter } from './admin.routes';
@@ -75,10 +73,8 @@ export function registerRoutes(app: express.Application) {
   app.use("/api/projects", authMiddleware, router);
   app.use("/api/sinistres", authMiddleware, sinrouter);
   app.use("/api/tabs", authMiddleware, tabrouter);
-  app.use("/api/risk", authMiddleware, riskrouter);
   app.use("/api/profile", authMiddleware, profile);
   app.use("/api/Tiers_Search", authMiddleware, recherche_tier);
   app.use("/api/Contrat_Update", authMiddleware, update_contrat);
-  app.use("/api/Tiers_Update", authMiddleware, update_tier);
   app.use("/api/update_piece_contrat", authMiddleware, update_piece_au_contrat);
 }

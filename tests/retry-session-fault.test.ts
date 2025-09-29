@@ -67,10 +67,10 @@ describe('SOAP retry on session-not-found (mocked)', () => {
   const auth = new AuthService();
   const token = await auth.get_token(SECRET, 'SID-RETRY-TEST');
 
-  const app = (await import('../src/server')).default;
+  const { app } = await import('../src/server');
 
     // Act
-    const res = await request(app)
+    const res = await request(app.server)
       .post('/api/projects/project_listitems')
   .set('Authorization', `Bearer ${token}`)
       .send({ dossier: 123, domain: 'test-domain' });

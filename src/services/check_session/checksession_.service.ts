@@ -5,8 +5,7 @@ import { sendSoapRequest } from '../soap.service';
 
 export async function checksession_(bassecuritycontext: BasSecurityContext) {
   const params=new BasParams()
-  params.AddString("BasSecuritycontext",bassecuritycontext.ToSoapVar())
-  params.AddString("basSecuritycontext",bassecuritycontext.ToSoapVar())
-  const result = await sendSoapRequest(params,"checksession");
+   bassecuritycontext? params.AddStr("BasSecurityContext",bassecuritycontext.ToSoapVar()):null
+    const result = await sendSoapRequest(params,"CheckSession", bassecuritycontext);
   return result;
 }

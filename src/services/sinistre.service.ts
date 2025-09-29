@@ -1,106 +1,65 @@
-import { Request, Response } from 'express';
+// Express types removed; Fastify-native pure-return helpers only
 import { sendSoapRequest } from './soap.service';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 import { BasParams } from '../Model/BasSoapObject/BasParams';
 import groupByTypename from '../utils/groupByTypename';
 
-
-
-export async function Sinistre_ListItemsHandler(req: Request, res: Response) {
-    let params = new BasParams()
-    //const params = req.body;
-    let _BasSecurityContext = new BasSecurityContext()
-    _BasSecurityContext.IsAuthenticated = true
-    _BasSecurityContext.SessionId = req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-    params.AddStr("BasSecurityContext", _BasSecurityContext.ToSoapVar());
-    const dossierId = typeof req.body.dossier === 'string' ? Number(req.body.dossier) : req.body.dossier;
-  
-    if (dossierId && dossierId > 0) {
-      params.AddInt("dossier", dossierId);
-    }
- 
-    const contraId = typeof req.body.contrat === 'string' ? Number(req.body.contrat) : req.body.contrat;
-    const contrat = contraId;
-    if (contrat && contrat > 0) {
-      params.AddInt("contrat", req.body.contrat)
-    }
-    const result = await sendSoapRequest(
-      params,
-      "Sin_Listitems",
-      _BasSecurityContext,
-      "sins",
-      undefined,
-      { userId: (req as any).user?.sub, domain: req.body?.domain }
-    );
-    const grouped = groupByTypename(result, { keepUnknown: true });
-    res.json(grouped);
+// Fastify-native pure-return helpers
+export async function sinistreListItems(body: any, auth: { sid: string; userId?: string; domain?: string }) {
+  const params = new BasParams();
+  const ctx = new BasSecurityContext();
+  ctx.IsAuthenticated = true as any;
+  ctx.SessionId = auth.sid;
+  params.AddStr('BasSecurityContext', ctx.ToSoapVar());
+  const dossierId = typeof body.dossier === 'string' ? Number(body.dossier) : body.dossier;
+  if (dossierId && dossierId > 0) params.AddInt('dossier', dossierId);
+  const contraId = typeof body.contrat === 'string' ? Number(body.contrat) : body.contrat;
+  if (contraId && contraId > 0) params.AddInt('contrat', contraId);
+  const result = await sendSoapRequest(params, 'Sin_Listitems', ctx, 'sins', undefined, { userId: auth.userId, domain: body?.domain });
+  return groupByTypename(result, { keepUnknown: true });
 }
 
-export async function Sinistre_DetailHandler(req: Request, res: Response) {
-    const params=new BasParams()
-    //const params = req.body;
-      const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-      basSecurityContext.IsAuthenticated=true
-    params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
-    const sinistre= req.body.sinistre ?? 0
-    if(sinistre && sinistre>0){
-     params.AddInt("sinistre",req.body.sinistre)}
-     
-    const result = await sendSoapRequest(
-      params,
-      "Sin_Details",
-      basSecurityContext,
-      "sin",
-      undefined,
-      { userId: (req as any).user?.sub, domain: req.body?.domain }
-    );
-    const grouped = groupByTypename(result, { keepUnknown: true });
-
-    res.json(grouped);
+export async function sinistreDetail(body: any, auth: { sid: string; userId?: string; domain?: string }) {
+  const params = new BasParams();
+  const ctx = new BasSecurityContext();
+  ctx.SessionId = auth.sid;
+  ctx.IsAuthenticated = true as any;
+  params.AddStr('BasSecurityContext', ctx.ToSoapVar());
+  const sinistre = body.sinistre ?? 0;
+  if (sinistre && sinistre > 0) params.AddInt('sinistre', sinistre);
+  const result = await sendSoapRequest(params, 'Sin_Details', ctx, 'sin', undefined, { userId: auth.userId, domain: body?.domain });
+  return groupByTypename(result, { keepUnknown: true });
 }
 
-export async function Sinistre_CreateHandler(req: Request, res: Response) {
-    const params=new BasParams()
-    //const params = req.body;
-      const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-      basSecurityContext.IsAuthenticated=true
-    params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
-    req.body.contrat ? params.AddInt("contrat",req.body.contrat) :null
-     params.AddInt("dossier",req.body.dossier)
-     params.AddString("produit",req.body.produit)
-     params.AddString("libelle",req.body.libelle)
-    const data = req.body.data
-    const result = await sendSoapRequest(
-      params,
-      "Sin_Create",
-      basSecurityContext,
-      "Sinistre",
-      data,
-      { userId: (req as any).user?.sub, domain: req.body?.domain }
-    );
-    res.json(result);
+export async function sinistreCreate(body: any, auth: { sid: string; userId?: string; domain?: string }) {
+  const params = new BasParams();
+  const ctx = new BasSecurityContext();
+  ctx.SessionId = auth.sid;
+  ctx.IsAuthenticated = true as any;
+  params.AddStr('BasSecurityContext', ctx.ToSoapVar());
+  if (body.contrat) params.AddInt('contrat', body.contrat);
+  params.AddInt('dossier', body.dossier);
+  params.AddString('produit', body.produit);
+  params.AddString('libelle', body.libelle);
+  const data = body.data;
+  const result = await sendSoapRequest(params, 'Sin_Create', ctx, 'Sinistre', data, { userId: auth.userId, domain: body?.domain });
+  return result;
 }
 
-export async function Sinistre_updateHandler(req: Request, res: Response) {
-    const params=new BasParams()
-    //const params = req.body;
-      const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-      basSecurityContext.IsAuthenticated=true
-    params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
-     params.AddInt("idproj",req.body.idproj)
-     params.AddString("libelle",req.body.libelle)
-    const data = req.body.data
-    const result = await sendSoapRequest(
-      params,
-      "Sin_update",
-      basSecurityContext,
-      "Sinistre",
-      data,
-      { userId: (req as any).user?.sub, domain: req.body?.domain }
-    );
-    res.json(result);
+export async function sinistreUpdate(body: any, auth: { sid: string; userId?: string; domain?: string }) {
+  const params = new BasParams();
+  const ctx = new BasSecurityContext();
+  ctx.SessionId = auth.sid;
+  ctx.IsAuthenticated = true as any;
+  params.AddStr('BasSecurityContext', ctx.ToSoapVar());
+  params.AddInt('idproj', body.idproj);
+  params.AddString('libelle', body.libelle);
+  const data = body.data;
+  const result = await sendSoapRequest(params, 'Sin_update', ctx, 'Sinistre', data, { userId: auth.userId, domain: body?.domain });
+  return result;
 }
+
+
+
+// Legacy Express-style handlers removed (now replaced by Fastify-native helpers)
 

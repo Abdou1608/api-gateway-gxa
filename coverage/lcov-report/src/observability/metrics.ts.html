@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.71% </span>
+                <span class="strong">79.59% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>42/49</span>
+                <span class='fraction'>39/49</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>3/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.71% </span>
+                <span class="strong">79.59% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>42/49</span>
+                <span class='fraction'>39/49</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -308,33 +308,33 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -456,16 +456,16 @@ export const soapSessionReopenFailuresTotal = new Counter({
   registers: [registry]
 });
 &nbsp;
-export function recordQueueSize(size: number) {
-  queueSizeGauge.set(size);
+export function <span class="fstat-no" title="function not covered" >recordQueueSize(</span>size: number) {
+<span class="cstat-no" title="statement not covered" >  queueSizeGauge.set(size);</span>
 }
 &nbsp;
-export function observeSoapDuration(action: string, seconds: number) {
-  soapRequestDurationSeconds.observe({ action }, seconds);
+export function <span class="fstat-no" title="function not covered" >observeSoapDuration(</span>action: string, seconds: number) {
+<span class="cstat-no" title="statement not covered" >  soapRequestDurationSeconds.observe({ action }, seconds);</span>
 }
 &nbsp;
-export function observeSoapDurationLabeled(owner: string | undefined, domain: string | undefined, seconds: number) {
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (process.env.SOAP_METRICS_LABELS === '1') {
+export function <span class="fstat-no" title="function not covered" >observeSoapDurationLabeled(</span>owner: string | undefined, domain: string | undefined, seconds: number) {
+<span class="cstat-no" title="statement not covered" >  <span class="missing-if-branch" title="if path not taken" >I</span>if (process.env.SOAP_METRICS_LABELS === '1') {</span>
     const o = <span class="cstat-no" title="statement not covered" >(owner &amp;&amp; owner.length &lt;= 64) ? owner : (owner ? 'redacted' : 'unknown');</span>
     const d = <span class="cstat-no" title="statement not covered" >(domain &amp;&amp; domain.length &lt;= 64) ? domain : (domain ? 'redacted' : 'unknown');</span>
 <span class="cstat-no" title="statement not covered" >    soapRequestDurationByOwnerSeconds.observe({ owner: o, domain: d }, seconds);</span>
@@ -517,7 +517,7 @@ export async function metricsHandler(req: Request, res: Response) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-29T03:04:12.682Z
+                at 2025-09-29T08:18:28.243Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

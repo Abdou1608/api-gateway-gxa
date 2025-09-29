@@ -1,5 +1,17 @@
-import { NextFunction, Request, Response } from 'express';
+import type { FastifyInstance, FastifyPluginAsync } from 'fastify';
+import type { NextFunction, Request, Response } from 'express';
 import { randomUUID } from 'crypto';
+
+export const correlationPlugin: FastifyPluginAsync = async (app: FastifyInstance) => {
+  app.addHook('onRequest', async (request, reply) => {
+    const hdr = request.headers['x-request-id'];
+    const id = (Array.isArray(hdr) ? hdr[0] : hdr) || randomUUID();
+    // Binder l’id sur le logger
+    request.log = request.log.child({ reqId: id });
+    (request as any).reqId = id;
+    reply.header('X-Request-ID', id);
+  });
+};
 
 /**
  * correlationId middleware

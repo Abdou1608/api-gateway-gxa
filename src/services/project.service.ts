@@ -1,179 +1,164 @@
-import { Request, Response } from 'express';
+// Express types removed; only Fastify-native helpers remain
 import { sendSoapRequest } from './soap.service';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 import { BasParams } from '../Model/BasSoapObject/BasParams';
 import groupByTypename from '../utils/groupByTypename';
 
-
-export async function Project_ListItemsHandler(req: Request, res: Response) {
-    const params=new BasParams()
-    //const params = req.body;
-      const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-
-      basSecurityContext.IsAuthenticated=true
-    params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
-     params.AddInt("dossier",req.body.dossier)
-    const result = await sendSoapRequest(
-      params,
-      "Project_ListItems",
-      basSecurityContext,
-      "projects",
-      undefined,
-  { userId: req.auth?.sid, domain: req.body?.domain }
-    );
-    res.json(result);
-};
-
-export async function Project_OfferListItemsHandler(req: Request, res: Response) {
-  let params=new BasParams()
-    //const params = req.body;
-    let _BasSecurityContext= new BasSecurityContext()
-    _BasSecurityContext.IsAuthenticated=true
-    _BasSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-   params.AddStr("BasSecurityContext",_BasSecurityContext.ToSoapVar())
-     params.AddInt("idproj",req.body.idproj)
-    // params.AddInt("projet",req.body.projet)
-    const result = await sendSoapRequest(
-      params,
-      "Project_OfferListItem",
-      _BasSecurityContext,
-      "Project",
-      undefined,
-  { userId: req.auth?.sid, domain: req.body?.domain }
-    );
-    const grouped = groupByTypename(result, { keepUnknown: true });
-
-    res.json(grouped);
+// Fastify-native service wrappers returning data instead of writing to res
+export async function projectListItems(body: any, auth: { sid: string; userId?: string; domain?: string }) {
+  const params = new BasParams();
+  const basSecurityContext = new BasSecurityContext();
+  basSecurityContext.SessionId = auth.sid;
+  basSecurityContext.IsAuthenticated = true as any;
+  params.AddStr('BasSecurityContext', basSecurityContext.ToSoapVar());
+  params.AddInt('dossier', body.dossier);
+  const result = await sendSoapRequest(
+    params,
+    'Project_ListItems',
+    basSecurityContext,
+    'projects',
+    undefined,
+    { userId: auth.userId ?? auth.sid, domain: body?.domain }
+  );
+  return result;
 }
 
-export async function Project_DetailHandler(req: Request, res: Response) {
-   let params=new BasParams()
-    //const params = req.body;
-      let basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-      basSecurityContext.IsAuthenticated=true
-    params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
-     params.AddInt("idproj",req.body.idproj)
-     
-    const result = await sendSoapRequest(
-      params,
-      "Project_Detail",
-      basSecurityContext,
-      "project",
-      undefined,
-  { userId: req.auth?.sid, domain: req.body?.domain }
-    );
-    const grouped = groupByTypename(result, { keepUnknown: true });
-
-    res.json(grouped);
+export async function projectOfferListItems(body: any, auth: { sid: string; userId?: string; domain?: string }) {
+  const params = new BasParams();
+  const ctx = new BasSecurityContext();
+  ctx.IsAuthenticated = true as any;
+  ctx.SessionId = auth.sid;
+  params.AddStr('BasSecurityContext', ctx.ToSoapVar());
+  params.AddInt('idproj', body.idproj);
+  const result = await sendSoapRequest(
+    params,
+    'Project_OfferListItem',
+    ctx,
+    'Project',
+    undefined,
+    { userId: auth.userId ?? auth.sid, domain: body?.domain }
+  );
+  return groupByTypename(result, { keepUnknown: true });
 }
 
-export async function Project_CreateHandler(req: Request, res: Response) {
-    const params=new BasParams()
-    //const params = req.body;
-      const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-      basSecurityContext.IsAuthenticated=true
-    params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
-    req.body.contrat ? params.AddInt("contrat",req.body.contrat) :null
-     params.AddInt("dossier",req.body.dossier)
-     params.AddString("produit",req.body.produit)
-     params.AddString("libelle",req.body.libelle)
-    const data = req.body.data
-    const result = await sendSoapRequest(
-      params,
-      "Project_Create",
-      basSecurityContext,
-      "Project",
-      data,
-  { userId: req.auth?.sid, domain: req.body?.domain }
-    );
-    res.json(result);
+export async function projectDetail(body: any, auth: { sid: string; userId?: string; domain?: string }) {
+  const params = new BasParams();
+  const ctx = new BasSecurityContext();
+  ctx.SessionId = auth.sid;
+  ctx.IsAuthenticated = true as any;
+  params.AddStr('BasSecurityContext', ctx.ToSoapVar());
+  params.AddInt('idproj', body.idproj);
+  const result = await sendSoapRequest(
+    params,
+    'Project_Detail',
+    ctx,
+    'project',
+    undefined,
+    { userId: auth.userId ?? auth.sid, domain: body?.domain }
+  );
+  return groupByTypename(result, { keepUnknown: true });
 }
 
-export async function Project_updateHandler(req: Request, res: Response) {
-    const params=new BasParams()
-    //const params = req.body;
-      const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-      basSecurityContext.IsAuthenticated=true
-    params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
-     params.AddInt("idproj",req.body.idproj)
-     params.AddString("libelle",req.body.libelle)
-    const data = req.body.data
-    const result = await sendSoapRequest(
-      params,
-      "Project_update",
-      basSecurityContext,
-      "project",
-      data,
-  { userId: req.auth?.sid, domain: req.body?.domain }
-    );
-    res.json(result);
+export async function projectCreate(body: any, auth: { sid: string; userId?: string; domain?: string }) {
+  const params = new BasParams();
+  const ctx = new BasSecurityContext();
+  ctx.SessionId = auth.sid;
+  ctx.IsAuthenticated = true as any;
+  params.AddStr('BasSecurityContext', ctx.ToSoapVar());
+  if (body.contrat) params.AddInt('contrat', body.contrat);
+  params.AddInt('dossier', body.dossier);
+  params.AddString('produit', body.produit);
+  params.AddString('libelle', body.libelle);
+  const data = body.data;
+  const result = await sendSoapRequest(
+    params,
+    'Project_Create',
+    ctx,
+    'Project',
+    data,
+    { userId: auth.userId ?? auth.sid, domain: body?.domain }
+  );
+  return result;
 }
 
-export async function Project_AddOfferHandler(req: Request, res: Response) {
-    const params=new BasParams()
-    //const params = req.body;
-      const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-      basSecurityContext.IsAuthenticated=true
-    params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
-    params.AddInt("idproj",req.body.idproj)
-    // params.AddInt("dossier",req.body.dossier)
-     params.AddString("produit",req.body.produit)
-    // params.AddString("libelle",req.body.libelle)
-    const result = await sendSoapRequest(
-      params,
-      "Project_AddOffer",
-      basSecurityContext,
-      "offer",
-      undefined,
-  { userId: req.auth?.sid, domain: req.body?.domain }
-    );
-    res.json(result);
+export async function projectUpdate(body: any, auth: { sid: string; userId?: string; domain?: string }) {
+  const params = new BasParams();
+  const ctx = new BasSecurityContext();
+  ctx.SessionId = auth.sid;
+  ctx.IsAuthenticated = true as any;
+  params.AddStr('BasSecurityContext', ctx.ToSoapVar());
+  params.AddInt('idproj', body.idproj);
+  params.AddString('libelle', body.libelle);
+  const data = body.data;
+  const result = await sendSoapRequest(
+    params,
+    'Project_update',
+    ctx,
+    'project',
+    data,
+    { userId: auth.userId ?? auth.sid, domain: body?.domain }
+  );
+  return result;
 }
 
-export async function Project_DeleteOfferHandler(req: Request, res: Response) {
-    const params=new BasParams()
-    //const params = req.body;
-      const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-      basSecurityContext.IsAuthenticated=true
-    params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
-    params.AddInt("idproj",req.body.idproj)
-    params.AddInt("idoffer",req.body.idoffer)
-   //  params.AddString("produit",req.body.produit)
-    const result = await sendSoapRequest(
-      params,
-      "Project_DeleteOffer",
-      basSecurityContext,
-      "project",
-      undefined,
-      { userId: (req as any).user?.sub, domain: req.body?.domain }
-    );
-    res.json(result);
+export async function projectAddOffer(body: any, auth: { sid: string; userId?: string; domain?: string }) {
+  const params = new BasParams();
+  const ctx = new BasSecurityContext();
+  ctx.SessionId = auth.sid;
+  ctx.IsAuthenticated = true as any;
+  params.AddStr('BasSecurityContext', ctx.ToSoapVar());
+  params.AddInt('idproj', body.idproj);
+  params.AddString('produit', body.produit);
+  const result = await sendSoapRequest(
+    params,
+    'Project_AddOffer',
+    ctx,
+    'offer',
+    undefined,
+    { userId: auth.userId ?? auth.sid, domain: body?.domain }
+  );
+  return result;
 }
 
-export async function Project_ValidateOfferHandler(req: Request, res: Response) {
-    const params=new BasParams()
-    //const params = req.body;
-      const basSecurityContext = new BasSecurityContext()
-      basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
-      basSecurityContext.IsAuthenticated=true
-    params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
-    params.AddInt("idproj",req.body.idproj)
-    params.AddInt("idoffer",req.body.idoffer)
-    params.AddString("defaut",req.body.defaut)
-    params.AddBool("Avenant",req.body.Avenant)
-    const result = await sendSoapRequest(
-      params,
-      "Project_ValidateOffer",
-      basSecurityContext,
-      "Cont",
-      undefined,
-      { userId: (req as any).user?.sub, domain: req.body?.domain }
-    );
-    res.json(result);
+export async function projectDeleteOffer(body: any, auth: { sid: string; userId?: string; domain?: string }) {
+  const params = new BasParams();
+  const ctx = new BasSecurityContext();
+  ctx.SessionId = auth.sid;
+  ctx.IsAuthenticated = true as any;
+  params.AddStr('BasSecurityContext', ctx.ToSoapVar());
+  params.AddInt('idproj', body.idproj);
+  params.AddInt('idoffer', body.idoffer);
+  const result = await sendSoapRequest(
+    params,
+    'Project_DeleteOffer',
+    ctx,
+    'project',
+    undefined,
+    { userId: auth.userId ?? auth.sid, domain: body?.domain }
+  );
+  return result;
 }
+
+export async function projectValidateOffer(body: any, auth: { sid: string; userId?: string; domain?: string }) {
+  const params = new BasParams();
+  const ctx = new BasSecurityContext();
+  ctx.SessionId = auth.sid;
+  ctx.IsAuthenticated = true as any;
+  params.AddStr('BasSecurityContext', ctx.ToSoapVar());
+  params.AddInt('idproj', body.idproj);
+  params.AddInt('idoffer', body.idoffer);
+  params.AddString('defaut', body.defaut);
+  params.AddBool('Avenant', body.Avenant);
+  const result = await sendSoapRequest(
+    params,
+    'Project_ValidateOffer',
+    ctx,
+    'Cont',
+    undefined,
+    { userId: auth.userId ?? auth.sid, domain: body?.domain }
+  );
+  return result;
+}
+
+
+// Legacy Express-style project handlers removed

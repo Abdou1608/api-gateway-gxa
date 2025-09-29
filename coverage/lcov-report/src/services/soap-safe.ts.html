@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">52.94% </span>
+                <span class="strong">14.7% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>18/34</span>
+                <span class='fraction'>5/34</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">53.57% </span>
+                <span class="strong">32.14% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>15/28</span>
+                <span class='fraction'>9/28</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/6</span>
+                <span class='fraction'>0/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.06% </span>
+                <span class="strong">16.12% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>18/31</span>
+                <span class='fraction'>5/31</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -140,24 +140,24 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -192,29 +192,29 @@ const BACKOFF_MS = Number(process.env.SOAP_BACKOFF_MS || '400') || <span class="
 &nbsp;
 function <span class="fstat-no" title="function not covered" >sleep(</span>ms: number) { <span class="cstat-no" title="statement not covered" >return new Promise(<span class="fstat-no" title="function not covered" >(r</span>) =&gt; <span class="cstat-no" title="statement not covered" >setTimeout(r, ms))</span>; </span>}
 &nbsp;
-export async function callSoapWithResilience&lt;T&gt;(
+export async function <span class="fstat-no" title="function not covered" >callSoapWithResilience&lt;</span>T&gt;(
   client: BasSoapClient,
   action: () =&gt; Promise&lt;T&gt;,
   options?: SoapResilienceOptions
 ): Promise&lt;T&gt; {
-  const timeoutMs = options?.timeoutMs ?? TIMEOUT_MS;
-  const retries = options?.retries ?? RETRIES;
-  const backoffMs = options?.backoffMs ?? BACKOFF_MS;
+  const timeoutMs = <span class="cstat-no" title="statement not covered" >options?.timeoutMs ?? TIMEOUT_MS;</span>
+  const retries = <span class="cstat-no" title="statement not covered" >options?.retries ?? RETRIES;</span>
+  const backoffMs = <span class="cstat-no" title="statement not covered" >options?.backoffMs ?? BACKOFF_MS;</span>
 &nbsp;
-  let attempt = 0;
-  let lastErr: any = null;
+  let attempt = <span class="cstat-no" title="statement not covered" >0;</span>
+  let lastErr: any = <span class="cstat-no" title="statement not covered" >null;</span>
 &nbsp;
-  while (attempt &lt;= retries) {
-    const controller = new AbortController();
-    const timer = setTimeout(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >controller.abort(),</span> timeoutMs);
-    try {
+<span class="cstat-no" title="statement not covered" >  while (attempt &lt;= retries) {</span>
+    const controller = <span class="cstat-no" title="statement not covered" >new AbortController();</span>
+    const timer = <span class="cstat-no" title="statement not covered" >setTimeout(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >controller.abort(),</span> timeoutMs);</span>
+<span class="cstat-no" title="statement not covered" >    try {</span>
       // Note: BasSoapClient doesn't support signal directly; rely on timeouts via Promise race
-      const result = await Promise.race([
+      const result = <span class="cstat-no" title="statement not covered" >await Promise.race([</span>
         action(),
-        new Promise&lt;never&gt;((_, reject) =&gt; setTimeout(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >reject(new UpstreamTimeoutError('SOAP_TIMEOUT')),</span> timeoutMs)),
+        new Promise&lt;never&gt;(<span class="fstat-no" title="function not covered" >(_</span>, reject) =&gt; <span class="cstat-no" title="statement not covered" >setTimeout(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >reject(new UpstreamTimeoutError('SOAP_TIMEOUT')),</span> timeoutMs))</span>,
       ]);
-      clearTimeout(timer);
-      return result as T;
+<span class="cstat-no" title="statement not covered" >      clearTimeout(timer);</span>
+<span class="cstat-no" title="statement not covered" >      return result as T;</span>
     } catch (e: any) {
 <span class="cstat-no" title="statement not covered" >      clearTimeout(timer);</span>
 <span class="cstat-no" title="statement not covered" >      lastErr = e;</span>
@@ -241,7 +241,7 @@ export async function callSoapWithResilience&lt;T&gt;(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-29T03:04:12.682Z
+                at 2025-09-29T08:18:28.243Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

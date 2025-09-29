@@ -16,10 +16,11 @@ describe('AUTH_ERROR on /profile unauthorized scenario', () => {
     const auth = new AuthService();
     const token = await auth.get_token(SECRET, 'SID-AUTH-ERR');
 
-    // Import app after mocks and env are set
-    const app = (await import('../src/server')).default;
+    // Import app after mocks and env are set, await readiness for routes/plugins
+    const { app, ready } = await import('../src/server');
+    await ready;
 
-    const res = await request(app)
+    const res = await request(app.server)
       .post('/api/profile')
       .set('Authorization', `Bearer ${token}`)
       .send({ login: 'nouser', domain: 'test' });

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.32% </span>
+                <span class="strong">83.87% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>28/31</span>
+                <span class='fraction'>26/31</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">42.85% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/14</span>
+                <span class='fraction'>6/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.88% </span>
+                <span class="strong">77.77% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>8/9</span>
+                <span class='fraction'>7/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.32% </span>
+                <span class="strong">83.87% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>28/31</span>
+                <span class='fraction'>26/31</span>
             </div>
         
             
@@ -181,11 +181,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -200,19 +200,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -241,10 +241,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -310,8 +310,8 @@ export class ValidationError extends BaseAppError&lt;{ issues: Array&lt;{ path: 
 }
 &nbsp;
 export class AuthError extends BaseAppError&lt;{ reason?: string }&gt; {
-  constructor(message = <span class="branch-0 cbranch-no" title="branch not covered" >'Unauthorized',</span> details?: { reason?: string }) {
-    super('AUTH_ERROR', 'AUTH.UNAUTHORIZED', message, details);
+<span class="fstat-no" title="function not covered" >  constructor(m</span>essage = <span class="branch-0 cbranch-no" title="branch not covered" >'Unauthorized',</span> details?: { reason?: string }) {
+<span class="cstat-no" title="statement not covered" >    super('AUTH_ERROR', 'AUTH.UNAUTHORIZED', message, details);</span>
   }
 }
 &nbsp;
@@ -342,8 +342,8 @@ export class InternalError extends BaseAppError {
 export function errorHttpStatus(err: BaseAppError | Error): number {
   if (err instanceof BaseAppError) {
     switch (err.type) {
-      case 'AUTH_ERROR':
-        return 401;
+<span class="branch-0 cbranch-no" title="branch not covered" >      case 'AUTH_ERROR':</span>
+<span class="cstat-no" title="statement not covered" >        return 401;</span>
       case 'VALIDATION_ERROR':
         return 400;
       case 'TRANSFORM_ERROR':
@@ -367,7 +367,7 @@ export function errorHttpStatus(err: BaseAppError | Error): number {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-29T03:04:12.682Z
+                at 2025-09-29T08:18:28.243Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
