@@ -6,7 +6,6 @@ import groupByTypename from '../utils/groupByTypename';
 
 
 export async function Project_ListItemsHandler(req: Request, res: Response) {
-  try {
     const params=new BasParams()
     //const params = req.body;
       const basSecurityContext = new BasSecurityContext()
@@ -15,15 +14,18 @@ export async function Project_ListItemsHandler(req: Request, res: Response) {
       basSecurityContext.IsAuthenticated=true
     params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
      params.AddInt("dossier",req.body.dossier)
-    const result = await sendSoapRequest(params,"Project_ListItems",basSecurityContext,"projects");
+    const result = await sendSoapRequest(
+      params,
+      "Project_ListItems",
+      basSecurityContext,
+      "projects",
+      undefined,
+  { userId: req.auth?.sid, domain: req.body?.domain }
+    );
     res.json(result);
-  } catch (error:any) {
-     const e=error ? error :null
-  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });  }
 };
 
 export async function Project_OfferListItemsHandler(req: Request, res: Response) {
-  try {
   let params=new BasParams()
     //const params = req.body;
     let _BasSecurityContext= new BasSecurityContext()
@@ -32,18 +34,20 @@ export async function Project_OfferListItemsHandler(req: Request, res: Response)
    params.AddStr("BasSecurityContext",_BasSecurityContext.ToSoapVar())
      params.AddInt("idproj",req.body.idproj)
     // params.AddInt("projet",req.body.projet)
-    const result = await sendSoapRequest(params,"Project_OfferListItem",_BasSecurityContext,"Project");
+    const result = await sendSoapRequest(
+      params,
+      "Project_OfferListItem",
+      _BasSecurityContext,
+      "Project",
+      undefined,
+  { userId: req.auth?.sid, domain: req.body?.domain }
+    );
     const grouped = groupByTypename(result, { keepUnknown: true });
 
     res.json(grouped);
-  } catch (error:any) {
-     const e=error ? error :null
-  res.status(500).json({ error: 'SOAP Error:'+e?.message, details: JSON.stringify(e) });
-  }
 }
 
 export async function Project_DetailHandler(req: Request, res: Response) {
-  try {
    let params=new BasParams()
     //const params = req.body;
       let basSecurityContext = new BasSecurityContext()
@@ -52,17 +56,20 @@ export async function Project_DetailHandler(req: Request, res: Response) {
     params.AddStr("BasSecurityContext",basSecurityContext.ToSoapVar())
      params.AddInt("idproj",req.body.idproj)
      
-    const result = await sendSoapRequest(params,"Project_Detail",basSecurityContext, "project");
+    const result = await sendSoapRequest(
+      params,
+      "Project_Detail",
+      basSecurityContext,
+      "project",
+      undefined,
+  { userId: req.auth?.sid, domain: req.body?.domain }
+    );
     const grouped = groupByTypename(result, { keepUnknown: true });
 
     res.json(grouped);
-  } catch (error:any) {
-     const e=error ? error :null
-  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });  }
 }
 
 export async function Project_CreateHandler(req: Request, res: Response) {
-  try {
     const params=new BasParams()
     //const params = req.body;
       const basSecurityContext = new BasSecurityContext()
@@ -74,15 +81,18 @@ export async function Project_CreateHandler(req: Request, res: Response) {
      params.AddString("produit",req.body.produit)
      params.AddString("libelle",req.body.libelle)
     const data = req.body.data
-    const result = await sendSoapRequest(params, "Project_Create", basSecurityContext,"Project",data);
+    const result = await sendSoapRequest(
+      params,
+      "Project_Create",
+      basSecurityContext,
+      "Project",
+      data,
+  { userId: req.auth?.sid, domain: req.body?.domain }
+    );
     res.json(result);
-  } catch (error:any) {
-     const e=error ? error :null
-  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });  }
 }
 
 export async function Project_updateHandler(req: Request, res: Response) {
-  try {
     const params=new BasParams()
     //const params = req.body;
       const basSecurityContext = new BasSecurityContext()
@@ -92,15 +102,18 @@ export async function Project_updateHandler(req: Request, res: Response) {
      params.AddInt("idproj",req.body.idproj)
      params.AddString("libelle",req.body.libelle)
     const data = req.body.data
-    const result = await sendSoapRequest(params,"Project_update",basSecurityContext,"project",data);
+    const result = await sendSoapRequest(
+      params,
+      "Project_update",
+      basSecurityContext,
+      "project",
+      data,
+  { userId: req.auth?.sid, domain: req.body?.domain }
+    );
     res.json(result);
-  } catch (error:any) {
-     const e=error ? error :null
-  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });  }
 }
 
 export async function Project_AddOfferHandler(req: Request, res: Response) {
-  try {
     const params=new BasParams()
     //const params = req.body;
       const basSecurityContext = new BasSecurityContext()
@@ -111,15 +124,18 @@ export async function Project_AddOfferHandler(req: Request, res: Response) {
     // params.AddInt("dossier",req.body.dossier)
      params.AddString("produit",req.body.produit)
     // params.AddString("libelle",req.body.libelle)
-    const result = await sendSoapRequest(params, "Project_AddOffer",basSecurityContext,"offer");
+    const result = await sendSoapRequest(
+      params,
+      "Project_AddOffer",
+      basSecurityContext,
+      "offer",
+      undefined,
+  { userId: req.auth?.sid, domain: req.body?.domain }
+    );
     res.json(result);
-  } catch (error:any) {
-     const e=error ? error :null
-  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });  }
 }
 
 export async function Project_DeleteOfferHandler(req: Request, res: Response) {
-  try {
     const params=new BasParams()
     //const params = req.body;
       const basSecurityContext = new BasSecurityContext()
@@ -129,15 +145,18 @@ export async function Project_DeleteOfferHandler(req: Request, res: Response) {
     params.AddInt("idproj",req.body.idproj)
     params.AddInt("idoffer",req.body.idoffer)
    //  params.AddString("produit",req.body.produit)
-    const result = await sendSoapRequest(params,"Project_DeleteOffer",basSecurityContext, "project");
+    const result = await sendSoapRequest(
+      params,
+      "Project_DeleteOffer",
+      basSecurityContext,
+      "project",
+      undefined,
+      { userId: (req as any).user?.sub, domain: req.body?.domain }
+    );
     res.json(result);
-  } catch (error:any) {
-     const e=error ? error :null
-  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });  }
 }
 
 export async function Project_ValidateOfferHandler(req: Request, res: Response) {
-  try {
     const params=new BasParams()
     //const params = req.body;
       const basSecurityContext = new BasSecurityContext()
@@ -148,9 +167,13 @@ export async function Project_ValidateOfferHandler(req: Request, res: Response) 
     params.AddInt("idoffer",req.body.idoffer)
     params.AddString("defaut",req.body.defaut)
     params.AddBool("Avenant",req.body.Avenant)
-    const result = await sendSoapRequest(params,"Project_ValidateOffer",basSecurityContext, "Cont");
+    const result = await sendSoapRequest(
+      params,
+      "Project_ValidateOffer",
+      basSecurityContext,
+      "Cont",
+      undefined,
+      { userId: (req as any).user?.sub, domain: req.body?.domain }
+    );
     res.json(result);
-  } catch (error:any) {
-     const e=error ? error :null
-  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });  }
 }

@@ -4,8 +4,16 @@ import groupByTypename from "../../utils/groupByTypename";
 import { sendSoapRequest } from "../soap.service";
 
 
-export async function quittance_details(quittance: number, 
-details:boolean,garanties:boolean,addinfospqg:boolean,intervenants:boolean,addinfosqint:boolean, BasSecurityContext:BasSecurityContext,) {
+export async function quittance_details(
+  quittance: number,
+  details: boolean,
+  garanties: boolean,
+  addinfospqg: boolean,
+  intervenants: boolean,
+  addinfosqint: boolean,
+  BasSecurityContext: BasSecurityContext,
+  ctx?: { userId?: string; domain?: string; password?: string }
+) {
   const soapBody = {
 	quittance,details, BasSecurityContext
   }
@@ -18,7 +26,14 @@ details:boolean,garanties:boolean,addinfospqg:boolean,intervenants:boolean,addin
  params.AddBool("addinfospqg",addinfospqg)
  params.AddBool("intervenants",intervenants)
  params.AddBool("addinfosqint",addinfosqint)
-  const result = await sendSoapRequest(params, "Quittance_Details",BasSecurityContext);
+  const result = await sendSoapRequest(
+    params,
+    "Quittance_Details",
+    BasSecurityContext,
+    undefined,
+    undefined,
+    ctx
+  );
   const grouped = groupByTypename(result, { keepUnknown: true });
   return grouped;
 }

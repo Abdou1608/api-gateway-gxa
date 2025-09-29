@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.tiers_search = tiers_search;
 const soap_service_1 = require("../soap.service");
 const BasParams_1 = require("../../Model/BasSoapObject/BasParams");
-async function tiers_search(BasSecurityContext, reference, dppname, typetiers, ntel, datenais, rsociale) {
+async function tiers_search(BasSecurityContext, reference, dppname, typetiers, ntel, datenais, rsociale, ctx) {
     const params = new BasParams_1.BasParams();
     params.AddStr("BasSecurityContext", BasSecurityContext.ToSoapVar());
     if (reference != "" && reference != null) {
@@ -31,6 +31,6 @@ async function tiers_search(BasSecurityContext, reference, dppname, typetiers, n
     params.AddString("datanode", "");
     // const soapBody = {reference,dppname,typetiers,codp,datenais}
     let result;
-    result = await (0, soap_service_1.sendSoapRequest)(params, "Tiers_Search", BasSecurityContext);
+    result = await (0, soap_service_1.sendSoapRequest)(params, "Tiers_Search", BasSecurityContext, undefined, undefined, ctx);
     return result;
 }

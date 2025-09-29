@@ -7,7 +7,7 @@ exports.produit_details = produit_details;
 const BasParams_1 = require("../../Model/BasSoapObject/BasParams");
 const groupByTypename_1 = __importDefault(require("../../utils/groupByTypename"));
 const soap_service_1 = require("../soap.service");
-async function produit_details(code, BasSecurityContext, options, basecouvs, clauses) {
+async function produit_details(code, BasSecurityContext, options, basecouvs, clauses, ctx) {
     const params = new BasParams_1.BasParams();
     params.AddStr("BasSecurityContext", BasSecurityContext.ToSoapVar());
     params.AddString("code", code);
@@ -16,7 +16,7 @@ async function produit_details(code, BasSecurityContext, options, basecouvs, cla
     params.AddBool("basecouv", basecouvs ?? true);
     params.AddBool("clauses", clauses ?? true);
     console.log("Paramettres du Detail du produit requis===" + JSON.stringify(params));
-    const result = await (0, soap_service_1.sendSoapRequest)(params, "Produit_Details", BasSecurityContext, "newprod");
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Produit_Details", BasSecurityContext, "newprod", undefined, ctx);
     const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
     return grouped;
 }

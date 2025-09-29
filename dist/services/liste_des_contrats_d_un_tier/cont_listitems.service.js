@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.cont_listitems = cont_listitems;
 const BasParams_1 = require("../../Model/BasSoapObject/BasParams");
 const soap_service_1 = require("../soap.service");
-async function cont_listitems(dossier, includeall, defaut, BasSecurityContext) {
+async function cont_listitems(dossier, includeall, defaut, BasSecurityContext, ctx) {
     defaut = true;
     const soapBody = { dossier, includeall, defaut, BasSecurityContext };
     const params = new BasParams_1.BasParams();
@@ -29,6 +29,6 @@ async function cont_listitems(dossier, includeall, defaut, BasSecurityContext) {
       </soapenv:Envelope>
     `
     */
-    const result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_ListItems", BasSecurityContext);
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_ListItems", BasSecurityContext, undefined, undefined, ctx);
     return result;
 }

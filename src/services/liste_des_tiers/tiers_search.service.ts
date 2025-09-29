@@ -3,7 +3,16 @@ import { BasSecurityContext } from '../../Model/BasSoapObject/BasSecurityContext
 import { BasParams } from '../../Model/BasSoapObject/BasParams';
 import { Tier } from '../../Model/tier.model';
 
-export async function tiers_search(BasSecurityContext: BasSecurityContext, reference: string, dppname: string, typetiers?: string, ntel?: string, datenais?: string, rsociale?: any) {
+export async function tiers_search(
+  BasSecurityContext: BasSecurityContext,
+  reference: string,
+  dppname: string,
+  typetiers?: string,
+  ntel?: string,
+  datenais?: string,
+  rsociale?: any,
+  ctx?: { userId?: string; domain?: string; password?: string }
+) {
   const params=new BasParams()
   params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())
   if(reference!="" && reference!=null){params.AddString("reference",reference)}
@@ -22,6 +31,13 @@ export async function tiers_search(BasSecurityContext: BasSecurityContext, refer
    params.AddString("datanode","")
  // const soapBody = {reference,dppname,typetiers,codp,datenais}
   let result:[Tier] 
-   result = await sendSoapRequest(params, "Tiers_Search", BasSecurityContext);
+   result = await sendSoapRequest(
+     params,
+     "Tiers_Search",
+     BasSecurityContext,
+     undefined,
+     undefined,
+     ctx
+   );
   return result;
 }

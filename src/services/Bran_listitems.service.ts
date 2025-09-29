@@ -3,7 +3,10 @@ import { sendSoapRequest } from './soap.service';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 import { BasParams } from '../Model/BasSoapObject/BasParams';
 
-export async function bran_listitems( BasSecurityContext?:BasSecurityContext) {
+export async function bran_listitems(
+  BasSecurityContext?: BasSecurityContext,
+  ctx?: { userId?: string; domain?: string; password?: string }
+) {
 
       
   //const soapBody = {typeecran,branche,disponible,BasSecurityContext}
@@ -14,7 +17,14 @@ export async function bran_listitems( BasSecurityContext?:BasSecurityContext) {
   // disponible ?  params.AddBool("disponible",disponible) :null
 
    params.AddString("datanode","bran")
-  const result = await sendSoapRequest(params, "Bran_ListItems",BasSecurityContext,"bran");
+  const result = await sendSoapRequest(
+    params,
+    "Bran_ListItems",
+    BasSecurityContext,
+    "bran",
+    undefined,
+    ctx
+  );
   return result;
  
 }

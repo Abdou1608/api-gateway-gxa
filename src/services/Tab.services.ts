@@ -5,7 +5,6 @@ import { BasParams } from '../Model/BasSoapObject/BasParams';
 import groupByTypename from '../utils/groupByTypename';
 
 export async function Tab_ListValues(req: Request, res: Response) {
-  try {
   const params=new BasParams()
   //const params = req.body;
     const basSecurityContext = new BasSecurityContext()
@@ -15,17 +14,13 @@ export async function Tab_ListValues(req: Request, res: Response) {
    params.AddString("tabcode",req.body.tabcode)
    params.AddString("datanode","tabs")
  // const soapBody = {reference,dppname,typetiers,codp,datenais}
-  const result = await sendSoapRequest(params, "Tab_ListValues", basSecurityContext,"tabs");
+  const result = await sendSoapRequest(params, "Tab_ListValues", basSecurityContext, "tabs", undefined, { userId: (req as any).user?.sub, domain: req.body?.domain });
   const grouped = groupByTypename(result, { keepUnknown: true });
  // return grouped;
   res.json(grouped);
-} catch (error:any) {
-   const e=error ? error :null
-  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });}
 }
 
 export async function Tab_ListItems(req: Request, res: Response) {
-  try {
   const params=new BasParams()
   const basSecurityContext = new BasSecurityContext()
   basSecurityContext.SessionId=req.auth?.sid ?? req.body.BasSecurityContext?._SessionId
@@ -35,15 +30,11 @@ export async function Tab_ListItems(req: Request, res: Response) {
   params.AddString("filtre",req.body.filtre ) }
    params.AddString("datanode","tabs")
  // const soapBody = {reference,dppname,typetiers,codp,datenais}
-  const result = await sendSoapRequest(params, "Tab_ListItems", basSecurityContext,"tab");
+  const result = await sendSoapRequest(params, "Tab_ListItems", basSecurityContext, "tab", undefined, { userId: (req as any).user?.sub, domain: req.body?.domain });
   res.json(result);
-} catch (error:any) {
-   const e=error ? error :null
-  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });}
 }
 
 export async function Tab_GetValue(req: Request, res: Response) {
-  try {
   const params=new BasParams()
   //const params = req.body;
     const basSecurityContext = new BasSecurityContext()
@@ -54,9 +45,6 @@ export async function Tab_GetValue(req: Request, res: Response) {
    params.AddString("tabref",req.body?.tabref)
    params.AddString("datanode","tabs")
  // const soapBody = {reference,dppname,typetiers,codp,datenais}
-  const result = await sendSoapRequest(params, "Tab_GetValue", basSecurityContext);
-} catch (error:any) {
-   const e=error ? error :null
-  res.status(error.status ?? 500).json({ error: error?.message, detail: JSON.stringify(error) });
-}
+  const result = await sendSoapRequest(params, "Tab_GetValue", basSecurityContext, undefined, undefined, { userId: (req as any).user?.sub, domain: req.body?.domain });
+  res.json(result);
 }

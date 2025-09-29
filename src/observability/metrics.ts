@@ -47,6 +47,68 @@ export const tokenRevokedRedisCardinality = new Gauge({
   registers: [registry]
 });
 
+// Pending SOAP queue metrics
+export const queueSizeGauge = new Gauge({
+  name: 'soap_pending_queue_size',
+  help: 'Current number of in-flight SOAP requests',
+  registers: [registry]
+});
+
+export const soapRequestDurationSeconds = new Histogram({
+  name: 'soap_request_duration_seconds',
+  help: 'Duration of SOAP requests (RunAction end-to-end)',
+  labelNames: ['action'] as const,
+  buckets: [0.025,0.05,0.1,0.25,0.5,1,2,5,10],
+  registers: [registry]
+});
+
+// Optional high-cardinality metrics (enable via SOAP_METRICS_LABELS=1)
+export const soapRequestDurationByOwnerSeconds = new Histogram({
+  name: 'soap_request_duration_by_owner_seconds',
+  help: 'Duration of SOAP requests partitioned by owner/domain (enable with SOAP_METRICS_LABELS=1)',
+  labelNames: ['owner','domain'] as const,
+  buckets: [0.025,0.05,0.1,0.25,0.5,1,2,5,10],
+  registers: [registry]
+});
+
+// Session reopen metrics
+export const soapSessionReopenAttemptsTotal = new Counter({
+  name: 'soap_session_reopen_attempts_total',
+  help: 'Number of attempts to reopen SOAP session after faults',
+  labelNames: ['owner','domain'] as const,
+  registers: [registry]
+});
+
+export const soapSessionReopenSuccessTotal = new Counter({
+  name: 'soap_session_reopen_success_total',
+  help: 'Number of successful SOAP session reopen events',
+  labelNames: ['owner','domain'] as const,
+  registers: [registry]
+});
+
+export const soapSessionReopenFailuresTotal = new Counter({
+  name: 'soap_session_reopen_failures_total',
+  help: 'Number of failed SOAP session reopen events',
+  labelNames: ['owner','domain'] as const,
+  registers: [registry]
+});
+
+export function recordQueueSize(size: number) {
+  queueSizeGauge.set(size);
+}
+
+export function observeSoapDuration(action: string, seconds: number) {
+  soapRequestDurationSeconds.observe({ action }, seconds);
+}
+
+export function observeSoapDurationLabeled(owner: string | undefined, domain: string | undefined, seconds: number) {
+  if (process.env.SOAP_METRICS_LABELS === '1') {
+    const o = (owner && owner.length <= 64) ? owner : (owner ? 'redacted' : 'unknown');
+    const d = (domain && domain.length <= 64) ? domain : (domain ? 'redacted' : 'unknown');
+    soapRequestDurationByOwnerSeconds.observe({ owner: o, domain: d }, seconds);
+  }
+}
+
 // Middleware instrumentation
 export function metricsInstrumentation(req: Request, res: Response, next: NextFunction) {
   const start = process.hrtime.bigint();

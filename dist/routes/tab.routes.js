@@ -35,9 +35,10 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const Tabservice = __importStar(require("../services/Tab.services"));
+const async_handler_1 = require("../middleware/async-handler");
 const tabrouter = (0, express_1.Router)();
-tabrouter.post('/Tab_ListItems', Tabservice.Tab_ListItems);
-tabrouter.post('/Tab_ListValues', Tabservice.Tab_ListValues);
-tabrouter.post('/Tab_GetValue', Tabservice.Tab_GetValue);
+tabrouter.post('/Tab_ListItems', (0, async_handler_1.asyncHandler)(Tabservice.Tab_ListItems));
+tabrouter.post('/Tab_ListValues', (0, async_handler_1.asyncHandler)(Tabservice.Tab_ListValues));
+tabrouter.post('/Tab_GetValue', (0, async_handler_1.asyncHandler)(Tabservice.Tab_GetValue));
 exports.default = tabrouter;
 // Utilisez `const api = new DefaultApi();` dans vos handlers pour les appels backend

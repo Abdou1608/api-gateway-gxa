@@ -4,9 +4,15 @@ import groupByTypename from "../../utils/groupByTypename";
 import { sendSoapRequest } from "../soap.service";
 
 
-export async function cont_search(reference:string,detailorigine:boolean,
- origine:any,
-codefic:string,nomchamp: string, BasSecurityContext:BasSecurityContext) {
+export async function cont_search(
+  reference: string,
+  detailorigine: boolean,
+  origine: any,
+  codefic: string,
+  nomchamp: string,
+  BasSecurityContext: BasSecurityContext,
+  ctx?: { userId?: string; domain?: string; password?: string }
+) {
   const soapBody={reference,detailorigine,origine,codefic,nomchamp, BasSecurityContext};
   const params=new BasParams()
   params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())
@@ -35,7 +41,14 @@ codefic:string,nomchamp: string, BasSecurityContext:BasSecurityContext) {
     </soapenv:Envelope>
   `;
 */
-  const result = await sendSoapRequest(params,"Cont_Search",BasSecurityContext, "Conts");
+  const result = await sendSoapRequest(
+    params,
+    "Cont_Search",
+    BasSecurityContext,
+    "Conts",
+    undefined,
+    ctx
+  );
   const grouped = groupByTypename(result, { keepUnknown: true });
   return grouped;
   return result;

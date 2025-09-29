@@ -7,7 +7,7 @@ exports.quittance_details = quittance_details;
 const BasParams_1 = require("../../Model/BasSoapObject/BasParams");
 const groupByTypename_1 = __importDefault(require("../../utils/groupByTypename"));
 const soap_service_1 = require("../soap.service");
-async function quittance_details(quittance, details, garanties, addinfospqg, intervenants, addinfosqint, BasSecurityContext) {
+async function quittance_details(quittance, details, garanties, addinfospqg, intervenants, addinfosqint, BasSecurityContext, ctx) {
     const soapBody = {
         quittance, details, BasSecurityContext
     };
@@ -20,7 +20,7 @@ async function quittance_details(quittance, details, garanties, addinfospqg, int
     params.AddBool("addinfospqg", addinfospqg);
     params.AddBool("intervenants", intervenants);
     params.AddBool("addinfosqint", addinfosqint);
-    const result = await (0, soap_service_1.sendSoapRequest)(params, "Quittance_Details", BasSecurityContext);
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Quittance_Details", BasSecurityContext, undefined, undefined, ctx);
     const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
     return grouped;
 }

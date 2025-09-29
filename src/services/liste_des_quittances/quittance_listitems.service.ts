@@ -2,8 +2,12 @@ import { BasParams } from '../../Model/BasSoapObject/BasParams';
 import { BasSecurityContext } from '../../Model/BasSoapObject/BasSecurityContext';
 import { sendSoapRequest } from '../soap.service';
 
-export async function quittance_listitems(dossier:any,
-contrat: any,BasSecurityContext:BasSecurityContext,) {
+export async function quittance_listitems(
+  dossier: any,
+  contrat: any,
+  BasSecurityContext: BasSecurityContext,
+  ctx?: { userId?: string; domain?: string; password?: string }
+) {
   const params=new BasParams()
 params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())
 if (contrat){
@@ -16,6 +20,13 @@ if(dossier){
 //   disponible ?  params.AddBool("disponible",disponible) :null
 
    params.AddString("datanode","quit")
-  const result = await sendSoapRequest(params,"Quittance_ListItems",BasSecurityContext);
+  const result = await sendSoapRequest(
+    params,
+    "Quittance_ListItems",
+    BasSecurityContext,
+    undefined,
+    undefined,
+    ctx
+  );
   return result;
 }

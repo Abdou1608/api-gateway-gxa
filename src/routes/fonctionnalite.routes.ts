@@ -30,7 +30,7 @@ import YAML from "yamljs";
 import riskrouter from './risque.routes';
 import list_des_tecrants from './liste_des_tecrants.routes';
 import sinrouter from './sinistre.routes';
-import admin from './admin.routes';
+import admin, { queueUiRouter, auditUiRouter } from './admin.routes';
 
 
 
@@ -43,8 +43,18 @@ export function registerRoutes(app: express.Application) {
   // Public
   app.use("/api/login", login);
   app.use("/api/logout", logout);
-  // Admin (header-guarded)
+  // Admin (header-guarded by default)
   app.use("/api/admin", admin);
+  app.use("/api/admin/pending-queue/ui", queueUiRouter);
+  app.use("/api/admin/soap-audit/ui", auditUiRouter);
+
+  // Local-only debug exposure (no admin guard) when not in production
+  if (process.env.NODE_ENV !== 'production') {
+    // Re-expose admin router and queue UI under /debug for local dashboards without admin headers
+    app.use('/debug/admin', admin);
+    app.use('/debug/pending-queue/ui', queueUiRouter);
+    app.use('/debug/soap-audit/ui', auditUiRouter);
+  }
   // Protected (auth middleware first)
   app.use("/api/ajout_piece_au_contrat", authMiddleware, ajout_piece_au_contrat);
   app.use("/api/check_session", authMiddleware, check_session);

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.quittance_create = quittance_create;
 const BasParams_1 = require("../../Model/BasSoapObject/BasParams");
 const soap_service_1 = require("../soap.service");
-async function quittance_create(contrat, piece, bordereau, autocalcul, affectation, data, bass, datedebut, datedefin) {
+async function quittance_create(contrat, piece, bordereau, autocalcul, affectation, data, bass, datedebut, datedefin, ctx) {
     const params = new BasParams_1.BasParams();
     params.AddStr("BasSecurityContext", bass.ToSoapVar());
     params.AddInt("contrat", contrat);
@@ -39,6 +39,6 @@ async function quittance_create(contrat, piece, bordereau, autocalcul, affectati
       </soapenv:Envelope>
     `;
   */
-    const result = await (0, soap_service_1.sendSoapRequest)(params, 'Quittance_Create', bass, "quit", data);
+    const result = await (0, soap_service_1.sendSoapRequest)(params, 'Quittance_Create', bass, 'quit', data, ctx);
     return result;
 }

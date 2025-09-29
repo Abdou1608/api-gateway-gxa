@@ -3,9 +3,13 @@ import { BasSecurityContext } from '../../Model/BasSoapObject/BasSecurityContext
 import groupByTypename from '../../utils/groupByTypename';
 import { sendSoapRequest } from '../soap.service';
 
-export async function produit_listitems(typeecran? : string,
-	branche? : string,
-	disponible? : boolean, BasSecurityContext?:BasSecurityContext) {
+export async function produit_listitems(
+  typeecran?: string,
+  branche?: string,
+  disponible?: boolean,
+  BasSecurityContext?: BasSecurityContext,
+  ctx?: { userId?: string; domain?: string; password?: string }
+) {
 
       
   const soapBody = {typeecran,branche,disponible,BasSecurityContext}
@@ -16,7 +20,14 @@ export async function produit_listitems(typeecran? : string,
    disponible ?  params.AddBool("disponible",disponible) :null
 
    params.AddString("datanode","prod")
-  const result = await sendSoapRequest(params, "Produit_ListItems",BasSecurityContext,"prod");
+  const result = await sendSoapRequest(
+    params,
+    "Produit_ListItems",
+    BasSecurityContext,
+    "prod",
+    undefined,
+    ctx
+  );
  //const grouped = groupByTypename(result, { keepUnknown: true }); 
   return result;
 
