@@ -1,11 +1,7 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BasSecurityContext = void 0;
-const soap_fault_handler_1 = require("../../utils/soap-fault-handler");
-const logger_1 = __importDefault(require("../../utils/logger"));
+const BasSoapFault_1 = require("./BasSoapFault");
 const fast_xml_parser_1 = require("fast-xml-parser");
 class BasSecurityContext {
     get SessionId() {
@@ -42,7 +38,7 @@ class BasSecurityContext {
                 this.IsAuthenticated = context.IsAuthenticated === 'true' || context.IsAuthenticated === true || context.IsAuthenticated['#text'] === true;
             }
             else {
-                (0, soap_fault_handler_1.handleSoapResponse)(xmlstring, logger_1.default); // lèvera AppError si Fault
+                BasSoapFault_1.BasSoapFault.ThrowError(xmlstring);
             }
         }
         catch (e) {

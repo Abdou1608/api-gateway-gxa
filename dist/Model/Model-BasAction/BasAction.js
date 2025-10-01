@@ -32,17 +32,10 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BasAction = void 0;
 const Xpath = __importStar(require("xpath"));
-const soap_fault_handler_1 = require("../../utils/soap-fault-handler");
-const logger_1 = __importDefault(require("../../utils/logger"));
-const pending_queue_1 = require("../../utils/pending-queue");
-const metrics_1 = require("../../observability/metrics");
-const soap_audit_1 = require("../../observability/soap-audit");
+const BasSoapFault_1 = require("../BasSoapObject/BasSoapFault");
 class BasAction {
     constructor(BasSoapCLient, appConfigService) {
         this.BasSoapCLient = BasSoapCLient;
@@ -57,41 +50,15 @@ class BasAction {
         //body +="<params>"+(xmldata ?? "")+"</params>"
         body += '</ns1:RunAction>';
         console.log("Body de la requete est:=====" + body);
-        const p = pending_queue_1.PendingQueue.register(actionName, ctx);
-        await soap_audit_1.SoapAudit.init();
-        const auditStart = Date.now();
-        logger_1.default.info(`[SOAP] ▶ RunAction ${actionName} owner=${ctx?.userId ?? '-'} domain=${ctx?.domain ?? '-'} queue=${pending_queue_1.PendingQueue.size()} [${pending_queue_1.PendingQueue.formatSnapshot()}]`);
-        (0, metrics_1.recordQueueSize)(pending_queue_1.PendingQueue.size());
-        let response;
-        try {
-            response = await this.BasSoapCLient.soapRequest(this.appConfigService.GetURlActionService(), body, ctx);
-            const end = Date.now();
-            // capture small payload snippet (strip whitespace, truncate)
-            const snippet = (response || '').replace(/\s+/g, ' ').slice(0, 800);
-            soap_audit_1.SoapAudit.record({ id: p.id, action: actionName, owner: ctx?.userId, domain: ctx?.domain, start: auditStart, end, durationMs: end - auditStart, outcome: 'success', payloadSnippet: snippet });
+        let response = await this.BasSoapCLient.soapRequest(this.appConfigService.GetURlActionService(), body);
+        console.log("BasSoapFault.IsBasError(response):=====" + BasSoapFault_1.BasSoapFault.IsBasError(response));
+        if (BasSoapFault_1.BasSoapFault.IsBasError(response)) {
+            console.log("response:=====" + response);
+            BasSoapFault_1.BasSoapFault.ThrowError(response);
         }
-        finally {
-            const ended = pending_queue_1.PendingQueue.complete(p.id);
-            if (ended) {
-                const durMs = Date.now() - ended.startedAt;
-                const sec = durMs / 1000;
-                (0, metrics_1.observeSoapDuration)(actionName, sec);
-                (0, metrics_1.observeSoapDurationLabeled)(ctx?.userId, ctx?.domain, sec);
-                logger_1.default.info(`[SOAP] ◀ RunAction ${actionName} done in ${durMs}ms owner=${ctx?.userId ?? '-'} domain=${ctx?.domain ?? '-'} queue=${pending_queue_1.PendingQueue.size()} [${pending_queue_1.PendingQueue.formatSnapshot()}]`);
-                (0, metrics_1.recordQueueSize)(pending_queue_1.PendingQueue.size());
-            }
-        }
-        // Centralisation fault -> handleSoapResponse (lèvera AppError si fault)
-        try {
-            response = (0, soap_fault_handler_1.handleSoapResponse)(response, logger_1.default);
-        }
-        catch (e) {
-            // Add audit record for error before rethrowing
-            const end = Date.now();
-            const errMsg = (e?.message || '').toString();
-            const errSnippet = errMsg.slice(0, 800);
-            soap_audit_1.SoapAudit.record({ id: p.id, action: actionName, owner: ctx?.userId, domain: ctx?.domain, start: auditStart, end, durationMs: end - auditStart, outcome: 'error', errorCode: e?.code || e?.name, errorMessage: e?.message, errorSnippet: errSnippet });
-            throw e;
+        if (BasSoapFault_1.BasSoapFault.IsBasError(response)) {
+            console.log("response:=====" + response);
+            BasSoapFault_1.BasSoapFault.ThrowError(response);
         }
         return response;
     }

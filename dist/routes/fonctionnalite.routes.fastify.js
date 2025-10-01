@@ -829,7 +829,7 @@ const registerRoutes = async (app) => {
         ctx.SessionId = request.auth?.sid ?? body?.BasSecurityContext?._SessionId;
         const code = body.code;
         const options = body.options ?? true;
-        const basecouv = body.basecouv ?? true;
+        const basecouv = false;
         const clauses = body.clauses ?? true;
         const result = await (0, produit_details_service_1.produit_details)(code, ctx, options, basecouv, clauses, { userId: request.user?.sub, domain: body?.domain });
         return reply.send(result);

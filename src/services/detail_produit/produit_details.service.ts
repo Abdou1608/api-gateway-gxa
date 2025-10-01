@@ -18,15 +18,15 @@ export async function produit_details(
    params.AddString("code",code)
   // params.AddBool("composition",composition ?? false) 
    params.AddBool("options",options ?? true)
-params.AddBool("basecouv",basecouvs ?? true) 
- params.AddBool("clauses",clauses ?? true)
+params.AddBool("basecouv",basecouvs ?? false) 
+ params.AddBool("clauses",clauses ?? false)
 console.log("Paramettres du Detail du produit requis==="+JSON.stringify(params))
   const result = await sendSoapRequest(
     params,
     "Produit_Details",
     BasSecurityContext,
-    "newprod",
-    undefined,
+    "Produit",
+    null,
     ctx
   );
   const grouped = groupByTypename(result, { keepUnknown: true});

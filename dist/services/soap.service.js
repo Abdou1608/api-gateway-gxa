@@ -30,37 +30,37 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
         throw new errors_1.ValidationError("Aucune identité n'est fournie", [{ path: 'BasSecurityContext', message: 'manquant' }]);
     }
     else {
-        console.log("✅ Inside ----------------------------------------------------------------");
+        //console.log("✅ Inside ----------------------------------------------------------------");
         if (data && data !== "") {
-            console.log("✅ Inside ----------------------------------------------------------------");
+            //console.log("✅ Inside ----------------------------------------------------------------");
             if ((sid === "cont") && (actionName !== "Cont_NewPiece")) {
                 xmldata = (0, cont_to_xml_service_1.contModelToXml)(data);
-                console.log("----------------------------xmldata = contModelToXml(data)-------------------------------------------");
-                console.log("Data envoyé=" + xmldata);
-                console.log("_____________________________________________________________________");
+                //console.log("----------------------------xmldata = contModelToXml(data)-------------------------------------------")
+                //console.log("Data envoyé="+xmldata)
+                //console.log("_____________________________________________________________________")
             }
             else if (sid === "risk" || sid == "quit" || sid == "Project") {
                 xmldata = (0, xml_parser_1.objectToXML)(data, sid);
                 //objectToCustomXML(data,sid)
                 //
-                console.log("----------------------------xmldata = objectToXML(data)-------------------------------------------");
-                console.log("Data envoyé=" + xmldata);
-                console.log("_____________________________________________________________________");
+                //console.log("----------------------------xmldata = objectToXML(data)-------------------------------------------")
+                //console.log("Data envoyé="+xmldata)
+                //console.log("_____________________________________________________________________")
             }
             else {
                 xmldata = (0, xml_parser_1.objectToCustomXML)(data, sid);
-                console.log("----------------------------xmldata = objectToCustomXML(data)-------------------------------------------");
-                console.log("Data envoyé=" + xmldata);
-                console.log("_____________________________________________________________________");
+                //console.log("----------------------------xmldata = objectToCustomXML(data)-------------------------------------------")
+                //console.log("Data envoyé="+xmldata)
+                //console.log("_____________________________________________________________________")
             }
             // xmldata=`<Data>${xmldata}</Data>`
-            console.log("✅ Inside ----------------------------------------------------------------");
-            //  console.log("✅ Inside SENDSOAPREQUEST - Data====:", xmldata);
-            console.log("✅ Fin Data ----------------------------------------------------------------");
+            //console.log("✅ Inside ----------------------------------------------------------------");
+            //  //console.log("✅ Inside SENDSOAPREQUEST - Data====:", xmldata);
+            //console.log("✅ Fin Data ----------------------------------------------------------------");
         }
         // console.info("⚠️ SessionId et BasSec fournie dans les paramètres correctement!!"+basSecurityContext);}
-        // console.log("✅ Inside SENDSOAPREQUEST - actionName:", actionName);
-        console.log("✅ Inside SENDSOAPREQUEST - sid:", sid);
+        // //console.log("✅ Inside SENDSOAPREQUEST - actionName:", actionName);
+        //console.log("✅ Inside SENDSOAPREQUEST - sid:", sid);
         const an = actionName ? actionName : "";
         const actionRun = () => runBasAct.RunAction(an, params, basSecurityContext ? basSecurityContext : new BasSecurityContext_1.BasSecurityContext(), xmldata, ctx);
         const resilientCall = () => (0, soap_safe_1.callSoapWithResilience)(bsc, actionRun);
@@ -70,8 +70,8 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
                 const f = BasSoapFault_1.BasSoapFault.ParseBasErrorDetailed(response);
                 throw new errors_1.SoapServerError('SOAP.FAULT', f.faultstring || 'SOAP Fault', { soapFault: { faultcode: f.faultcode, faultstring: f.faultstring, detail: f.details, state: f.state } });
             }
-            console.log("✅ Inside runBasAct - actionName====", actionName);
-            console.log("✅ Inside runBasAct - response====", response);
+            //console.log("✅ Inside runBasAct - actionName====", actionName);
+            //console.log("✅ Inside runBasAct - response====", response);
             // Si aucune erreur, on traite les données selon le `sid`
             if (sid === "produit") {
                 return { success: true, data: await (0, soap_parser_service_1.parseProdSoapResponse)(response) };
@@ -144,7 +144,7 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
            }
          });
        
-         console.log("📨 SOAP response received.");
+         //console.log("📨 SOAP response received.");
        
          // ✅ Parsing XML -> JSON
         // const xml2js = await import('xml2js');

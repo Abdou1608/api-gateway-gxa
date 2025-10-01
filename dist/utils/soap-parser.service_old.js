@@ -35,26 +35,26 @@ async function parseSoapXmlToJson(soapXml, datanode) {
         }
         else if ((datanode == "risks") || (datanode == "Risks")) {
             dname = "risks";
-            console.log("Dans else if datanode ===risks");
+            //console.log("Dans else if datanode ===risks")
         }
         else if ((datanode == "offers") || (datanode == "projects") || (datanode == "Offers") || (datanode == "Projects") || (datanode == "offer") || (datanode == "project")) {
-            console.log("Dans else if datanode ===offers ||projects");
+            //console.log("Dans else if datanode ===offers ||projects")
             dname = "offers";
         }
-        console.log("La valeur de  dname est ========" + dname);
-        console.log("La valeur de  datanode est ========" + datanode);
+        //console.log("La valeur de  dname est ========"+ dname)
+        //console.log("La valeur de  datanode est ========"+ datanode)
         let dataNode = doc.getElementsByTagName(datanode || 'Data' || 'data' || dname)[0];
         dataNode = dataNode ? dataNode : doc.getElementsByTagName('Data')[0];
         if (!dataNode || !dataNode.textContent) {
             dataNode = doc.getElementsByTagName(dname)[0];
             if (!dataNode) {
-                console.log(' Ou <Data> introuvable dans la réponse SOAP');
+                //console.log(' Ou <Data> introuvable dans la réponse SOAP')
                 //return parseProdSoapResponse()
                 // throw new Error('dataNode est inexistant dans la réponse SOAP oui Session utilisateur non valide');
             }
             else if (!dataNode.textContent) {
-                console.log('dataNode.textContent est inexistant dans la réponse SOAP');
-                //  console.log('Le contenue de dataNode est-----'+ serializer.serializeToString(dataNode))
+                //console.log('dataNode.textContent est inexistant dans la réponse SOAP')
+                //  //console.log('Le contenue de dataNode est-----'+ serializer.serializeToString(dataNode))
                 // throw new Error(dname+' dataNode.textContent introuvable dans la réponse SOAP oui Session utilisateur non valide');
             }
         }
@@ -69,7 +69,7 @@ async function parseSoapXmlToJson(soapXml, datanode) {
             .replace(/\\\\/g, '\\')
             .replace(/&gt;/g, '>')
             .replace(/&lt;/g, '<');
-        // console.log("**********La valeur de decoded est ========"+decoded)
+        // //console.log("**********La valeur de decoded est ========"+decoded)
         const innerXml = parser.parseFromString(decoded, 'application/xml');
         const root = innerXml.documentElement;
         let isList = false;
@@ -77,7 +77,7 @@ async function parseSoapXmlToJson(soapXml, datanode) {
         if (datanode && datanode !== "") {
             const nodes = root.getElementsByTagName(dname || datanode || 'Data');
             const node = nodes[0];
-            //console.log("node.nodeName est :======="+node?.nodeName)
+            ////console.log("node.nodeName est :======="+node?.nodeName)
             isList = node ? node.nodeName?.toLowerCase().endsWith('s') : false;
             _dn = 1;
         }
@@ -85,10 +85,10 @@ async function parseSoapXmlToJson(soapXml, datanode) {
             isList = root.tagName.toLowerCase().endsWith('s');
             _dn = 2;
         }
-        // console.log("La valeur de isList est ========"+isList)
-        // console.log("La valeur de _dn est ========"+_dn)
+        // //console.log("La valeur de isList est ========"+isList)
+        // //console.log("La valeur de _dn est ========"+_dn)
         const tagname = datanode ? datanode : "";
-        // console.log("La valeur de tagname  est ========"+tagname )
+        // //console.log("La valeur de tagname  est ========"+tagname )
         let rawNodes;
         const rawnode = root.getElementsByTagName('object');
         const _rawnode = root.getElementsByTagName(tagname);
@@ -97,19 +97,19 @@ async function parseSoapXmlToJson(soapXml, datanode) {
         rawNodes = rawnode.length > 0 ? rawnode : __rawnode;
         rawNodes = rawNodes.length > 0 ? rawNodes : _rawnode;
         rawNodes = rawNodes.length > 0 ? rawNodes : ___rawnode;
-        // console.log("La valeur de rawNodes[0].textcontent  est ========"+rawNodes[0].textcontent )
-        // console.log("La valeur de rawNodes[0]  est ========"+rawNodes[0] )
-        console.log("La Longueur de rawNodes  est ========" + rawNodes.length);
+        // //console.log("La valeur de rawNodes[0].textcontent  est ========"+rawNodes[0].textcontent )
+        // //console.log("La valeur de rawNodes[0]  est ========"+rawNodes[0] )
+        //console.log("La Longueur de rawNodes  est ========"+rawNodes.length )
         // On vérifie explicitement la présence d'au moins un objet
         let objectNodes = [];
         if (isList || rawNodes.length > 1) {
             objectNodes = Array.from(rawNodes); // plusieurs objets
-            console.log("Nombre d'objets trouvés est ----: " + objectNodes.length);
+            //console.log("Nombre d'objets trouvés est ----: "+objectNodes.length)
             if (objectNodes.length < 1) {
                 throw new Error("Aucun élément <object> trouvé dans le XML et Datanode =" + datanode);
             }
             const new_res = objectNodes.map(node => {
-                console.log("le node trouvés");
+                //console.log("le node trouvés")
                 // console.log("la longueur du le node trouvés est "+node)
                 // console.log("le node trouvés est "+node.DOCUMENT_NODE.toString())
                 const _serialiser = new xmldom_2.XMLSerializer();

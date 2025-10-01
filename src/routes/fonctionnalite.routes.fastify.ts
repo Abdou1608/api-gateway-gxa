@@ -877,7 +877,7 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
     ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
     const code = body.code;
     const options = body.options ?? true;
-    const basecouv = body.basecouv ?? true;
+    const basecouv =  false;
     const clauses = body.clauses ?? true;
     const result = await produit_details(
       code,
