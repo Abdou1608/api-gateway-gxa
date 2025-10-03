@@ -19,14 +19,18 @@ async function sinistreListItems(body, auth) {
     ctx.IsAuthenticated = true;
     ctx.SessionId = auth.sid;
     params.AddStr('BasSecurityContext', ctx.ToSoapVar());
-    const dossierId = typeof body.dossier === 'string' ? Number(body.dossier) : body.dossier;
-    if (dossierId && dossierId > 0)
-        params.AddInt('dossier', dossierId);
-    const contraId = typeof body.contrat === 'string' ? Number(body.contrat) : body.contrat;
-    if (contraId && contraId > 0)
-        params.AddInt('contrat', contraId);
-    const result = await (0, soap_service_1.sendSoapRequest)(params, 'Sin_Listitems', ctx, 'sins', undefined, { userId: auth.userId, domain: body?.domain });
-    return (0, groupByTypename_1.default)(result, { keepUnknown: true });
+    if (body.dossier) {
+        const dossierId = typeof body.dossier === 'string' ? Number(body.dossier) : body.dossier;
+        if (dossierId && dossierId > 0)
+            params.AddInt('dossier', dossierId);
+    }
+    if (body.contrat) {
+        const contraId = typeof body.contrat === 'string' ? Number(body.contrat) : body.contrat;
+        if (contraId && contraId > 0)
+            params.AddInt('contrat', contraId);
+    }
+    const result = await (0, soap_service_1.sendSoapRequest)(params, 'Sin_Listitems', ctx, 'sins', null, { userId: auth.userId, domain: body?.domain });
+    return (0, groupByTypename_1.default)(result, { keepUnknown: false });
 }
 async function sinistreDetail(body, auth) {
     const params = new BasParams_1.BasParams();

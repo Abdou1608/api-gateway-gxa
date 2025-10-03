@@ -21,7 +21,7 @@ export async function sinistreListItems(body: any, auth: { sid: string; userId?:
   }
   
   const result = await sendSoapRequest(params, 'Sin_Listitems', ctx, 'sins', null, { userId: auth.userId, domain: body?.domain });
-  return groupByTypename(result, { keepUnknown: true });
+  return groupByTypename(result, { keepUnknown: false });
 }
 
 export async function sinistreDetail(body: any, auth: { sid: string; userId?: string; domain?: string }) {
