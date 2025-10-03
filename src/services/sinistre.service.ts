@@ -11,11 +11,16 @@ export async function sinistreListItems(body: any, auth: { sid: string; userId?:
   ctx.IsAuthenticated = true as any;
   ctx.SessionId = auth.sid;
   params.AddStr('BasSecurityContext', ctx.ToSoapVar());
-  const dossierId = typeof body.dossier === 'string' ? Number(body.dossier) : body.dossier;
-  if (dossierId && dossierId > 0) params.AddInt('dossier', dossierId);
-  const contraId = typeof body.contrat === 'string' ? Number(body.contrat) : body.contrat;
+  if(body.dossier){
+    const dossierId = typeof body.dossier === 'string' ? Number(body.dossier) : body.dossier;
+    if (dossierId && dossierId > 0) params.AddInt('dossier', dossierId);
+  }
+  if(body.contrat){
+    const contraId = typeof body.contrat === 'string' ? Number(body.contrat) : body.contrat;
   if (contraId && contraId > 0) params.AddInt('contrat', contraId);
-  const result = await sendSoapRequest(params, 'Sin_Listitems', ctx, 'sins', undefined, { userId: auth.userId, domain: body?.domain });
+  }
+  
+  const result = await sendSoapRequest(params, 'Sin_Listitems', ctx, 'sins', null, { userId: auth.userId, domain: body?.domain });
   return groupByTypename(result, { keepUnknown: true });
 }
 
