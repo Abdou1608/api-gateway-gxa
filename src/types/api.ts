@@ -1,6 +1,4 @@
-/**
- * Generated from openapi.fr.ex.custom.yaml - DO NOT EDIT MANUALLY
- */
+
 export interface StandardSuccess {
   ok: boolean;
 }

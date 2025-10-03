@@ -81,7 +81,7 @@ async function setupApp() {
         });
     }
     catch {
-        exports.app.log.warn('under-pressure non installé, backpressure/healthCheck natifs désactivés');
+        exports.app.log.warn('under-pressure n est pas installé, backpressure/healthCheck natifs désactivés');
     }
     await exports.app.register(Apply_Middlewares_fastify_1.applyGlobalMiddlewarePlugin); // MIGRATION: ex: compress/security
     await exports.app.register(correlation_1.correlationPlugin); // MIGRATION: X-Request-ID + logs

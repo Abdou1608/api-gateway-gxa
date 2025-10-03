@@ -45,7 +45,7 @@ async function setupApp() {
       healthCheckInterval: 5000,
     });
   } catch {
-    app.log.warn('under-pressure non installé, backpressure/healthCheck natifs désactivés');
+    app.log.warn('under-pressure n est pas installé, backpressure/healthCheck natifs désactivés');
   }
 
   await app.register(applyGlobalMiddlewarePlugin); // MIGRATION: ex: compress/security
