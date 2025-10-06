@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.api_Create_tierValidator = exports.tiersObjectSchema = exports.inputObjectSchema = exports.objectsObjectSchema = exports.adresseInseeObjectSchema = exports.dppObjectSchema = exports.tierObjectSchema = exports.xtlogObjectSchema = void 0;
+exports.api_Create_tierValidator = exports.tiersObjectSchema = exports.inputObjectSchema = exports.objectsObjectSchema = exports.adresseInseeObjectSchema = exports.dpmObjectSchema = exports.dppObjectSchema = exports.tierObjectSchema = exports.xtlogObjectSchema = void 0;
 const zod_1 = require("zod");
 exports.xtlogObjectSchema = zod_1.z.object({
-    Numtiers: zod_1.z.number(),
-    Ordreext: zod_1.z.number(),
+    Numtiers: zod_1.z.number().optional(),
+    Ordreext: zod_1.z.number().optional(),
     Site: zod_1.z.string().optional(),
     Login: zod_1.z.string().optional(),
     password: zod_1.z.string().optional(),
@@ -19,7 +19,7 @@ exports.xtlogObjectSchema = zod_1.z.object({
 });
 // Schéma Tier détaillé
 exports.tierObjectSchema = zod_1.z.object({
-    Numtiers: zod_1.z.number(),
+    Numtiers: zod_1.z.number().optional(),
     Typtiers: zod_1.z.string().optional(),
     Nattiers: zod_1.z.string().optional(),
     Numdpp: zod_1.z.number().optional(),
@@ -62,27 +62,35 @@ exports.tierObjectSchema = zod_1.z.object({
 });
 // Schéma DPP minimal selon ce code
 exports.dppObjectSchema = zod_1.z.object({
-    nom: zod_1.z.string(),
-    prenom: zod_1.z.string(),
+    Numdpp: zod_1.z.number().optional(),
+    Rsociale: zod_1.z.string().optional(),
+    Nom: zod_1.z.string(),
+    Prenom: zod_1.z.string(),
+});
+exports.dpmObjectSchema = zod_1.z.object({
+    Numdpm: zod_1.z.number().optional(),
+    Rsociale: zod_1.z.string(),
+    Nom: zod_1.z.string().optional(),
 });
 // Schéma AdresseInsee
 exports.adresseInseeObjectSchema = zod_1.z.object({
-    BurDist: zod_1.z.string(),
+    BurDist: zod_1.z.string().optional(),
     CodeBis: zod_1.z.string().optional(),
-    CodePays: zod_1.z.string(),
-    CodePostal: zod_1.z.string(),
+    CodePays: zod_1.z.string().optional(),
+    CodePostal: zod_1.z.string().optional(),
     CompAdr: zod_1.z.string().optional(),
     INSEElocalite: zod_1.z.string().optional(),
     INSEEvoie: zod_1.z.string().optional(),
-    LibelleVoie: zod_1.z.string(),
-    Localite: zod_1.z.string(),
+    LibelleVoie: zod_1.z.string().optional(),
+    Localite: zod_1.z.string().optional(),
     NumVoie: zod_1.z.string().optional(),
-    Pays: zod_1.z.string(),
+    Pays: zod_1.z.string().optional(),
 });
 // Schéma objects
 exports.objectsObjectSchema = zod_1.z.object({
     TIERS: exports.tierObjectSchema,
-    DPP: exports.dppObjectSchema,
+    DPP: exports.dppObjectSchema.optional(),
+    DPM: exports.dpmObjectSchema.optional(),
     XTLOG: exports.xtlogObjectSchema.optional(),
     adresse_insee: exports.adresseInseeObjectSchema.optional(),
 });

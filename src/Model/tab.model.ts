@@ -70,3 +70,50 @@ export const createTab = (init?: Partial<Tab>): Tab => ({
   tabref: '',
   ...init,
 });
+
+/** Enum des noms de champs tels qu’ils apparaissent dans <param name="..."> */
+export enum FieldsTagName {
+  Tabaff = 'Tabaff',
+  Tabcode = 'Tabcode',
+  Tabref = 'Tabref',
+  Tabval = 'Tabval',
+  Valref = 'Valref',
+}
+
+/** Un enregistrement "tab" (objet métier issu d’un <object typename="tab">) */
+export interface TabRecord {
+  /** Libellé affiché (ex: "ASSOCIATION", "EURL", …) */
+  [FieldsTagName.Tabaff]: string;
+
+  /** Code de table (ex: "STATUTJU") */
+  [FieldsTagName.Tabcode]: string;
+
+  /** Code de référence (ex: "GIE", "ORG", "SA", …) */
+  [FieldsTagName.Tabref]: string;
+
+  /** Valeur de table (souvent identique à Tabaff) */
+  [FieldsTagName.Tabval]: string;
+
+  /** Valeur de référence concaténée (ex: "ORG:ORGANISATION") */
+  [FieldsTagName.Valref]: string;
+}
+
+/** Métadonnées du nœud <tab ...> (attributs) */
+export interface TabMeta {
+  /** Attribut tabcode du nœud <tab> (ex: "STATUTJU") */
+  tabcode: string;
+  /** Attribut type (ex: "V") */
+  type: string;
+  /** Attribut align (ex: "G") */
+  align: string;
+  /** Attribut size (ex: "15") */
+  size: number;
+}
+
+/** Modèle racine aligné sur la structure <tabs><tab ...><objects>...</objects></tab></tabs> */
+export interface TabsModel {
+  meta: TabMeta;
+  /** Liste des enregistrements "tab" extraits des <object typename="tab"> */
+  records: TabRecord[];
+}
+

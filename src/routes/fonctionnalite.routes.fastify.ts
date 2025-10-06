@@ -62,6 +62,8 @@ import { tiers_search } from '../services/liste_des_tiers/tiers_search.service';
 import { api_contrat_updateValidator } from '../validators/api_contrat_updateValidator';
 import { cont_update, cont_piece_update } from '../services/update_contrat/cont_update.service';
 import { api_update_piece_contratValidator } from '../validators/api_update_piece_contratValidator';
+import { api_contrats_searchValidator } from '../validators/api_contrats_searchValidator';
+import { contrats_search } from '../services/contrats_search.service';
 
 export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
   // TODO: migrate existing Express routes to Fastify here.
@@ -989,6 +991,22 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
       body.datenais ?? null,
       body.typetiers ?? null,
       body.rsociale ?? null,
+      { userId: (request as any).user?.sub, domain: body?.domain }
+    );
+    return reply.send(result);
+  });
+
+  app.post('/api/Contrats_Search', {
+    preHandler: authPreHandler,
+    preValidation: validateBodyFastify(api_contrats_searchValidator),
+  }, async (request, reply) => {
+    const body = request.body as any;
+    const ctx = new BasSecurityContext();
+    ctx.IsAuthenticated = true as any;
+    ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
+    const result = await contrats_search(
+      ctx,
+      body.reference ?? '',
       { userId: (request as any).user?.sub, domain: body?.domain }
     );
     return reply.send(result);

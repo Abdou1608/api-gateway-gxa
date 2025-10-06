@@ -45,9 +45,13 @@ class BasAction {
     async RunAction(actionName, basParams, basSecurityContext, xmldata, ctx) {
         let body = "<ns1:RunAction>" + basSecurityContext.ToSoapVar() + `<name xsi:type=\"xsd:string\">${actionName}</name>`;
         //console.log("Dans RunAction xmldata est :====="+xmldata) 
-        basParams.AddStr("data", xmldata ?? "");
+        // basParams.AddStr("data", xmldata ?? "")
+        basParams.AddString("data", xmldata ?? "");
         body += basParams.ToSoapVar();
         //body +="<params>"+(xmldata ?? "")+"</params>"
+        //  if (xmldata && xmldata !== "") {
+        //     body += `<data xsi:type=\"xsd:string\">${xmldata ?? ""}</data>`;
+        // }
         body += '</ns1:RunAction>';
         console.log("Body de la requete est:=====" + body);
         let response = await this.BasSoapCLient.soapRequest(this.appConfigService.GetURlActionService(), body);

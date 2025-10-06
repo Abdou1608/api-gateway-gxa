@@ -1,7 +1,7 @@
 "use strict";
 // tab.model.ts
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTab = exports.TabFieldTags = void 0;
+exports.FieldsTagName = exports.createTab = exports.TabFieldTags = void 0;
 /** fieldTagMap (métadonnées pour chaque propriété) */
 exports.TabFieldTags = {
     tabcode: { caption: 'code table', dataType: 'ftString', nullable: false, persistent: true },
@@ -17,3 +17,12 @@ const createTab = (init) => ({
     ...init,
 });
 exports.createTab = createTab;
+/** Enum des noms de champs tels qu’ils apparaissent dans <param name="..."> */
+var FieldsTagName;
+(function (FieldsTagName) {
+    FieldsTagName["Tabaff"] = "Tabaff";
+    FieldsTagName["Tabcode"] = "Tabcode";
+    FieldsTagName["Tabref"] = "Tabref";
+    FieldsTagName["Tabval"] = "Tabval";
+    FieldsTagName["Valref"] = "Valref";
+})(FieldsTagName || (exports.FieldsTagName = FieldsTagName = {}));

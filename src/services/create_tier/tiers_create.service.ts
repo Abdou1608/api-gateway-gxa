@@ -21,10 +21,10 @@ export async function tiers_create(
 	numtiers ? params.AddInt("numtiers",numtiers) :null
     numdpp ? params.AddInt("numdpp",numdpp) : null
     nature ? params.AddString("nature",nature) : null
-	params.AddStr("typtiers",typtiers)
+	params.AddString("typtiers",typtiers)
 	//if (data) {
 	//	params.AddStr("data",tierModelToXml(data))	}
   
-	const result = await sendSoapRequest(params, "Tiers_Create", basec, undefined, data, ctx);
+	const result = await sendSoapRequest(params, "Tiers_Create", basec, "tiers", data, ctx);
   return result;
 }

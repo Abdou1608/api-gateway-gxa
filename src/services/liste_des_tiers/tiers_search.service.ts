@@ -15,7 +15,9 @@ export async function tiers_search(
 ) {
   const params=new BasParams()
   params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())
-  if(reference!="" && reference!=null){params.AddString("reference",reference)}
+  if(reference!="" && reference!=null){
+    const ref = `%${reference}%`;
+    params.AddString("reference",ref)}
    if(rsociale!="" && rsociale!=null){params.AddString("rsociale",rsociale)}
    if(dppname!="" && dppname!=null){params.AddString("dppname",dppname)}
    

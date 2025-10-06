@@ -4,7 +4,7 @@ import { BasSoapClient } from '../Model/Model-BasSoapClient/BasSoapClient';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 
 import {  parseProdSoapResponse, parseSoapEmbeddedXmlToJson, parseSoapXmlToJson, parseTabRowsXml } from '../utils/soap-parser.service';
-import { objectToCustomXML, objectToXML } from '../utils/xml-parser';
+import { objectToCustomXML, objectToCustomXMLForStrVal, objectToXML, parseTabsXml } from '../utils/xml-parser';
 import { contModelToXml } from './create_contrat/cont_to_xml.service';
 import { BasSoapFault } from '../Model/BasSoapObject/BasSoapFault';
 import { ValidationError, TransformError, SoapServerError, InternalError } from '../common/errors';
@@ -52,7 +52,9 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
     
       }
   else{
-      xmldata = objectToCustomXML(data,sid)
+    const xmlPropre = objectToCustomXML(data, sid);        // <data><input><objects>…</objects></input></data>
+const strValXML = objectToCustomXMLForStrVal(data, sid);
+      xmldata = strValXML
       //console.log("----------------------------xmldata = objectToCustomXML(data)-------------------------------------------")
         //console.log("Data envoyé="+xmldata)
         //console.log("_____________________________________________________________________")
@@ -103,6 +105,8 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
         return { success: true, data: parseTabRowsXml(response) };
       } else if (sid === "tab") {
         return { success: true, data: parseTabRowsXml(response) };
+        } else if (sid === "tabs") {
+        return { success: true, data: parseSoapXmlToJson(response,sid) };
       } else if (["offers", "offer", "Offer"].includes(sid)) {
         return { success: true, data: await parseSoapEmbeddedXmlToJson(response, "offers") };
       } else if (["projects", "project", "Project"].includes(sid)) {

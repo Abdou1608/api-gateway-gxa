@@ -7,7 +7,8 @@ async function tiers_search(BasSecurityContext, reference, dppname, typetiers, n
     const params = new BasParams_1.BasParams();
     params.AddStr("BasSecurityContext", BasSecurityContext.ToSoapVar());
     if (reference != "" && reference != null) {
-        params.AddString("reference", reference);
+        const ref = `%${reference}%`;
+        params.AddString("reference", ref);
     }
     if (rsociale != "" && rsociale != null) {
         params.AddString("rsociale", rsociale);

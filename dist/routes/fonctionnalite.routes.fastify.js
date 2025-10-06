@@ -81,6 +81,8 @@ const tiers_search_service_1 = require("../services/liste_des_tiers/tiers_search
 const api_contrat_updateValidator_1 = require("../validators/api_contrat_updateValidator");
 const cont_update_service_1 = require("../services/update_contrat/cont_update.service");
 const api_update_piece_contratValidator_1 = require("../validators/api_update_piece_contratValidator");
+const api_contrats_searchValidator_1 = require("../validators/api_contrats_searchValidator");
+const contrats_search_service_1 = require("../services/contrats_search.service");
 const registerRoutes = async (app) => {
     // TODO: migrate existing Express routes to Fastify here.
     // Keep a basic ping for now to validate wiring.
@@ -898,6 +900,17 @@ const registerRoutes = async (app) => {
         ctx.IsAuthenticated = true;
         ctx.SessionId = request.auth?.sid ?? body?.BasSecurityContext?._SessionId;
         const result = await (0, tiers_search_service_1.tiers_search)(ctx, body.reference ?? '', body.dppname ?? null, body.ntel ?? null, body.datenais ?? null, body.typetiers ?? null, body.rsociale ?? null, { userId: request.user?.sub, domain: body?.domain });
+        return reply.send(result);
+    });
+    app.post('/api/Contrats_Search', {
+        preHandler: auth_fastify_1.authPreHandler,
+        preValidation: (0, zod_fastify_1.validateBodyFastify)(api_contrats_searchValidator_1.api_contrats_searchValidator),
+    }, async (request, reply) => {
+        const body = request.body;
+        const ctx = new BasSecurityContext_1.BasSecurityContext();
+        ctx.IsAuthenticated = true;
+        ctx.SessionId = request.auth?.sid ?? body?.BasSecurityContext?._SessionId;
+        const result = await (0, contrats_search_service_1.contrats_search)(ctx, body.reference ?? '', { userId: request.user?.sub, domain: body?.domain });
         return reply.send(result);
     });
     // Fastify-native /api/Contrat_Update
