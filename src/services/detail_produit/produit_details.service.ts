@@ -19,13 +19,13 @@ export async function produit_details(
   // params.AddBool("composition",composition ?? false) 
    params.AddBool("options",options ?? true)
 params.AddBool("basecouv",basecouvs ?? false) 
- params.AddBool("clauses",clauses ?? false)
+ params.AddBool("clauses",clauses ?? true)
 console.log("Paramettres du Detail du produit requis==="+JSON.stringify(params))
   const result = await sendSoapRequest(
     params,
     "Produit_Details",
     BasSecurityContext,
-    "Produit",
+    "PROD",
     null,
     ctx
   );

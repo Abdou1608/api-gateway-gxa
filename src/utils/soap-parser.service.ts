@@ -544,6 +544,7 @@ export async function parseProdSoapResponse(xmlString: string): Promise<any> {
 //throw new Error('rawContentMatch et detail_rawContentMatch sont inexistant dans la réponse SOAP');
   return parseprod_content(rawContentMatch[0],produits)
   }else if(_xmlContent){
+    console.log("Appel de parse_Produit_SoapXml  _xmlContent existe====="+_xmlContent)
     return await parse_Produit_SoapXml(xmlString)
     // parseprod_content(detail_rawContentMatch[0],produits)
   }else {
@@ -607,7 +608,7 @@ function get_prod(prod:Element){
   };
 
 }
-export async function parse_Produit_SoapXml(xml: string): Promise<Produit> {
+export async function parse_Produit_SoapXml(xml: string): Promise<any> {
   try {
     const parsed = await parseStringPromise(xml, {
       explicitArray: false,
@@ -679,7 +680,7 @@ export async function parse_Produit_SoapXml(xml: string): Promise<Produit> {
       }
     }
 
-    return result as Produit;
+    return result as any;
   } catch (error) {
     console.error('SOAP XML parsing failed:', error);
     throw new Error('Invalid SOAP response or unexpected structure');

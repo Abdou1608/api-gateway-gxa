@@ -485,6 +485,7 @@ async function parseProdSoapResponse(xmlString) {
         return parseprod_content(rawContentMatch[0], produits);
     }
     else if (_xmlContent) {
+        console.log("Appel de parse_Produit_SoapXml  _xmlContent existe=====" + _xmlContent);
         return await parse_Produit_SoapXml(xmlString);
         // parseprod_content(detail_rawContentMatch[0],produits)
     }

@@ -75,7 +75,7 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
             //console.log("✅ Inside runBasAct - actionName====", actionName);
             //console.log("✅ Inside runBasAct - response====", response);
             // Si aucune erreur, on traite les données selon le `sid`
-            if (sid === "produit") {
+            if (sid === "produit" || sid === "Produit") {
                 return { success: true, data: await (0, soap_parser_service_1.parseProdSoapResponse)(response) };
             }
             else if (sid === "prod") {

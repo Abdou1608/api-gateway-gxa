@@ -35,6 +35,7 @@ exports.produitFieldMap = {
     ole: 'b_ole',
     typarro: 'b_typarro',
     fvahom: 'b_fvahom',
+    typename: 'b_typename',
 };
 exports.produitTagMap = {
     codeprod: 'b_codeprod',
@@ -69,5 +70,6 @@ exports.produitTagMap = {
     catalog: 'b_catalog',
     ole: 'b_ole',
     typarro: 'b_typarro',
-    fvahom: 'b_fvahom'
+    fvahom: 'b_fvahom',
+    typename: 'b_typename',
 };

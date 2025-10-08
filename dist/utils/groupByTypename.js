@@ -57,9 +57,9 @@ function groupByTypename(input, opts = {}) {
             item.__typename;
         if (!key) {
             if (keepUnknown) {
-                if (!Array.isArray(result.Produit))
-                    result.Produit = [];
-                result.Produit.push(item);
+                if (!Array.isArray(result.Notypename))
+                    result.Notypename = [];
+                result.Notypename.push(item);
             }
             continue;
         }

@@ -6,7 +6,7 @@ export interface HasTypename {
 
 export type GroupedByTypename<T> = Record<string, T | T[]> & {
   /** Les éléments sans typename (si keepUnknown=true) */
-  Produit?: T[]; // toujours un tableau pour les "unknown"
+  Notypename?: T[]; // toujours un tableau pour les "unknown"
 };
 
 /** Essaie d’extraire un tableau d’objets depuis diverses formes d’entrée */
@@ -83,8 +83,8 @@ export default function groupByTypename<T extends HasTypename>(
 
     if (!key) {
       if (keepUnknown) {
-        if (!Array.isArray(result.Produit)) result.Produit = [];
-        (result.Produit as T[]).push(item as T);
+        if (!Array.isArray(result.Notypename)) result.Notypename = [];
+        (result.Notypename as T[]).push(item as T);
       }
       continue;
     }

@@ -97,7 +97,7 @@ const strValXML = objectToCustomXMLForStrVal(data, sid);
       //console.log("✅ Inside runBasAct - response====", response);
   
       // Si aucune erreur, on traite les données selon le `sid`
-      if (sid === "produit") {
+      if (sid === "produit" || sid === "Produit") {
         return { success: true, data: await parseProdSoapResponse(response) };
       } else if (sid === "prod") {
         return { success: true, data: parseProdSoapResponse(response) };

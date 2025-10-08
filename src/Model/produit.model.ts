@@ -32,6 +32,7 @@ export interface Produit {
     ole?: string;
     typarro?: string;
     fvahom?: any;
+    typename?: string;
   }
   export const produitFieldMap: Record<keyof Produit, string> = {
     codeprod: 'b_codeprod',
@@ -67,6 +68,7 @@ export interface Produit {
     ole: 'b_ole',
     typarro: 'b_typarro',
     fvahom: 'b_fvahom',
+    typename: 'b_typename',
   };
 
  export const produitTagMap: Record<keyof Produit, string> = {
@@ -102,5 +104,6 @@ export interface Produit {
     catalog: 'b_catalog',
     ole: 'b_ole',
     typarro: 'b_typarro',
-    fvahom: 'b_fvahom'
+    fvahom: 'b_fvahom',
+    typename: 'b_typename',
   };
