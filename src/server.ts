@@ -7,6 +7,7 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import rateLimit from '@fastify/rate-limit';
 import formbody from '@fastify/formbody';
+import multipart from '@fastify/multipart';
 // Note: load under-pressure dynamically to avoid build-time dependency when not installed
 import swaggerUI from '@fastify/swagger-ui';
 import path from 'path';
@@ -37,6 +38,7 @@ async function setupApp() {
   await app.register(rateLimit, { max: 200, timeWindow: '1 minute' });
   // Support application/x-www-form-urlencoded bodies (legacy clients)
   await app.register(formbody);
+  await app.register(multipart);
   try {
     const mod = await import('@fastify/under-pressure');
     await app.register(mod.default, {

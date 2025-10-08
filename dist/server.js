@@ -45,6 +45,7 @@ const fastify_1 = __importDefault(require("fastify"));
 const cors_1 = __importDefault(require("@fastify/cors"));
 const rate_limit_1 = __importDefault(require("@fastify/rate-limit"));
 const formbody_1 = __importDefault(require("@fastify/formbody"));
+const multipart_1 = __importDefault(require("@fastify/multipart"));
 // Note: load under-pressure dynamically to avoid build-time dependency when not installed
 const swagger_ui_1 = __importDefault(require("@fastify/swagger-ui"));
 const path_1 = __importDefault(require("path"));
@@ -72,6 +73,7 @@ async function setupApp() {
     await exports.app.register(rate_limit_1.default, { max: 200, timeWindow: '1 minute' });
     // Support application/x-www-form-urlencoded bodies (legacy clients)
     await exports.app.register(formbody_1.default);
+    await exports.app.register(multipart_1.default);
     try {
         const mod = await Promise.resolve().then(() => __importStar(require('@fastify/under-pressure')));
         await exports.app.register(mod.default, {

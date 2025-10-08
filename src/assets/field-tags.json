@@ -1,0 +1,33 @@
+{
+  "Tier": {
+    "numtiers": "ID Tier",
+    "rsociale": "Raison sociale",
+    "tel": "T\u00e9l\u00e9phone",
+    "adr": "Adresse"
+  },
+  "Contrat": {
+    "numcont": "ID Contrat",
+    "numtiers": "ID Tier",
+    "branche": "Type d\u2019\u00e9cran (branche)",
+    "codeprod": "Code produit"
+  },
+  "Piece": {
+    "piece": "ID Pi\u00e8ce",
+    "dateEffet": "Date d\u2019effet",
+    "dateEcheance": "Date d\u2019\u00e9ch\u00e9ance"
+  },
+  "Technique": {
+    "adhesion": "ID Adh\u00e9sion",
+    "risque": "ID Risque"
+  },
+  "Project": {
+    "numproj": "ID Projet",
+    "libelle": "Libell\u00e9",
+    "description": "Description"
+  },
+  "Proposition": {
+    "code": "ID Proposition",
+    "numproj": "ID Projet",
+    "comment": "Commentaire"
+  }
+}

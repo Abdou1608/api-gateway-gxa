@@ -84,6 +84,7 @@ const api_update_piece_contratValidator_1 = require("../validators/api_update_pi
 const api_contrats_searchValidator_1 = require("../validators/api_contrats_searchValidator");
 const contrats_search_service_1 = require("../services/contrats_search.service");
 const catal_listitems_service_1 = require("../services/catal_listitems.service");
+const tools_convert_routes_1 = __importDefault(require("./tools.convert.routes"));
 const registerRoutes = async (app) => {
     // TODO: migrate existing Express routes to Fastify here.
     // Keep a basic ping for now to validate wiring.
@@ -1080,5 +1081,6 @@ const registerRoutes = async (app) => {
         return reply.send(data);
     });
     // Express bridge fully removed; all business/admin/public routes are native
+    await app.register(tools_convert_routes_1.default);
 };
 exports.registerRoutes = registerRoutes;

@@ -65,6 +65,7 @@ import { api_update_piece_contratValidator } from '../validators/api_update_piec
 import { api_contrats_searchValidator } from '../validators/api_contrats_searchValidator';
 import { contrats_search } from '../services/contrats_search.service';
 import { catal_listitems } from '../services/catal_listitems.service';
+import toolsConvertRoutes from './tools.convert.routes';
 
 export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
   // TODO: migrate existing Express routes to Fastify here.
@@ -1212,4 +1213,5 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
   });
 
   // Express bridge fully removed; all business/admin/public routes are native
+  await app.register(toolsConvertRoutes);
 };
