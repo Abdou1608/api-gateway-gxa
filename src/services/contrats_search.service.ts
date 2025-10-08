@@ -24,7 +24,7 @@ export async function contrats_search(
      params,
      "Cont_Search",
      BasSecurityContext,
-     undefined,
+     "searchresult",
      undefined,
      ctx
    );

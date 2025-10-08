@@ -64,6 +64,7 @@ import { cont_update, cont_piece_update } from '../services/update_contrat/cont_
 import { api_update_piece_contratValidator } from '../validators/api_update_piece_contratValidator';
 import { api_contrats_searchValidator } from '../validators/api_contrats_searchValidator';
 import { contrats_search } from '../services/contrats_search.service';
+import { catal_listitems } from '../services/catal_listitems.service';
 
 export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
   // TODO: migrate existing Express routes to Fastify here.
@@ -973,7 +974,19 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
     );
     return reply.send(result);
   });
-
+  app.post('/api/catal_ListItems', {
+    preHandler: authPreHandler,
+  }, async (request, reply) => {
+    const body = request.body as any;
+    const ctx = new BasSecurityContext();
+    ctx.IsAuthenticated = true as any;
+    ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
+    const result = await catal_listitems(
+      ctx,
+      { userId: (request as any).user?.sub, domain: body?.domain }
+    );
+    return reply.send(result);
+  });
   // Fastify-native /api/Tiers_Search
   app.post('/api/Tiers_Search', {
     preHandler: authPreHandler,

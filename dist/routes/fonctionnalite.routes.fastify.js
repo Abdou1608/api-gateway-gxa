@@ -83,6 +83,7 @@ const cont_update_service_1 = require("../services/update_contrat/cont_update.se
 const api_update_piece_contratValidator_1 = require("../validators/api_update_piece_contratValidator");
 const api_contrats_searchValidator_1 = require("../validators/api_contrats_searchValidator");
 const contrats_search_service_1 = require("../services/contrats_search.service");
+const catal_listitems_service_1 = require("../services/catal_listitems.service");
 const registerRoutes = async (app) => {
     // TODO: migrate existing Express routes to Fastify here.
     // Keep a basic ping for now to validate wiring.
@@ -888,6 +889,16 @@ const registerRoutes = async (app) => {
         ctx.IsAuthenticated = true;
         ctx.SessionId = request.auth?.sid ?? body?.BasSecurityContext?._SessionId;
         const result = await (0, Bran_listitems_service_1.bran_listitems)(ctx, { userId: request.user?.sub, domain: body?.domain });
+        return reply.send(result);
+    });
+    app.post('/api/catal_ListItems', {
+        preHandler: auth_fastify_1.authPreHandler,
+    }, async (request, reply) => {
+        const body = request.body;
+        const ctx = new BasSecurityContext_1.BasSecurityContext();
+        ctx.IsAuthenticated = true;
+        ctx.SessionId = request.auth?.sid ?? body?.BasSecurityContext?._SessionId;
+        const result = await (0, catal_listitems_service_1.catal_listitems)(ctx, { userId: request.user?.sub, domain: body?.domain });
         return reply.send(result);
     });
     // Fastify-native /api/Tiers_Search

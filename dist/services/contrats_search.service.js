@@ -14,6 +14,6 @@ async function contrats_search(BasSecurityContext, reference, ctx) {
     params.AddString("datanode", "");
     // const soapBody = {reference,dppname,typetiers,codp,datenais}
     let result;
-    result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_Search", BasSecurityContext, undefined, undefined, ctx);
+    result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_Search", BasSecurityContext, "searchresult", undefined, ctx);
     return result;
 }
