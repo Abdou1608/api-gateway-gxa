@@ -5,6 +5,9 @@ const xmlbuilder2_1 = require("xmlbuilder2");
 // ====== Config ======
 const MONETARY_FIELDS = new Set([
     'Primann', 'Totann', 'Franini', 'Capini', 'Coutpol', 'Cieprime', 'Cietaxes', 'Commsup', 'Commann', 'Txcomm',
+    'Hono', 'Ptini', 'Pnini', 'Comini', 'Impaye', 'Acompte', 'Frprel', 'Tauxrea', 'Tauxap1', 'Tauxap2',
+    'Retrorea', 'Retroap1', 'Retroap2', 'Kprretro', 'Kprretem', 'Retroemi', 'Coeffcom'
+    // champs monétaires complémentaires (ex: pour devises) 
     // ajouter ici les autres champs monétaires
 ]);
 // forcer une devise quand le champ compagnon "...1" est absent :
@@ -117,7 +120,7 @@ function contModelToXml(model) {
 // --- Ajoute ces helpers/config ---
 const DATE_FIELDS = new Set([
     'Datdermo', 'Dateresi', 'Ddebpiec', 'Dfinpiec', 'Entree', 'Sortie',
-    'Dateori', 'Datebia', 'Datetar', 'ext_piec_datesit' // complète si besoin
+    'Dateori', 'Datebia', 'Datetar', 'ext_piec_datesit', 'DateRefIndice', 'dateRefIndice' // complète si besoin
 ]);
 function toIsoDateTime(value) {
     if (value === null || value === undefined || value === '')

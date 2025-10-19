@@ -5,27 +5,8 @@ import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 import { invalidateToken } from '../auth/token-revocation.service';
 import { closesession_ } from '../services/logout/closesession_.service';
 import { AuthError } from '../common/errors';
-import fs from 'fs';
-import ajout_piece_au_contrat from './ajout_piece_au_contrat.routes';
 import { cont_newpiece } from '../services/ajout_piece_au_contrat/cont_newpiece.service';
-import check_session from './check_session.routes';
-import create_contrat from './create_contrat.routes';
-import create_quittance from './create_quittance.routes';
-import create_reglement from './create_reglement.routes';
-import create_tier from './create_tier.routes';
-import detail_contrat from './detail_contrat.routes';
-import detail_adhesion from './detail_adhesion.routes';
 import { adh_details } from '../services/detail_adhesion/adh_details.service';
-import detail_produit from './detail_produit.routes';
-import detail_quittance from './detail_quittance.routes';
-import detail_tier from './detail_tier.routes';
-import liste_des_contrats from './liste_des_contrats.routes';
-import liste_des_contrats_d_un_tier from './liste_des_contrats_d_un_tier.routes';
-import liste_des_produits from './liste_des_produits.routes';
-import liste_des_quittances from './liste_des_quittances.routes';
-import list_des_tecrants from './liste_des_tecrants.routes';
-import recherche_tier from './recherche_tier.routes';
-import update_contrat from './update_contrat.routes';
 import * as Risk from '../services/risk.service';
 import { updateTier as updateTierService } from '../services/update_tier.fastify.service';
 import { authPreHandler } from '../middleware/auth.fastify';
@@ -1086,6 +1067,16 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
     ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
     const { cont_create } = await import('../services/create_contrat/cont_create.service');
     const result = await cont_create(body.dossier, body.produit, body.effet, body.data, ctx, { userId: (request as any).user?.sub, domain: body?.domain });
+    return reply.send(result);
+  });
+
+    app.post('/api/Cont_CalculTarif', { preHandler: authPreHandler }, async (request, reply) => {
+    const body = request.body as any;
+    const ctx = new BasSecurityContext();
+    ctx.IsAuthenticated = true as any;
+    ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
+    const { Cont_CalculTarif } = await import('../services/create_contrat/Cont_CalculTarif.service');
+    const result = await Cont_CalculTarif(body.contrat, body.piece, body.adhesion,ctx, { userId: (request as any).user?.sub, domain: body?.domain });
     return reply.send(result);
   });
 

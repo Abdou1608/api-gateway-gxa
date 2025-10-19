@@ -969,6 +969,15 @@ const registerRoutes = async (app) => {
         const result = await cont_create(body.dossier, body.produit, body.effet, body.data, ctx, { userId: request.user?.sub, domain: body?.domain });
         return reply.send(result);
     });
+    app.post('/api/Cont_CalculTarif', { preHandler: auth_fastify_1.authPreHandler }, async (request, reply) => {
+        const body = request.body;
+        const ctx = new BasSecurityContext_1.BasSecurityContext();
+        ctx.IsAuthenticated = true;
+        ctx.SessionId = request.auth?.sid ?? body?.BasSecurityContext?._SessionId;
+        const { Cont_CalculTarif } = await Promise.resolve().then(() => __importStar(require('../services/create_contrat/Cont_CalculTarif.service')));
+        const result = await Cont_CalculTarif(body.contrat, body.piece, body.adhesion, ctx, { userId: request.user?.sub, domain: body?.domain });
+        return reply.send(result);
+    });
     app.post('/api/create_quittance', { preHandler: auth_fastify_1.authPreHandler }, async (request, reply) => {
         const body = request.body;
         const ctx = new BasSecurityContext_1.BasSecurityContext();

@@ -1,5 +1,7 @@
 import { BasParams } from '../../Model/BasSoapObject/BasParams';
 import { ContModel } from '../../Model/create_update_contrat';
+import groupByTypename from '../../utils/groupByTypename';
+import { cont_details } from '../detail_contrat/cont_details.service';
 import { sendSoapRequest } from '../soap.service';
 import { contModelToXml } from './cont_to_xml.service';
 
@@ -29,5 +31,24 @@ export async function cont_create(
     data,
     ctx
   );
-  return result;
+ // console.log("$$$$$$$$$ RESULT CREATE CONTRAT "+JSON.stringify(result))
+  if (!result?.error ) {
+    const resultData = result["piec"];
+    console.log("$$$$$$$$$ RESULT DATA CREATE CONTRAT Objet"+JSON.stringify(resultData))
+   console.log("$$$$$$$$$ RESULT DATA CREATE CONTRAT  "+(resultData.contrat))
+    if (!resultData) {
+      console.error("No data in response");
+      return { error: "No data in response" };
+    }
+    const contCreateResult = await cont_details(
+      { contrat: resultData.contrat },
+      BasSecurityContext
+    );
+    console.log("$$$$$$$$$ RESULT DATA CREATE CONTRAT  contCreateResult==="+JSON.stringify(contCreateResult))
+    return contCreateResult;
+   //  const grouped = groupByTypename(contCreateResult, { keepUnknown: true });
+    //  return grouped;
+  }else{
+    return result
+  }
 }

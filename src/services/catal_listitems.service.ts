@@ -19,7 +19,7 @@ export async function catal_listitems(
    params.AddString("datanode","catal")
   const result = await sendSoapRequest(
     params,
-    "catal_ListItems",
+    "Catal_ListItems",
     BasSecurityContext,
     "catal",
     undefined,

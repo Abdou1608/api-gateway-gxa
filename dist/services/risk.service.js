@@ -31,7 +31,7 @@ async function riskCreate(body, auth) {
     if (body.piece)
         params.AddInt('piece', body.piece);
     if (body.dateEntree)
-        params.AddDateTime('dateEntree', body.dateEntree);
+        params.AddStrDate('dateEntree', body.dateEntree);
     params.AddString('datanode', 'Risk');
     const result = await (0, soap_service_1.sendSoapRequest)(params, 'Risk_Create', ctx, 'risk', body.data, { userId: auth.userId, domain: auth.domain ?? body?.domain });
     return result;

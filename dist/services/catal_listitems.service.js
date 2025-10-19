@@ -11,6 +11,6 @@ async function catal_listitems(BasSecurityContext, ctx) {
     //  branche? params.AddString("branche",branche):null
     // disponible ?  params.AddBool("disponible",disponible) :null
     params.AddString("datanode", "catal");
-    const result = await (0, soap_service_1.sendSoapRequest)(params, "catal_ListItems", BasSecurityContext, "catal", undefined, ctx);
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Catal_ListItems", BasSecurityContext, "catal", undefined, ctx);
     return result;
 }
