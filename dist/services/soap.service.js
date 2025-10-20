@@ -12,6 +12,7 @@ const BasSoapFault_1 = require("../Model/BasSoapObject/BasSoapFault");
 const errors_1 = require("../common/errors");
 const user_queue_1 = require("../lib/user-queue");
 const soap_safe_1 = require("./soap-safe");
+const risk_xml_serializer_1 = require("../utils/risk-xml-serializer");
 //import {  parseSoapOffersToRows } from '../utils/new-soap-parser.service';
 const clhttp = require('http');
 const config = new app_config_service_1.AppConfigService;
@@ -39,13 +40,16 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
                 //console.log("Data envoyé="+xmldata)
                 //console.log("_____________________________________________________________________")
             }
-            else if (sid === "risk" || sid == "quit" || sid == "Project") {
+            else if (sid == "quit" || sid == "Project") {
                 xmldata = (0, xml_parser_1.objectToXML)(data, sid);
                 //objectToCustomXML(data,sid)
                 //
                 //console.log("----------------------------xmldata = objectToXML(data)-------------------------------------------")
                 //console.log("Data envoyé="+xmldata)
                 //console.log("_____________________________________________________________________")
+            }
+            else if (sid === "risk") {
+                xmldata = (0, risk_xml_serializer_1.riskModelToEscapedStrVal)(data, sid);
             }
             else {
                 const xmlPropre = (0, xml_parser_1.objectToCustomXML)(data, sid); // <data><input><objects>…</objects></input></data>

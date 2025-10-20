@@ -1,63 +1,7 @@
-import { XMLParser } from "fast-xml-parser";
-import { parseStringPromise } from "xml2js";
 import { create } from 'xmlbuilder2';
-import { TabsModel, TabMeta, TabRecord, FieldsTagName } from "../Model/tab.model";
-export async function parseXml(xml: string): Promise<any> {
-  return await parseStringPromise(xml, { explicitArray: false });
-}
 
-/**
- * Transforme un objet JavaScript en flux XML enveloppé dans une balise <Data>,
- * sans inclure la déclaration XML.
- *
- * @param data - L'objet contenant plusieurs sous-objets à convertir en XML.
- * @returns Un flux XML sous forme de chaîne de caractères.
- */
-export function objectToXML(data: Record<string, any>, _root:string): string {
-  const root = create().ele(_root).ele('input').ele('objects');
+/* --------------------------------- Utils ---------------------------------- */
 
-  function buildXml(parent: any, obj: Record<string, any>) {
-    Object.entries(obj).forEach(([key, value]) => {
-      if (value === null || value === undefined) {
-        parent.ele('param').att('xsi:nil', 'true').att('name', key).att('is_null',"true").att('type', 'ptUnknown');
-      } else if (Array.isArray(value)) {
-        const arrayParent = parent.ele('object').att('typename',key);
-        value.forEach((item) => {
-          const itemElem = arrayParent.ele('item');
-          if (typeof item === 'object') {
-            buildXml(itemElem, item);
-          } else {
-            itemElem.txt(String(item));
-          }
-        });
-      } else if (typeof value === 'object') {
-        const child = parent.ele('object').att('typename',key);;
-        buildXml(child, value);
-      } else if (typeof value === 'boolean') {
-        parent.ele('param').att('name', key).att('type', 'ptBool').att('bool_val',value ? 'true' : 'false').txt(value ? 'true' : 'false');
-      } else if (typeof value === 'number') {
-        parent.ele('param').att('name', key).att('type', Number.isInteger(value) ? 'ptInt' : 'ptfloat').att('int_val',String(value) ).txt(String(value));
-      } else {
-        parent.ele('param').att('name', key).att('type', 'ptString').txt(value);
-      }
-    });
-  }
-
-  buildXml(root, data);
-
-  return root.end({ prettyPrint: true, headless: true });
-}
-
-
-
-/**
-  *
- * @param data - Objet source contenant des sous-objets avec des paramètres typés.
- * @returns Chaîne XML.
- */
-//import { create } from 'xmlbuilder2';
-
-/** Détection prudente d’une date ISO (yyyy-MM-dd, yyyy-MM-ddTHH:mm:ss[.SSS]Z, etc.) */
 function isIsoDateString(s: string): boolean {
   if (!s) return false;
   const isoLike = /^\d{4}-\d{2}-\d{2}(?:[T ]\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+\-]\d{2}:\d{2})?)?$/;
@@ -66,9 +10,8 @@ function isIsoDateString(s: string): boolean {
   return !isNaN(+d);
 }
 
-/** Mapping JS -> (type, attributs, texte) pour la grammaire attendue (ptString, ptInt, …). */
 function getXMLTypeAndValue(value: any): {
-  type: string;
+  type: 'ptString' | 'ptInt' | 'ptFloat' | 'ptBool' | 'ptDateTime' | 'ptUnknown';
   attrs: Record<string, string>;
   text?: string;
 } {
@@ -81,173 +24,127 @@ function getXMLTypeAndValue(value: any): {
     case 'number':
       if (Number.isInteger(value)) return { type: 'ptInt', attrs: { int_val: String(value) } };
       return { type: 'ptFloat', attrs: { float_val: value.toExponential(14).replace('e', 'E') } };
-    case 'string': {
+    case 'string':
       if (isIsoDateString(value)) {
         const iso = new Date(value).toISOString();
         return { type: 'ptDateTime', attrs: { date_val: iso } };
       }
       return { type: 'ptString', attrs: {}, text: value };
-    }
     default:
       return { type: 'ptUnknown', attrs: { is_null: 'true' } };
   }
 }
 
-/** Ajoute un <object typename="..."> avec ses <param> dans <objects>. */
-function appendObject(objectsEle: any, objectName: string, objectData: any) {
-  const objectEle = objectsEle.ele('object').att('typename', String(objectName).toUpperCase());
-
-  if (Array.isArray(objectData)) {
-    // Chaque entrée du tableau devient un param indexé
-    objectData.forEach((val, idx) => {
-      const { type, attrs, text } = getXMLTypeAndValue(val);
-      const p = objectEle.ele('param').att('name', `${objectName}[${idx}]`).att('type', type);
-      for (const [k, v] of Object.entries(attrs)) p.att(k, v);
-      if (text !== undefined && type === 'ptString') p.txt(text);
-    });
-    return;
-  }
-
-  if (objectData && typeof objectData === 'object') {
-    for (const paramName of Object.keys(objectData)) {
-      const { type, attrs, text } = getXMLTypeAndValue(objectData[paramName]);
+/** Ajoute tous les <param> d’un objet simple dans un <object typename="..."> déjà créé. */
+function addParamsToObject(objectEle: any, record: Record<string, any>) {
+  for (const [paramName, paramValue] of Object.entries(record ?? {})) {
+    // Si une propriété interne est elle-même un objet → on “aplatit” en param texte JSON
+    if (paramValue && typeof paramValue === 'object' && !Array.isArray(paramValue)) {
+      const { type, attrs, text } = getXMLTypeAndValue(JSON.stringify(paramValue));
       const p = objectEle.ele('param').att('name', String(paramName)).att('type', type);
       for (const [k, v] of Object.entries(attrs)) p.att(k, v);
       if (text !== undefined && type === 'ptString') p.txt(text);
+      continue;
+    }
+
+    // Tableaux internes (rares) → un param par entrée
+    if (Array.isArray(paramValue)) {
+      paramValue.forEach((v, idx) => {
+        const { type, attrs, text } = getXMLTypeAndValue(v);
+        const p = objectEle.ele('param')
+          .att('name', `${paramName}[${idx}]`)
+          .att('type', type);
+        for (const [k, v2] of Object.entries(attrs)) p.att(k, v2);
+        if (text !== undefined && type === 'ptString') p.txt(text);
+      });
+      continue;
+    }
+
+    const { type, attrs, text } = getXMLTypeAndValue(paramValue);
+    const p = objectEle.ele('param').att('name', String(paramName)).att('type', type);
+    for (const [k, v] of Object.entries(attrs)) p.att(k, v);
+    if (text !== undefined && type === 'ptString') p.txt(text);
+  }
+}
+
+/**
+ * Ajoute un objet (ou un tableau d’objets) sous le conteneur <objects>.
+ * - Si `value` est un objet simple → un seul <object typename="KEY">...</object>.
+ * - Si `value` est un tableau d’objets → **un <object> par élément** (c’est la correction demandée).
+ * - Si `value` est un tableau de scalaires → un seul <object> avec plusieurs <param name="key[i]">.
+ */
+function appendUnderObjects(objectsEle: any, key: string, value: any) {
+  const TYPE = String(key).toUpperCase();
+
+  if (Array.isArray(value)) {
+    // → CORRECTION : un <object typename="TYPE"> par élément si ce sont des objets
+    const allObjects = value.every(v => v && typeof v === 'object' && !Array.isArray(v));
+    if (allObjects) {
+      value.forEach((record) => {
+        const obj = objectsEle.ele('object').att('typename', TYPE);
+        addParamsToObject(obj, record);
+      });
+    } else {
+      // Tableau de scalaires : on conserve un seul <object> avec params indexés
+      const obj = objectsEle.ele('object').att('typename', TYPE);
+      value.forEach((v, idx) => {
+        const { type, attrs, text } = getXMLTypeAndValue(v);
+        const p = obj.ele('param').att('name', `${key}[${idx}]`).att('type', type);
+        for (const [k, v2] of Object.entries(attrs)) p.att(k, v2);
+        if (text !== undefined && type === 'ptString') p.txt(text);
+      });
     }
     return;
   }
 
-  // Valeur atomique directement sous l'objet
-  const { type, attrs, text } = getXMLTypeAndValue(objectData);
-  const p = objectEle.ele('param').att('name', String(objectName)).att('type', type);
+  if (value && typeof value === 'object') {
+    const obj = objectsEle.ele('object').att('typename', TYPE);
+    addParamsToObject(obj, value);
+    return;
+  }
+
+  // Valeur atomique → un seul <object> avec un <param>
+  const obj = objectsEle.ele('object').att('typename', TYPE);
+  const { type, attrs, text } = getXMLTypeAndValue(value);
+  const p = obj.ele('param').att('name', key).att('type', type);
   for (const [k, v] of Object.entries(attrs)) p.att(k, v);
   if (text !== undefined && type === 'ptString') p.txt(text);
 }
 
-/**
- * Génère un XML propre de la forme:
- *   <data><input><objects> ... </objects></input></data>
- */
-export function objectToCustomXML(data: Record<string, any>, sid: string): string {
-  const root = create().ele(sid);
-  const input = root.ele('input');
-  const objects = input.ele('objects');
+/* ----------------------------- Générateurs XML ----------------------------- */
 
-  for (const objectName of Object.keys(data)) {
-    appendObject(objects, objectName, data[objectName]);
+/** 
+ * Génère: <data><input><objects> ... </objects></input></data>
+ * NB: `_root` est ignoré pour garantir une enveloppe stable “data”.
+ */
+export function objectToXML(data: Record<string, any>, _root: string): string {
+  const root = create().ele('data');
+  const objects = root.ele('input').ele('objects');
+
+  for (const [key, value] of Object.entries(data ?? {})) {
+    appendUnderObjects(objects, key, value);
   }
 
   return root.end({ prettyPrint: true, headless: true });
 }
 
-/**
- * Échappe le XML pour insertion dans un champ string (StrVal) d’un SOAP :
- *   & -> &amp;  (d’abord)
- *   < -> &lt;
- *   > -> &gt;
- */
-export function xmlToEscapedForStrVal(xml: string): string {
-  return xml
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+/** Variante paramétrable: <sid><input><objects>...</objects></input></sid> */
+export function objectToCustomXML(data: Record<string, any>, sid: string): string {
+  const root = create().ele(sid);
+  const objects = root.ele('input').ele('objects');
+
+  for (const [key, value] of Object.entries(data ?? {})) {
+    appendUnderObjects(objects, key, value);
+  }
+
+  return root.end({ prettyPrint: true, headless: true });
 }
 
-/** Helper : produit directement la version échappée pour StrVal. */
+/** Pour injecter l’XML dans un champ string (StrVal) d’un SOAP. */
+export function xmlToEscapedForStrVal(xml: string): string {
+  return xml.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 export function objectToCustomXMLForStrVal(data: Record<string, any>, sid: string): string {
   return xmlToEscapedForStrVal(objectToCustomXML(data, sid));
 }
-
-
-
-
-
-
-// On suppose que ces types existent déjà dans ton code :
-/*
-export enum FieldsTagName { Tabaff='Tabaff', Tabcode='Tabcode', Tabref='Tabref', Tabval='Tabval', Valref='Valref' }
-export interface TabRecord { Tabaff:string; Tabcode:string; Tabref:string; Tabval:string; Valref:string; }
-export interface TabMeta { tabcode:string; type:string; align:string; size:number; }
-export interface TabsModel { meta: TabMeta; records: TabRecord[]; }
-*/
-
-function toArray<T>(x: T | T[] | undefined | null): T[] {
-  if (x == null) return [];
-  return Array.isArray(x) ? x : [x];
-}
-
-export function parseTabsXml(xmlRaw: string): TabsModel {
-  // 1) Nettoyage : retire les préfixes comme "Script result:" / BOM / espaces
-  
-const decoded = xmlRaw
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&amp;/g, '&')
-    .replace(/\\</g, '<')
-    .replace(/\\>/g, '>')
-    .replace(/\\\//g, '/')
-    .replace(/\\"/g, '"')
-    .replace(/\\\\/g, '\\')
-    .replace(/&gt;/g, '>')
-    .replace(/&lt;/g, '<');
-  // 2) Parser configuré (texte dans "#text" quand il y a des attributs)
-  const parser = new XMLParser({
-    ignoreAttributes: false,
-    attributeNamePrefix: '@_',
-    textNodeName: '#text',
-    trimValues: true,
-  });
-
-  const doc = parser.parse(decoded);
-
-  // 3) Récupération du premier <tab>
-  const tabsNode = doc?.tabs?.tab;
-  const tabs = toArray<any>(tabsNode);
-  if (tabs.length === 0) {
-    throw new Error('XML invalide: élément <tab> introuvable.');
-  }
-  const tab0 = tabs[0];
-
-  // 4) Métadonnées <tab ...>
-  const meta: TabMeta = {
-    tabcode: String(tab0?.['@_tabcode'] ?? ''),
-    type: String(tab0?.['@_type'] ?? ''),
-    align: String(tab0?.['@_align'] ?? ''),
-    size: Number(tab0?.['@_size'] ?? 0),
-  };
-
-  // 5) Liste d'objets <object typename="tab"> et leurs <param>
-  const objects = toArray<any>(tab0?.objects?.object);
-
-  const records: TabRecord[] = objects
-    .filter((o) => String(o?.['@_typename'] ?? '').toLowerCase() === 'tab')
-    .map<TabRecord>((o) => {
-      const params = toArray<any>(o?.param);
-
-      // Réduit la liste de <param> en dictionnaire { name: value }
-      const bag = params.reduce<Record<string, string>>((acc, p) => {
-        const key = String(p?.['@_name'] ?? '');
-        // valeur textuelle : fast-xml-parser met le texte dans "#text" s'il y a des attributs
-        let val = '';
-        if (typeof p?.['#text'] === 'string') val = p['#text'];
-        else if (typeof p?._ === 'string') val = p._; // fallback
-        else if (typeof p === 'string') val = p;      // cas rarissime
-        if (key) acc[key] = val;
-        return acc;
-      }, {});
-
-      // Construit l'enregistrement typé
-      const rec: TabRecord = {
-        [FieldsTagName.Tabaff]: bag[FieldsTagName.Tabaff] ?? '',
-        [FieldsTagName.Tabcode]: bag[FieldsTagName.Tabcode] ?? '',
-        [FieldsTagName.Tabref]: bag[FieldsTagName.Tabref] ?? '',
-        [FieldsTagName.Tabval]: bag[FieldsTagName.Tabval] ?? '',
-        [FieldsTagName.Valref]: bag[FieldsTagName.Valref] ?? '',
-      };
-      return rec;
-    });
-
-  return { meta, records };
-}
-

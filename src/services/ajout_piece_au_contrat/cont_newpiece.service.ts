@@ -1,5 +1,4 @@
 import { BasParams } from "../../Model/BasSoapObject/BasParams";
-import { parseXml } from "../../utils/xml-parser";
 import { sendSoapRequest } from "../soap.service";
 
 

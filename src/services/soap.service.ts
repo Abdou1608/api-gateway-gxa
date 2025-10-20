@@ -4,12 +4,13 @@ import { BasSoapClient } from '../Model/Model-BasSoapClient/BasSoapClient';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 
 import {  parseProdSoapResponse, parseSoapEmbeddedXmlToJson, parseSoapXmlToJson, parseTabRowsXml } from '../utils/soap-parser.service';
-import { objectToCustomXML, objectToCustomXMLForStrVal, objectToXML, parseTabsXml } from '../utils/xml-parser';
+import { objectToCustomXML, objectToCustomXMLForStrVal, objectToXML } from '../utils/xml-parser';
 import { contModelToXml } from './create_contrat/cont_to_xml.service';
 import { BasSoapFault } from '../Model/BasSoapObject/BasSoapFault';
 import { ValidationError, TransformError, SoapServerError, InternalError } from '../common/errors';
 import { withUserQueue } from '../lib/user-queue';
 import { callSoapWithResilience } from './soap-safe';
+import { riskModelToEscapedStrVal } from '../utils/risk-xml-serializer';
 //import {  parseSoapOffersToRows } from '../utils/new-soap-parser.service';
 
 
@@ -42,7 +43,7 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
         //console.log("----------------------------xmldata = contModelToXml(data)-------------------------------------------")
         //console.log("Data envoyé="+xmldata)
         //console.log("_____________________________________________________________________")
-      }else if(sid==="risk" || sid=="quit" || sid=="Project"){
+      }else if( sid=="quit" || sid=="Project"){
         xmldata =objectToXML(data,sid)
         //objectToCustomXML(data,sid)
         //
@@ -50,7 +51,8 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
         //console.log("Data envoyé="+xmldata)
         //console.log("_____________________________________________________________________")
     
-      }
+      }else if(sid==="risk"){
+    xmldata = riskModelToEscapedStrVal(data, sid);}
   else{
     const xmlPropre = objectToCustomXML(data, sid);        // <data><input><objects>…</objects></input></data>
 const strValXML = objectToCustomXMLForStrVal(data, sid);
