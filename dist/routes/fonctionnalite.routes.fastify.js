@@ -85,6 +85,7 @@ const api_contrats_searchValidator_1 = require("../validators/api_contrats_searc
 const contrats_search_service_1 = require("../services/contrats_search.service");
 const catal_listitems_service_1 = require("../services/catal_listitems.service");
 const tools_convert_routes_1 = __importDefault(require("./tools.convert.routes"));
+const Qbor_Listitems_service_1 = require("../services/Qbor_Listitems.service");
 const registerRoutes = async (app) => {
     // TODO: migrate existing Express routes to Fastify here.
     // Keep a basic ping for now to validate wiring.
@@ -881,6 +882,16 @@ const registerRoutes = async (app) => {
         return reply.send(result);
     });
     // Fastify-native /api/liste_des_types_ecrans
+    app.post('/api/Qbor_Listitems', {
+        preHandler: auth_fastify_1.authPreHandler,
+    }, async (request, reply) => {
+        const body = request.body;
+        const ctx = new BasSecurityContext_1.BasSecurityContext();
+        ctx.IsAuthenticated = true;
+        ctx.SessionId = request.auth?.sid ?? body?.BasSecurityContext?._SessionId;
+        const result = await (0, Qbor_Listitems_service_1.Qbor_Listitems)(ctx, { userId: request.user?.sub, domain: body?.domain });
+        return reply.send(result);
+    });
     app.post('/api/liste_des_types_ecrans', {
         preHandler: auth_fastify_1.authPreHandler,
         preValidation: (0, zod_fastify_1.validateBodyFastify)(api_liste_des_bransValidator_1.api_liste_des_bransValidator),
@@ -975,7 +986,8 @@ const registerRoutes = async (app) => {
         ctx.IsAuthenticated = true;
         ctx.SessionId = request.auth?.sid ?? body?.BasSecurityContext?._SessionId;
         const { Cont_CalculTarif } = await Promise.resolve().then(() => __importStar(require('../services/create_contrat/Cont_CalculTarif.service')));
-        const result = await Cont_CalculTarif(body.contrat, body.piece, body.adhesion, ctx, { userId: request.user?.sub, domain: body?.domain });
+        const details = body.details ?? true;
+        const result = await Cont_CalculTarif(body.contrat, body.piece, body.adhesion, details, ctx, { userId: request.user?.sub, domain: body?.domain });
         return reply.send(result);
     });
     app.post('/api/create_quittance', { preHandler: auth_fastify_1.authPreHandler }, async (request, reply) => {
@@ -984,7 +996,7 @@ const registerRoutes = async (app) => {
         ctx.IsAuthenticated = true;
         ctx.SessionId = request.auth?.sid ?? body?.BasSecurityContext?._SessionId;
         const { quittance_create } = await Promise.resolve().then(() => __importStar(require('../services/create_quittance/quittance_create.service')));
-        const result = await quittance_create(body.contrat, body.piece, body.bordereau, false, true, body.data, ctx, undefined, undefined, { userId: request.user?.sub, domain: body?.domain });
+        const result = await quittance_create(body.contrat, body.piece, body.Bordereau, body.autocalcul ?? false, body.affectation ?? true, body.data, ctx, body.datedebut, body.datedefin, { userId: request.user?.sub, domain: body?.domain });
         return reply.send(result);
     });
     app.post('/api/create_quittance/autocalcule', { preHandler: auth_fastify_1.authPreHandler }, async (request, reply) => {

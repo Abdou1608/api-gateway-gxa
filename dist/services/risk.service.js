@@ -52,5 +52,6 @@ async function riskUpdate(body, auth) {
         params.AddInt('dateEntree', body.dateEntree);
     params.AddString('datanode', 'Risk');
     const result = await (0, soap_service_1.sendSoapRequest)(params, 'Risk_Update', ctx, 'risk', body.data, { userId: auth.userId, domain: auth.domain ?? body?.domain });
+    //const grouped = groupByTypename(result, { keepUnknown: true });
     return result;
 }

@@ -1,5 +1,6 @@
 import { BasParams } from '../Model/BasSoapObject/BasParams';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
+import groupByTypename from '../utils/groupByTypename';
 import { sendSoapRequest } from './soap.service';
 
 export type AuthCtx = { sid: string; userId?: string; domain?: string };
@@ -43,5 +44,6 @@ export async function riskUpdate(body: any, auth: AuthCtx) {
   if (body.dateEntree) params.AddInt('dateEntree', body.dateEntree);
   params.AddString('datanode', 'Risk');
   const result = await sendSoapRequest(params, 'Risk_Update', ctx, 'risk', body.data, { userId: auth.userId, domain: auth.domain ?? body?.domain });
+ //const grouped = groupByTypename(result, { keepUnknown: true });
   return result;
 }

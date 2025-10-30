@@ -1,4 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Risk_ListItems = Risk_ListItems;
 exports.Risk_Create = Risk_Create;
@@ -6,6 +9,7 @@ exports.Risk_Update = Risk_Update;
 const soap_service_1 = require("./soap.service");
 const BasSecurityContext_1 = require("../Model/BasSoapObject/BasSecurityContext");
 const BasParams_1 = require("../Model/BasSoapObject/BasParams");
+const groupByTypename_1 = __importDefault(require("../utils/groupByTypename"));
 async function Risk_ListItems(req, res) {
     const params = new BasParams_1.BasParams();
     //const params = req.body;
@@ -62,5 +66,7 @@ async function Risk_Update(req, res) {
     params.AddString("datanode", "Risk");
     // const soapBody = {reference,dppname,typetiers,codp,datenais}
     const result = await (0, soap_service_1.sendSoapRequest)(params, "Risk_Update", basSecurityContext, "risk", req.body.data, { userId: req.user?.sub, domain: req.body?.domain });
-    res.json(result);
+    // res.json(result);
+    const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
+    res.json(grouped);
 }

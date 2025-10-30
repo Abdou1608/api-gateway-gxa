@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Cont_CalculTarif = Cont_CalculTarif;
 const BasParams_1 = require("../../Model/BasSoapObject/BasParams");
 const soap_service_1 = require("../soap.service");
-async function Cont_CalculTarif(contrat, piece, adhesion, BasSecurityContext, ctx) {
+async function Cont_CalculTarif(contrat, piece, adhesion, details, BasSecurityContext, ctx) {
     const params = new BasParams_1.BasParams();
     BasSecurityContext ? params.AddStr("BasSecurityContext", BasSecurityContext.ToSoapVar()) : null;
     params.AddInt("contrat", contrat);

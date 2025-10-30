@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { sendSoapRequest } from './soap.service';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 import { BasParams } from '../Model/BasSoapObject/BasParams';
+import groupByTypename from '../utils/groupByTypename';
 
 export async function Risk_ListItems(req: Request, res: Response) {
   const params=new BasParams()
@@ -55,5 +56,7 @@ export async function Risk_Update(req: Request, res: Response) {
      params.AddString("datanode","Risk")
    // const soapBody = {reference,dppname,typetiers,codp,datenais}
   const result = await sendSoapRequest(params, "Risk_Update", basSecurityContext, "risk", req.body.data, { userId: (req as any).user?.sub, domain: req.body?.domain });
-    res.json(result);
+   // res.json(result);
+     const grouped = groupByTypename(result, { keepUnknown: true });
+     res.json(grouped)
 }

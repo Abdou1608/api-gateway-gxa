@@ -10,6 +10,7 @@ export async function Cont_CalculTarif(
   contrat: number,
   piece?: number,
   adhesion?: number,
+  details?: boolean,
   BasSecurityContext?: any,
   ctx?: { userId?: string; domain?: string; password?: string }
 ) {

@@ -47,6 +47,7 @@ import { api_contrats_searchValidator } from '../validators/api_contrats_searchV
 import { contrats_search } from '../services/contrats_search.service';
 import { catal_listitems } from '../services/catal_listitems.service';
 import toolsConvertRoutes from './tools.convert.routes';
+import { Qbor_Listitems } from '../services/Qbor_Listitems.service';
 
 export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
   // TODO: migrate existing Express routes to Fastify here.
@@ -942,6 +943,20 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
   });
 
   // Fastify-native /api/liste_des_types_ecrans
+
+  app.post('/api/Qbor_Listitems', {
+    preHandler: authPreHandler,
+  }, async (request, reply) => {
+    const body = request.body as any;
+    const ctx = new BasSecurityContext();
+    ctx.IsAuthenticated = true as any;
+    ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
+    const result = await Qbor_Listitems(
+      ctx,
+      { userId: (request as any).user?.sub, domain: body?.domain }
+    );
+    return reply.send(result);
+  });
   app.post('/api/liste_des_types_ecrans', {
     preHandler: authPreHandler,
     preValidation: validateBodyFastify(api_liste_des_bransValidator),
@@ -1076,7 +1091,8 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
     ctx.IsAuthenticated = true as any;
     ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
     const { Cont_CalculTarif } = await import('../services/create_contrat/Cont_CalculTarif.service');
-    const result = await Cont_CalculTarif(body.contrat, body.piece, body.adhesion,ctx, { userId: (request as any).user?.sub, domain: body?.domain });
+   const details = body.details ?? true;
+    const result = await Cont_CalculTarif(body.contrat, body.piece, body.adhesion, details, ctx, { userId: (request as any).user?.sub, domain: body?.domain });
     return reply.send(result);
   });
 
@@ -1086,7 +1102,7 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
     ctx.IsAuthenticated = true as any;
     ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
     const { quittance_create } = await import('../services/create_quittance/quittance_create.service');
-    const result = await quittance_create(body.contrat, body.piece, body.bordereau, false, true, body.data, ctx, undefined, undefined, { userId: (request as any).user?.sub, domain: body?.domain });
+    const result = await quittance_create(body.contrat, body.piece, body.Bordereau, body.autocalcul ?? false, body.affectation ?? true, body.data, ctx, body.datedebut, body.datedefin, { userId: (request as any).user?.sub, domain: body?.domain });
     return reply.send(result);
   });
 
