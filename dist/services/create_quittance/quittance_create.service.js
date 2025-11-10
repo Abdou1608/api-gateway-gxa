@@ -12,10 +12,12 @@ async function quittance_create(contrat, piece, bordereau, autocalcul, affectati
     params.AddBool("autocalcul", autocalcul);
     params.AddBool("affectation", affectation);
     if (datedebut) {
-        params.AddDateTime("datedebut", new Date(datedebut));
+        const iso = new Date(datedebut).toISOString();
+        params.AddStrDate("datedebut", iso);
     }
     if (datedefin) {
-        params.AddDateTime("datedefin", new Date(datedefin));
+        const iso = new Date(datedefin).toISOString();
+        params.AddStrDate("datefin", iso);
     }
     // params.AddStr("data", data)
     /*

@@ -1,22 +1,24 @@
 import { BasParams } from '../../Model/BasSoapObject/BasParams';
+import { BasSecurityContext } from '../../Model/BasSoapObject/BasSecurityContext';
 import { ContModel } from '../../Model/create_update_contrat';
 import groupByTypename from '../../utils/groupByTypename';
 import { cont_details } from '../detail_contrat/cont_details.service';
+import { AuthCtx } from '../risk.service';
 import { sendSoapRequest } from '../soap.service';
 import { contModelToXml } from './cont_to_xml.service';
 
 
 export async function Cont_CalculTarif(
   contrat: number,
-  piece?: number,
-  adhesion?: number,
-  details?: boolean,
-  BasSecurityContext?: any,
-  ctx?: { userId?: string; domain?: string; password?: string }
+  piece: number,
+  adhesion: number,
+ auth: AuthCtx
 ) {
-    const params=new BasParams()
-    BasSecurityContext? params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar()):null
- 
+   const params = new BasParams();
+     const ctx = new BasSecurityContext();
+     ctx.IsAuthenticated = true as any;
+     ctx.SessionId = auth.sid as any;
+     params.AddStr('BasSecurityContext', ctx.ToSoapVar());
     params.AddInt("contrat",contrat)
     piece ? params.AddInt("piece",piece) : null
     adhesion ? params.AddInt("adhesion",adhesion) : null
@@ -27,7 +29,7 @@ export async function Cont_CalculTarif(
   const result = await sendSoapRequest(
     params,
     "Cont_CalculTarif",
-    BasSecurityContext,
+    ctx,
     "calcultarif",
     null
   );

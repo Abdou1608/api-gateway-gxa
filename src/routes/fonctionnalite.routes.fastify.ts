@@ -48,6 +48,7 @@ import { contrats_search } from '../services/contrats_search.service';
 import { catal_listitems } from '../services/catal_listitems.service';
 import toolsConvertRoutes from './tools.convert.routes';
 import { Qbor_Listitems } from '../services/Qbor_Listitems.service';
+import { Cont_CalculTarif } from '../services/create_contrat/Cont_CalculTarif.service';
 
 export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
   // TODO: migrate existing Express routes to Fastify here.
@@ -1092,7 +1093,7 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
     ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
     const { Cont_CalculTarif } = await import('../services/create_contrat/Cont_CalculTarif.service');
    const details = body.details ?? true;
-    const result = await Cont_CalculTarif(body.contrat, body.piece, body.adhesion, details, ctx, { userId: (request as any).user?.sub, domain: body?.domain });
+    const result = await Cont_CalculTarif(body.contrat, body.piece ?? 1, body.adhesion ?? null, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: body?.domain });
     return reply.send(result);
   });
 
@@ -1102,7 +1103,7 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
     ctx.IsAuthenticated = true as any;
     ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
     const { quittance_create } = await import('../services/create_quittance/quittance_create.service');
-    const result = await quittance_create(body.contrat, body.piece, body.Bordereau, body.autocalcul ?? false, body.affectation ?? true, body.data, ctx, body.datedebut, body.datedefin, { userId: (request as any).user?.sub, domain: body?.domain });
+    const result = await quittance_create(body.contrat, body.piece, body.Bordereau, body.autocalcul ?? true, body.affectation ?? true, body.data, ctx, body.datedebut, body.datedefin, { userId: (request as any).user?.sub, domain: body?.domain });
     return reply.send(result);
   });
 
@@ -1209,7 +1210,8 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
   app.post('/api/risk/risk_update', { preHandler: authPreHandler }, async (request, reply) => {
     const body = request.body as any;
     const data = await Risk.riskUpdate(body, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: body?.domain });
-    return reply.send(data);
+   const calc_data = await Cont_CalculTarif(data.contrat, data.piece ?? 1, data.adhesion ?? null,{ sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: body?.domain });
+    return reply.send({ data, calc_data });
   });
 
   // Fastify-native Tier update endpoint

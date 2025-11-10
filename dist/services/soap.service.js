@@ -13,6 +13,7 @@ const errors_1 = require("../common/errors");
 const user_queue_1 = require("../lib/user-queue");
 const soap_safe_1 = require("./soap-safe");
 const risk_xml_serializer_1 = require("../utils/risk-xml-serializer");
+const soap_error_detector_1 = require("../utils/soap-error-detector");
 //import {  parseSoapOffersToRows } from '../utils/new-soap-parser.service';
 const clhttp = require('http');
 const config = new app_config_service_1.AppConfigService;
@@ -76,6 +77,14 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
                 const f = BasSoapFault_1.BasSoapFault.ParseBasErrorDetailed(response);
                 throw new errors_1.SoapServerError('SOAP.FAULT', f.faultstring || 'SOAP Fault', { soapFault: { faultcode: f.faultcode, faultstring: f.faultstring, detail: f.details, state: f.state } });
             }
+            const businessError = (0, soap_error_detector_1.detectSoapError)(response);
+            if (businessError) {
+                throw new errors_1.SoapServerError(businessError.code ?? 'SOAP.BUSINESS_ERROR', businessError.message, {
+                    source: businessError.kind,
+                    logEntries: businessError.entries,
+                    rawResponseSnippet: businessError.rawSnippet,
+                });
+            }
             //console.log("✅ Inside runBasAct - actionName====", actionName);
             //console.log("✅ Inside runBasAct - response====", response);
             // Si aucune erreur, on traite les données selon le `sid`
@@ -104,6 +113,8 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
                 return { success: true, data: (0, soap_parser_service_1.parseSoapEmbeddedXmlToJson)(response, "Tarc0") };
             }
             else {
+                console.warn("⚠️ Unhandled SID:", sid);
+                console.log("⚠️ Response!!!!!!   :", response);
                 return { success: true, data: await (0, soap_parser_service_1.parseSoapXmlToJson)(response, sid) };
             }
         })

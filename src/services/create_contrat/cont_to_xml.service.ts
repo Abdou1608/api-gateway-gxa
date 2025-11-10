@@ -4,7 +4,7 @@ import { create } from 'xmlbuilder2';
 const MONETARY_FIELDS = new Set([
   'Primann', 'Totann', 'Franini', 'Capini', 'Coutpol', 'Cieprime', 'Cietaxes', 'Commsup','Commann','Txcomm',
   'Hono', 'Ptini', 'Pnini', 'Comini', 'Impaye', 'Acompte', 'Frprel','Tauxrea', 'Tauxap1', 'Tauxap2',
-  'Retrorea', 'Retroap1', 'Retroap2', 'Kprretro', 'Kprretem', 'Retroemi','Coeffcom'
+  'Retrorea', 'Retroap1', 'Retroap2', 'Kprretro', 'Kprretem', 'Retroemi','Coeffcom','Crm'
   // champs monétaires complémentaires (ex: pour devises) 
   // ajouter ici les autres champs monétaires
 ]);

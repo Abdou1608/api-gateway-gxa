@@ -86,6 +86,7 @@ const contrats_search_service_1 = require("../services/contrats_search.service")
 const catal_listitems_service_1 = require("../services/catal_listitems.service");
 const tools_convert_routes_1 = __importDefault(require("./tools.convert.routes"));
 const Qbor_Listitems_service_1 = require("../services/Qbor_Listitems.service");
+const Cont_CalculTarif_service_1 = require("../services/create_contrat/Cont_CalculTarif.service");
 const registerRoutes = async (app) => {
     // TODO: migrate existing Express routes to Fastify here.
     // Keep a basic ping for now to validate wiring.
@@ -987,7 +988,7 @@ const registerRoutes = async (app) => {
         ctx.SessionId = request.auth?.sid ?? body?.BasSecurityContext?._SessionId;
         const { Cont_CalculTarif } = await Promise.resolve().then(() => __importStar(require('../services/create_contrat/Cont_CalculTarif.service')));
         const details = body.details ?? true;
-        const result = await Cont_CalculTarif(body.contrat, body.piece, body.adhesion, details, ctx, { userId: request.user?.sub, domain: body?.domain });
+        const result = await Cont_CalculTarif(body.contrat, body.piece ?? 1, body.adhesion ?? null, { sid: request.auth.sid, userId: request.user?.sub, domain: body?.domain });
         return reply.send(result);
     });
     app.post('/api/create_quittance', { preHandler: auth_fastify_1.authPreHandler }, async (request, reply) => {
@@ -996,7 +997,7 @@ const registerRoutes = async (app) => {
         ctx.IsAuthenticated = true;
         ctx.SessionId = request.auth?.sid ?? body?.BasSecurityContext?._SessionId;
         const { quittance_create } = await Promise.resolve().then(() => __importStar(require('../services/create_quittance/quittance_create.service')));
-        const result = await quittance_create(body.contrat, body.piece, body.Bordereau, body.autocalcul ?? false, body.affectation ?? true, body.data, ctx, body.datedebut, body.datedefin, { userId: request.user?.sub, domain: body?.domain });
+        const result = await quittance_create(body.contrat, body.piece, body.Bordereau, body.autocalcul ?? true, body.affectation ?? true, body.data, ctx, body.datedebut, body.datedefin, { userId: request.user?.sub, domain: body?.domain });
         return reply.send(result);
     });
     app.post('/api/create_quittance/autocalcule', { preHandler: auth_fastify_1.authPreHandler }, async (request, reply) => {
@@ -1093,7 +1094,8 @@ const registerRoutes = async (app) => {
     app.post('/api/risk/risk_update', { preHandler: auth_fastify_1.authPreHandler }, async (request, reply) => {
         const body = request.body;
         const data = await Risk.riskUpdate(body, { sid: request.auth.sid, userId: request.user?.sub, domain: body?.domain });
-        return reply.send(data);
+        const calc_data = await (0, Cont_CalculTarif_service_1.Cont_CalculTarif)(data.contrat, data.piece ?? 1, data.adhesion ?? null, { sid: request.auth.sid, userId: request.user?.sub, domain: body?.domain });
+        return reply.send({ data, calc_data });
     });
     // Fastify-native Tier update endpoint
     app.put('/api/Tiers_Update', { preHandler: auth_fastify_1.authPreHandler }, async (request, reply) => {

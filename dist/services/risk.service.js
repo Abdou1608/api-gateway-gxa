@@ -53,5 +53,5 @@ async function riskUpdate(body, auth) {
     params.AddString('datanode', 'Risk');
     const result = await (0, soap_service_1.sendSoapRequest)(params, 'Risk_Update', ctx, 'risk', body.data, { userId: auth.userId, domain: auth.domain ?? body?.domain });
     //const grouped = groupByTypename(result, { keepUnknown: true });
-    return result;
+    return { result, contrat: body.contrat, piece: body.piece, adhesion: body.adhesion };
 }

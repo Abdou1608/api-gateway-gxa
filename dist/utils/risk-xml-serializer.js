@@ -9,7 +9,7 @@ const MONETARY_FIELDS = new Set([
     // hérités de cont + utiles côté risk/garan
     'Primann', 'Totann', 'Franini', 'Capini', 'Coutpol', 'Cieprime', 'Cietaxes', 'Commsup', 'Commann', 'Txcomm',
     'Hono', 'Ptini', 'Pnini', 'Comini', 'Impaye', 'Acompte', 'Frprel', 'Tauxrea', 'Tauxap1', 'Tauxap2',
-    'Retrorea', 'Retroap1', 'Retroap2', 'Kprretro', 'Kprretem', 'Retroemi', 'Coeffcom',
+    'Retrorea', 'Retroap1', 'Retroap2', 'Kprretro', 'Kprretem', 'Retroemi', 'Coeffcom', 'Crm',
     'Capital', 'Franchi', 'Valneuf', 'Valexp', 'Coef', 'Jourfran', 'Vindini', 'Vindice', 'Puissan', 'Pfiscale'
 ]);
 const DEFAULT_CURRENCY = 'DJF';

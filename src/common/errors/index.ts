@@ -26,12 +26,21 @@ export class BaseAppError<T extends ErrorDetails = ErrorDetails> extends Error {
 }
 
 export interface SoapFaultDetails extends ErrorDetails {
-  soapFault: {
+  soapFault?: {
     faultcode?: string;
     faultstring?: string;
     detail?: any;
     state?: string;
   };
+  source?: string;
+  logEntries?: Array<{
+    message: string;
+    code?: string;
+    severity?: string;
+    path?: string;
+    context?: Record<string, unknown>;
+  }>;
+  rawResponseSnippet?: string;
 }
 
 export class SoapServerError extends BaseAppError<SoapFaultDetails> {

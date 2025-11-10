@@ -11,6 +11,7 @@ import { ValidationError, TransformError, SoapServerError, InternalError } from 
 import { withUserQueue } from '../lib/user-queue';
 import { callSoapWithResilience } from './soap-safe';
 import { riskModelToEscapedStrVal } from '../utils/risk-xml-serializer';
+import { detectSoapError } from '../utils/soap-error-detector';
 //import {  parseSoapOffersToRows } from '../utils/new-soap-parser.service';
 
 
@@ -94,6 +95,19 @@ const strValXML = objectToCustomXMLForStrVal(data, sid);
           { soapFault: { faultcode: f.faultcode, faultstring: f.faultstring, detail: f.details, state: f.state } }
         );
       }
+
+      const businessError = detectSoapError(response);
+      if (businessError) {
+        throw new SoapServerError(
+          businessError.code ?? 'SOAP.BUSINESS_ERROR',
+          businessError.message,
+          {
+            source: businessError.kind,
+            logEntries: businessError.entries,
+            rawResponseSnippet: businessError.rawSnippet,
+          }
+        );
+      }
   
       //console.log("✅ Inside runBasAct - actionName====", actionName);
       //console.log("✅ Inside runBasAct - response====", response);
@@ -116,6 +130,8 @@ const strValXML = objectToCustomXMLForStrVal(data, sid);
       } else if (sid === "project-detail") {
         return { success: true, data: parseSoapEmbeddedXmlToJson(response, "Tarc0") };
       } else {
+        console.warn("⚠️ Unhandled SID:", sid);
+        console.log("⚠️ Response!!!!!!   :", response);
         return { success: true, data: await parseSoapXmlToJson(response, sid) };
       }
     })

@@ -45,5 +45,5 @@ export async function riskUpdate(body: any, auth: AuthCtx) {
   params.AddString('datanode', 'Risk');
   const result = await sendSoapRequest(params, 'Risk_Update', ctx, 'risk', body.data, { userId: auth.userId, domain: auth.domain ?? body?.domain });
  //const grouped = groupByTypename(result, { keepUnknown: true });
-  return result;
+  return {result,contrat: body.contrat, piece: body.piece, adhesion: body.adhesion};
 }
