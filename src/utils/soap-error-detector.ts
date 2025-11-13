@@ -120,7 +120,8 @@ export function detectSoapError(xml: string): SoapDetectionResult | null {
 
   const dataDetection = detectFromData(actionResult);
   if (dataDetection) {
-    return dataDetection;
+    return null;
+    //dataDetection;
   }
 
   return null;

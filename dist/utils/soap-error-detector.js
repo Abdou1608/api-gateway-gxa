@@ -82,7 +82,8 @@ function detectSoapError(xml) {
     }
     const dataDetection = detectFromData(actionResult);
     if (dataDetection) {
-        return dataDetection;
+        return null;
+        //dataDetection;
     }
     return null;
 }
