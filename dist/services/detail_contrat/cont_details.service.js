@@ -15,8 +15,10 @@ async function cont_details(body, bss, ctx) {
     params.AddBool("allpieces", body.allpieces ?? true);
     params.AddBool("detailadh", body.detailadh ?? true);
     params.AddBool("garanties", body.garanties ?? true);
-    params.AddBool("extensions", body.extensions ?? false);
+    params.AddBool("extensions", body.extensions ?? true);
     params.AddBool("infoscieprod", body.infoscieprod ?? false);
+    params.AddBool("clause", body.clauses ?? true);
+    params.AddBool("clauses", body.clauses ?? true);
     const result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_Details", bss, undefined, undefined, ctx);
     const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
     return grouped;

@@ -8,7 +8,7 @@ import { SessionStorage } from '../../Model/Model-SessionStorage/SessionStorage'
 export async function opensession(logon: string, password: string, domain?: string) {
   try {
     
-  
+  console.log("Début API opensession service avec les paramètres logon=="+logon+" password=="+password+" domain=="+domain)
     const params=new BasParams()
     params.AddString("logon",logon)
      params.AddString("password",password)
@@ -17,7 +17,8 @@ export async function opensession(logon: string, password: string, domain?: stri
      const basSoapClient= new BasSoapClient()
      const appc= new AppConfigService()
 const auth = new AuthenticationHelper(sessionStorage,basSoapClient, appc)
-  const result = await  auth.AuthenticateUser(logon,password);
+  const result = await  auth.AuthenticateUser(logon,password,domain);
+  console.log("!!!!!!!!Result opensession service=="+JSON.stringify( result))
   return result;
 
 }   catch (error:any) {

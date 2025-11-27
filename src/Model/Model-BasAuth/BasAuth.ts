@@ -8,9 +8,10 @@ export class BasAuth {
 
     constructor(private BasSoapCLient: BasSoapClient, private appConfigService: AppConfigService) { }
     
-    async OpenSession(BasLogin: string, BasPassword: string): Promise<BasSecurityContext> {
-        let body = `<ns1:OpenSession><logon xsi:type="xsd:string">${BasLogin}</logon><password xsi:type="xsd:string">${BasPassword}</password></ns1:OpenSession>`;
+    async OpenSession(BasLogin: string, BasPassword: string, BasDomain?: string): Promise<BasSecurityContext> {
+        let body = `<ns1:OpenSession><logon xsi:type="xsd:string">${BasLogin}</logon><password xsi:type="xsd:string">${BasPassword}</password><domain xsi:type="xsd:string">${BasDomain }</domain></ns1:OpenSession>`;
         let result: string = await this.BasSoapCLient.soapRequest(this.appConfigService.GetURlAuthService(), body);
+       console.log("!!!!!!!!!!!!!!!!!!!Result OpenSession BasAuth: "+result);
         let basSecurityContext = new BasSecurityContext();
         basSecurityContext.LoadFromXml(result);
         return basSecurityContext;

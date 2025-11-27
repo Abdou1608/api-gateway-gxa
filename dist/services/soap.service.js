@@ -56,7 +56,7 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
                 const xmlPropre = (0, xml_parser_1.objectToCustomXML)(data, sid); // <data><input><objects>…</objects></input></data>
                 const strValXML = (0, xml_parser_1.objectToCustomXMLForStrVal)(data, sid);
                 xmldata = strValXML;
-                //console.log("----------------------------xmldata = objectToCustomXML(data)-------------------------------------------")
+                console.log("----------------------------xmldata = objectToCustomXML(data)-------------------------------------------");
                 //console.log("Data envoyé="+xmldata)
                 //console.log("_____________________________________________________________________")
             }
@@ -109,12 +109,12 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
             else if (["projects", "project", "Project"].includes(sid)) {
                 return { success: true, data: await (0, soap_parser_service_1.parseSoapEmbeddedXmlToJson)(response, sid) };
             }
-            else if (sid === "project-detail") {
+            else if (sid === "project-detail" || sid === "cont_listitems") {
                 return { success: true, data: (0, soap_parser_service_1.parseSoapEmbeddedXmlToJson)(response, "Tarc0") };
             }
             else {
                 console.warn("⚠️ Unhandled SID:", sid);
-                console.log("⚠️ Response!!!!!!   :", response);
+                // console.log("⚠️ Response!!!!!!   :", response);
                 return { success: true, data: await (0, soap_parser_service_1.parseSoapXmlToJson)(response, sid) };
             }
         })

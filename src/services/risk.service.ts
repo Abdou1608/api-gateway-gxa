@@ -26,7 +26,13 @@ export async function riskCreate(body: any, auth: AuthCtx) {
   params.AddStr('BasSecurityContext', ctx.ToSoapVar());
   if (body.contrat) params.AddInt('contrat', body.contrat);
   if (body.piece) params.AddInt('piece', body.piece);
-  if (body.dateEntree) params.AddStrDate('dateEntree', body.dateEntree);
+  if (body.dateEntree && typeof body.dateEntree === 'string') {params.AddStrDate('dateEntree', body.dateEntree)}
+  else if (body.dateEntree && typeof body.dateEntree !== 'string') {
+    params.AddDateTime('dateEntree', body.dateEntree);
+  }
+  else {
+    params.AddDateTime('dateEntree', new Date());
+  } 
   params.AddString('datanode', 'Risk');
   const result = await sendSoapRequest(params, 'Risk_Create', ctx, 'risk', body.data, { userId: auth.userId, domain: auth.domain ?? body?.domain });
   return result;
@@ -41,8 +47,13 @@ export async function riskUpdate(body: any, auth: AuthCtx) {
   if (body.contrat) params.AddInt('contrat', body.contrat);
   if (body.piece) params.AddInt('piece', body.piece);
   if (body.adhesion) params.AddInt('adhesion', body.adhesion);
-  if (body.dateEntree) params.AddInt('dateEntree', body.dateEntree);
-  params.AddString('datanode', 'Risk');
+   if (body.dateEntree && typeof body.dateEntree === 'string') {params.AddStrDate('dateEntree', body.dateEntree)}
+  else if (body.dateEntree && typeof body.dateEntree !== 'string') {
+    params.AddDateTime('dateEntree', body.dateEntree);
+  }
+  else {
+    params.AddDateTime('dateEntree', new Date());
+  }   params.AddString('datanode', 'Risk');
   const result = await sendSoapRequest(params, 'Risk_Update', ctx, 'risk', body.data, { userId: auth.userId, domain: auth.domain ?? body?.domain });
  //const grouped = groupByTypename(result, { keepUnknown: true });
   return {result,contrat: body.contrat, piece: body.piece, adhesion: body.adhesion};

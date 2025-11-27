@@ -8,6 +8,7 @@ const BasSoapClient_1 = require("../../Model/Model-BasSoapClient/BasSoapClient")
 const SessionStorage_1 = require("../../Model/Model-SessionStorage/SessionStorage");
 async function opensession(logon, password, domain) {
     try {
+        console.log("Début API opensession service avec les paramètres logon==" + logon + " password==" + password + " domain==" + domain);
         const params = new BasParams_1.BasParams();
         params.AddString("logon", logon);
         params.AddString("password", password);
@@ -16,7 +17,8 @@ async function opensession(logon, password, domain) {
         const basSoapClient = new BasSoapClient_1.BasSoapClient();
         const appc = new app_config_service_1.AppConfigService();
         const auth = new BasAuthHelper_1.AuthenticationHelper(sessionStorage, basSoapClient, appc);
-        const result = await auth.AuthenticateUser(logon, password);
+        const result = await auth.AuthenticateUser(logon, password, domain);
+        console.log("!!!!!!!!Result opensession service==" + JSON.stringify(result));
         return result;
     }
     catch (error) {

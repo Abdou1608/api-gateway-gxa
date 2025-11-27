@@ -9,9 +9,10 @@ class BasAuth {
         this.BasSoapCLient = BasSoapCLient;
         this.appConfigService = appConfigService;
     }
-    async OpenSession(BasLogin, BasPassword) {
-        let body = `<ns1:OpenSession><logon xsi:type="xsd:string">${BasLogin}</logon><password xsi:type="xsd:string">${BasPassword}</password></ns1:OpenSession>`;
+    async OpenSession(BasLogin, BasPassword, BasDomain) {
+        let body = `<ns1:OpenSession><logon xsi:type="xsd:string">${BasLogin}</logon><password xsi:type="xsd:string">${BasPassword}</password><domain xsi:type="xsd:string">${BasDomain}</domain></ns1:OpenSession>`;
         let result = await this.BasSoapCLient.soapRequest(this.appConfigService.GetURlAuthService(), body);
+        console.log("!!!!!!!!!!!!!!!!!!!Result OpenSession BasAuth: " + result);
         let basSecurityContext = new BasSecurityContext_1.BasSecurityContext();
         basSecurityContext.LoadFromXml(result);
         return basSecurityContext;

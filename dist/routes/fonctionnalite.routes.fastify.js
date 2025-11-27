@@ -978,7 +978,7 @@ const registerRoutes = async (app) => {
         ctx.IsAuthenticated = true;
         ctx.SessionId = request.auth?.sid ?? body?.BasSecurityContext?._SessionId;
         const { cont_create } = await Promise.resolve().then(() => __importStar(require('../services/create_contrat/cont_create.service')));
-        const result = await cont_create(body.dossier, body.produit, body.effet, body.data, ctx, { userId: request.user?.sub, domain: body?.domain });
+        const result = await cont_create(body.dossier, body.produit, body.effet ?? body.Effet, body.data, ctx, { userId: request.user?.sub, domain: body?.domain });
         return reply.send(result);
     });
     app.post('/api/Cont_CalculTarif', { preHandler: auth_fastify_1.authPreHandler }, async (request, reply) => {
@@ -1094,8 +1094,13 @@ const registerRoutes = async (app) => {
     app.post('/api/risk/risk_update', { preHandler: auth_fastify_1.authPreHandler }, async (request, reply) => {
         const body = request.body;
         const data = await Risk.riskUpdate(body, { sid: request.auth.sid, userId: request.user?.sub, domain: body?.domain });
-        const calc_data = await (0, Cont_CalculTarif_service_1.Cont_CalculTarif)(data.contrat, data.piece ?? 1, data.adhesion ?? null, { sid: request.auth.sid, userId: request.user?.sub, domain: body?.domain });
-        return reply.send({ data, calc_data });
+        const calc_data = await (0, Cont_CalculTarif_service_1.Cont_CalculTarif)(data.contrat, data.piece ?? 1, data.adhesion ?? null, { sid: request.auth.sid, userId: request.user?.sub, domain: body?.domain }).catch(() => null);
+        if (calc_data) {
+            return reply.send({ data, calc_data });
+        }
+        else {
+            return reply.send({ data });
+        }
     });
     // Fastify-native Tier update endpoint
     app.put('/api/Tiers_Update', { preHandler: auth_fastify_1.authPreHandler }, async (request, reply) => {

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.tiers_create = tiers_create;
 const BasParams_1 = require("../../Model/BasSoapObject/BasParams");
+const tiers_details_service_1 = require("../detail_tier/tiers_details.service");
 const soap_service_1 = require("../soap.service");
 async function tiers_create(basec, typtiers, nature, numtiers, numdpp, data, ctx) {
     //const soapBody = {typtiers,nature,numtiers,numdpp,data}
@@ -14,5 +15,6 @@ async function tiers_create(basec, typtiers, nature, numtiers, numdpp, data, ctx
     //if (data) {
     //	params.AddStr("data",tierModelToXml(data))	}
     const result = await (0, soap_service_1.sendSoapRequest)(params, "Tiers_Create", basec, "tiers", data, ctx);
-    return result;
+    const resp = await (0, tiers_details_service_1.tiers_details)(basec, result.Numtiers, true, true, ctx);
+    return resp;
 }

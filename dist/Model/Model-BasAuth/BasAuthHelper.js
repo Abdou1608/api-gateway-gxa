@@ -10,8 +10,10 @@ class AuthenticationHelper {
         this.basAuth = new BasAuth_1.BasAuth(this.basSoapClient, this.appConfigService);
     }
     //Method for performing basic authentication and fetch token and save in session model
-    async AuthenticateUser(userName, password) {
-        return this.basSecurityContext = await this.basAuth.OpenSession(userName, password);
+    async AuthenticateUser(userName, password, domain) {
+        this.basSecurityContext = await this.basAuth.OpenSession(userName, password, domain);
+        console.log("!!!!!!!!!!!!!!! basSecurityContext AuthenticateUser: " + JSON.stringify(this.basSecurityContext));
+        return this.basSecurityContext;
         this.sessionStorage.Set(this.sessionStorage.SESSION_ID_TOKEN, this.basSecurityContext.GetSessionId());
         this.sessionStorage.Set(this.sessionStorage.SESSION_AUTHENTICATED, String(this.basSecurityContext.GetIsAuthenticated()));
         this.sessionStorage.SetContext(this.basSecurityContext);

@@ -15,7 +15,7 @@ export async function cont_update(
     params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())
     params.AddInt("contrat",contrat)
     piece ? params.AddInt("piece",piece) : null
-    effet ? params.AddStrDate("effet",effet) : null
+    effet ? params.AddDateTime("effet",new Date(effet)) : null
   // data ? params.AddStr("data",contModelToXml(data)) :null
    //console.log("££££££££===========DATA"+JSON.stringify( data))
 

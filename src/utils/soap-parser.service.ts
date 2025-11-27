@@ -1,13 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { XMLParser } from 'fast-xml-parser';
-import { DOMParser } from 'xmldom';
-import { DOMImplementation, XMLSerializer } from 'xmldom';
+import { DOMParser, XMLSerializer } from 'xmldom';
 import { Produit } from '../Model/produit.model';
+import { Parser, parseStringPromise } from 'xml2js';
+
 export interface XmlParsedObject {
   [key: string]: string | number | boolean | null | XmlParsedObject | XmlParsedObject[];
 }
-import { Parser, parseStringPromise } from 'xml2js';
-//import { parseStringPromise } from "xml2js/parseStringPromise";
-
 
 interface Param {
   name: string;
@@ -15,156 +14,247 @@ interface Param {
   int_val?: string;
   bool_val?: string;
   float_val?: string;
+  date_val?: string;
+  datetime_val?: string;
+  time_val?: string;
   is_null?: string;
   _: string;
 }
+
 type Constructor<T> = new (...args: any[]) => T;
 
-const parser = new XMLParser({
+const FAST_ATTR_PREFIX = '@_';
+
+const fastParser = new XMLParser({
   ignoreAttributes: false,
-  attributeNamePrefix: '',
+  attributeNamePrefix: FAST_ATTR_PREFIX,
   parseTagValue: true,
   parseAttributeValue: true,
+  trimValues: true,
+  allowBooleanAttributes: true,
 });
 
+/* ------------------------------ Helpers ------------------------------ */
 
- //* Parse une réponse SOAP XML contenant un champ <Data> encodé.
- 
- export async function parseSoapXmlToJson<T = any | any[]>(soapXml: string, datanode?:string): Promise<T | T[]>{
- 
+const isTrue = (v: any): boolean =>
+  v === true || v === 'true' || v === '1' || v === 1;
+
+const toInt = (v: any): number | null => {
+  const n = typeof v === 'number' ? v : Number(v);
+  return Number.isFinite(n) ? Math.trunc(n) : null;
+};
+
+/** Conversion robuste des floats (gère E+0002, virgules, espaces) */
+const toFloatStrict = (v: any): number | null => {
+  if (v === null || v === undefined) return null;
+  if (typeof v === 'number') return Number.isFinite(v) ? v : null;
+  let s = String(v).trim();
+  if (!s) return null;
+  // Remplacer virgule décimale éventuelle
+  s = s.replace(',', '.');
+  // Normaliser exposants de type E+0002 / E-0002 -> E+2 / E-2
+  s = s.replace(/e([+-])0+(\d+)/i, 'e$1$2');
+  // Supprimer espaces résiduels autour de E
+  s = s.replace(/\s*e\s*/i, 'e');
+  // Conversion
+  const n = Number(s);
+  if (Number.isFinite(n)) return n;
+  const n2 = parseFloat(s);
+  return Number.isFinite(n2) ? n2 : null;
+};
+
+const toStringSafe = (v: any): string =>
+  v === null || v === undefined ? '' : String(v).trim();
+
+const pickAttrFast = (obj: any, name: string): any => {
+  // Cherche successivement @_<name>, name, lower/upper variants
+  const k1 = `${FAST_ATTR_PREFIX}${name}`;
+  if (obj && Object.prototype.hasOwnProperty.call(obj, k1)) return obj[k1];
+  if (obj && Object.prototype.hasOwnProperty.call(obj, name)) return obj[name];
+  const low = name.toLowerCase();
+  const up = name.toUpperCase();
+  if (obj && Object.prototype.hasOwnProperty.call(obj, low)) return obj[low];
+  if (obj && Object.prototype.hasOwnProperty.call(obj, up)) return obj[up];
+  return undefined;
+};
+
+const isStringType = (t: any): boolean => {
+  const v = typeof t === 'string' ? t.trim().toLowerCase() : '';
+  return v === 'ptstring' || v === 'string';
+};
+
+const extractParamValueFast = (param: any): { name: string | undefined; value: any } => {
+  const name = pickAttrFast(param, 'name');
+  const isNull = pickAttrFast(param, 'is_null');
+  if (isTrue(isNull)) return { name, value: null };
+
+  const typeAttr = pickAttrFast(param, 'type');
+
+  // 0) Si le type est string => toujours renvoyer le contenu textuel (même s'il ressemble à un nombre)
+  if (isStringType(typeAttr)) {
+    // fast-xml-parser place le texte sous '#text' (et peut déjà avoir parsé en number/bool)
+    const textAny = (param && Object.prototype.hasOwnProperty.call(param, '#text'))
+      ? (param as any)['#text']
+      : undefined;
+    if (textAny !== undefined && textAny !== null) {
+      return { name, value: toStringSafe(textAny) };
+    }
+    // fallback ultime : si un des *_val existe on le convertit en string
+    const candidates = [
+      pickAttrFast(param, 'date_val'),
+      pickAttrFast(param, 'datetime_val'),
+      pickAttrFast(param, 'time_val'),
+      pickAttrFast(param, 'int_val'),
+      pickAttrFast(param, 'float_val'),
+      pickAttrFast(param, 'bool_val'),
+    ];
+    const first = candidates.find(v => v !== undefined && v !== null && String(v).trim() !== '');
+    if (first !== undefined) return { name, value: toStringSafe(first) };
+    // sinon string vide (valeur présente mais vide)
+    return { name, value: '' };
+  }
+
+  // 1) Dates (prioritaire si présentes en attributs)
+  const dateCandidates = ['date_val', 'datetime_val', 'time_val', 'date', 'datetime'];
+  for (const key of dateCandidates) {
+    const val = pickAttrFast(param, key);
+    if (val !== undefined && val !== null && String(val).trim() !== '') {
+      return { name, value: String(val).trim() };
+    }
+  }
+
+  // 2) Numériques / booléens
+  const intVal = pickAttrFast(param, 'int_val');
+  if (intVal !== undefined) return { name, value: toInt(intVal) };
+
+  const floatVal = pickAttrFast(param, 'float_val');
+  if (floatVal !== undefined) return { name, value: toFloatStrict(floatVal) };
+
+  const boolVal = pickAttrFast(param, 'bool_val');
+  if (boolVal !== undefined) return { name, value: isTrue(boolVal) };
+
+  // 3) Contenu textuel (#text) — accepter string/number/bool
+  if (param && Object.prototype.hasOwnProperty.call(param, '#text')) {
+    const raw = (param as any)['#text'];
+    // Si pas de type explicite, on renvoie "tel quel" (string/number/bool), mais trim si string
+    return { name, value: typeof raw === 'string' ? raw.trim() : raw };
+  }
+
+  // 4) fallback vide
+  return { name, value: '' };
+};
+
+const extractParamValueFromElement = (paramEl: Element): { name: string | null; value: any } => {
+  const name = paramEl.getAttribute('name');
+  const isNull = paramEl.getAttribute('is_null');
+  if (isTrue(isNull)) return { name, value: null };
+
+  const typeAttr = paramEl.getAttribute('type');
+
+  // Si type string => toujours le texte (même si "3021190")
+  if (isStringType(typeAttr)) {
+    return { name, value: toStringSafe(paramEl.textContent) };
+  }
+
+  // 1) Dates
+  const dateAttr =
+    paramEl.getAttribute('date_val') ??
+    paramEl.getAttribute('datetime_val') ??
+    paramEl.getAttribute('time_val') ??
+    paramEl.getAttribute('date') ??
+    paramEl.getAttribute('datetime');
+  if (dateAttr && dateAttr.trim() !== '') {
+    return { name, value: dateAttr.trim() };
+  }
+
+  // 2) Numériques / booléens
+  const intVal = paramEl.getAttribute('int_val');
+  if (intVal !== null && intVal !== undefined) return { name, value: toInt(intVal) };
+
+  const floatVal = paramEl.getAttribute('float_val');
+  if (floatVal !== null && floatVal !== undefined) return { name, value: toFloatStrict(floatVal) };
+
+  const boolVal = paramEl.getAttribute('bool_val');
+  if (boolVal !== null && boolVal !== undefined) return { name, value: isTrue(boolVal) };
+
+  // 3) Texte (accepter tout)
+  return { name, value: toStringSafe(paramEl.textContent) };
+};
+
+/* ------------------------------ parseSoapXmlToJson ------------------------------ */
+/** Parse une réponse SOAP XML contenant un champ <Data> encodé. */
+export async function parseSoapXmlToJson<T = any | any[]>(soapXml: string, datanode?: string): Promise<T | T[]> {
   try {
-  const parser = new DOMParser();
-  const serializer = new XMLSerializer();
-  const doc = parser.parseFromString(soapXml, 'application/xml');
-  //console.log("La valeur de  soapXml est ========"+ soapXml)
-  let dname:string=datanode ? datanode+'-rows':""
-  if (datanode =="tab"){
-    dname="tab-rows"
-  }else if (datanode =="tabs"){
-    dname="tabs"
-  }else if ((datanode == "risks") || (datanode =="Risks")){
-    dname="risks"
-    console.log("Dans else if datanode ===risks")
-  }else if((datanode == "offers") || (datanode =="projects") || (datanode == "Offers") || (datanode =="Projects") || (datanode == "offer") || (datanode =="project"))  {
-    console.log("Dans else if datanode ===offers ||projects")
-    dname="offers"
-  }
+    const dom = new DOMParser();
+    const serializer = new XMLSerializer();
+    const doc = dom.parseFromString(soapXml, 'application/xml');
 
-console.log("La valeur de  dname est ========"+ dname)
-console.log("La valeur de  datanode est ========"+ datanode)
-  let dataNode = doc.getElementsByTagName(datanode || 'Data' || 'data'|| dname)[0];
-  dataNode = dataNode ? dataNode :  doc.getElementsByTagName('Data')[0];
-  
-  if (!dataNode || !dataNode.textContent) {
-     dataNode =  doc.getElementsByTagName(dname)[0];
-     
-     if (!dataNode ) {
-      console.log(' Ou <Data> introuvable dans la réponse SOAP')
-      //return parseProdSoapResponse()
-   // throw new Error('dataNode est inexistant dans la réponse SOAP oui Session utilisateur non valide');
-     } else if(!dataNode.textContent){
-      console.log('dataNode.textContent est inexistant dans la réponse SOAP')
-    //  console.log('Le contenue de dataNode est-----'+ serializer.serializeToString(dataNode))
-    
-     // throw new Error(dname+' dataNode.textContent introuvable dans la réponse SOAP oui Session utilisateur non valide');
-    
-     }
+    let dname: string = datanode ? `${datanode}-rows` : '';
+    if (datanode === 'tab') dname = 'tab-rows';
+    else if (datanode === 'tabs') dname = 'tabs';
+    else if (datanode === 'risks' || datanode === 'Risks') dname = 'risks';
+    else if (['offers', 'projects', 'Offers', 'Projects', 'offer', 'project'].includes(datanode ?? '')) dname = 'offers';
+
+    let dataNode = doc.getElementsByTagName(datanode || 'Data' || 'data' || dname)[0];
+    dataNode = dataNode ? dataNode : doc.getElementsByTagName('Data')[0];
+
+    if (!dataNode || !dataNode.textContent) {
+      dataNode = doc.getElementsByTagName(dname)[0];
     }
 
-  const decoded = soapXml
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&amp;/g, '&')
-    .replace(/\\</g, '<')
-    .replace(/\\>/g, '>')
-    .replace(/\\\//g, '/')
-    .replace(/\\"/g, '"')
-    .replace(/\\\\/g, '\\')
-    .replace(/&gt;/g, '>')
-    .replace(/&lt;/g, '<');
-  // console.log("**********La valeur de decoded est ========"+decoded)
-  const innerXml = parser.parseFromString(decoded, 'application/xml');
-  const root = innerXml.documentElement;
-  let isList=false
-  let _dn=0
-  if (datanode && datanode !== ""){
-    const nodes = root.getElementsByTagName(dname || datanode || 'Data' ) ;
-    const node = nodes[0];
-    //console.log("node.nodeName est :======="+node?.nodeName)
-    isList = node ? node.nodeName?.toLowerCase().endsWith('s') : false;
-    _dn=1
-  } else {
-    isList = root.tagName.toLowerCase().endsWith('s');
-    _dn=2
-  }
-  
- // console.log("La valeur de isList est ========"+isList)
- // console.log("La valeur de _dn est ========"+_dn)
-  const tagname =datanode ? datanode :""
- // console.log("La valeur de tagname  est ========"+tagname )
-  let rawNodes:any 
-  const rawnode=root.getElementsByTagName('object' )
-  const _rawnode= root.getElementsByTagName(tagname);
-  const __rawnode= root.getElementsByTagName(tagname+"-rows")
-  const ___rawnode =root.getElementsByTagName("Data")
-  rawNodes = rawnode.length>0 ? rawnode : __rawnode;
-  rawNodes = rawNodes.length>0  ? rawNodes : _rawnode;
-  rawNodes = rawNodes.length>0  ? rawNodes : ___rawnode;
- // console.log("La valeur de rawNodes[0].textcontent  est ========"+rawNodes[0].textcontent )
- // console.log("La valeur de rawNodes[0]  est ========"+rawNodes[0] )
-  console.log("La Longueur de rawNodes  est ========"+rawNodes.length )
-  // On vérifie explicitement la présence d'au moins un objet
-  let objectNodes: Element[] = [];
- 
-  if (isList || rawNodes.length > 0) {
-    objectNodes = Array.from(rawNodes); // plusieurs objets
-    console.log("Nombre d'objets trouvés est ----: "+objectNodes.length)
-    if (objectNodes.length === 0) {
-      throw new Error("Aucun élément <object> trouvé dans le XML et Datanode ="+datanode);
+    const decoded = soapXml
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/\\</g, '<')
+      .replace(/\\>/g, '>')
+      .replace(/\\\//g, '/')
+      .replace(/\\"/g, '"')
+      .replace(/\\\\/g, '\\');
+
+    const innerXml = dom.parseFromString(decoded, 'application/xml');
+    const root = innerXml.documentElement;
+
+    let isList = false;
+    if (datanode && datanode !== '') {
+      const nodes = root.getElementsByTagName(dname || datanode || 'Data');
+      const node = nodes[0];
+      isList = node ? node.nodeName?.toLowerCase().endsWith('s') : false;
+    } else {
+      isList = root.tagName.toLowerCase().endsWith('s');
     }
-    const new_res = objectNodes.map(node => {
-    console.log("le node trouvés")
-   // console.log("la longueur du le node trouvés est "+node)
-   // console.log("le node trouvés est "+node.DOCUMENT_NODE.toString())
-    const _serialiser = new XMLSerializer()
-      const xmlString = _serialiser.serializeToString(node);
-      const result = parseObjectXmlToJson(xmlString)
-     // console.log("le node trouvés ds xmlString est ----: "+xmlString)
-    //  console.log("le resultat de  est parseObjectXmlToJson----: "+JSON.stringify(result))
-      return result;
-    })
-    if (new_res?.length > 1){
-       return new_res as T[]
-    }else {
-      return new_res[0] as T
+
+    const tagname = datanode ? datanode : '';
+    const rawnode = root.getElementsByTagName('object');
+    const _rawnode = root.getElementsByTagName(tagname);
+    const __rawnode = root.getElementsByTagName(`${tagname}-rows`);
+    const ___rawnode = root.getElementsByTagName('Data');
+    let rawNodes: any = rawnode.length > 0 ? rawnode : __rawnode;
+    rawNodes = rawNodes.length > 0 ? rawNodes : _rawnode;
+    rawNodes = rawNodes.length > 0 ? rawNodes : ___rawnode;
+
+    // Plusieurs objets
+    if (isList || rawNodes.length > 0) {
+      const objectNodes: Element[] = Array.from(rawNodes);
+      if (objectNodes.length === 0) {
+        throw new Error(`Aucun élément <object> trouvé dans le XML et Datanode=${datanode}`);
+      }
+      const results = objectNodes.map(node => {
+        const xmlString = serializer.serializeToString(node);
+        return parseObjectXmlToJson(xmlString);
+      });
+      return (results.length > 1 ? results : results[0]) as any;
+    } else {
+      const xmlString = new XMLSerializer().serializeToString(rawNodes[0]);
+      const result = await parseSoapEmbeddedXmlToJson(xmlString);
+      return result as T;
     }
-    
-  } else  {
-   // objectNodes.push(rawNodes[0]); // un seul objet
-  // console.log("La valeur de rawNodes[0].textcontent  est ========"+rawNodes[0].textContent )
-  
-   const xmlString = serializer.serializeToString(rawNodes[0]);
-   const result = parseSoapEmbeddedXmlToJson(xmlString) 
-   return  result  as T;
- // return new_xmlNodeToJson(rawNodes[0]) as T
+  } catch (error: any) {
+    throw new Error(error?.message ?? 'parseSoapXmlToJson failed');
   }
-  
-  // Si aucun nœud trouvé, on retourne un tableau vide ou lance une erreur
- 
-  
-  /* On mappe uniquement des nœuds valides
-  const parsed = objectNodes.map((node) => node.textContent? parseObjectXmlToJson(node.textContent) : null);
-  console.log("RESULTA DE arseSoapXmlToJson. PARSED....."+JSON.stringify(parsed))
-  const result = parsed.length > 1 ? parsed : parsed[0];
-// console.log("RESULTA DE arseSoapXmlToJson. result....."+JSON.stringify(result))
-  return result as T;
-  */
-} catch (error:any) {
-  throw new Error(error.message)
-}
 }
 
-
+/* ------------------------------ xmlToJsonSync ------------------------------ */
 export function xmlToJsonSync(xml: string): Record<string, any> {
   let output: Record<string, any> = {};
   const parser = new Parser({
@@ -172,6 +262,7 @@ export function xmlToJsonSync(xml: string): Record<string, any> {
     mergeAttrs: true,
     trim: true,
     valueProcessors: [
+      // laisse xml2js typer les nombres, mais ce parseur est un fallback ; la voie principale gère ptString correctement
       (value: string) => (!isNaN(Number(value)) && value.trim() !== '' ? Number(value) : value),
     ],
   });
@@ -182,31 +273,21 @@ export function xmlToJsonSync(xml: string): Record<string, any> {
   return output;
 }
 
-/**
- * Renvoie le premier objet-fils du root (ignore les attributs racine)
- */
+/** Renvoie le premier objet-fils du root (ignore les attributs racine) */
 function extractFirstDataChild(obj: any): any {
   if (typeof obj !== 'object' || obj === null) return obj;
-  // Filtre les clés "attributs" (xmlns, xsi, $)
   const keys = Object.keys(obj).filter(
-    (k) =>
-      !k.startsWith('xmlns') &&
-      !k.startsWith('xsi') &&
-      k !== '$'
+    (k) => !k.startsWith('xmlns') && !k.startsWith('xsi') && k !== '$'
   );
   for (const k of keys) {
-    if (typeof obj[k] === 'object') return obj[k]; // on retourne l'enfant objet
+    if (typeof obj[k] === 'object') return obj[k];
   }
-  // fallback: si tout est primitif, on retourne le 1er champ
   if (keys.length) return obj[keys[0]];
   return obj;
 }
 
-/**
- * Si le root a un seul noeud, on l'aplatit (ex: {data: {...}} => {...})
- */
+/** Si le root a un seul noeud, on l'aplatit (ex: {data: {...}} => {...}) */
 function flattenRoot(obj: any): any {
-  // Si c'est {racine: {champ: valeur, ...}} => {champ: valeur, ...}
   if (
     typeof obj === 'object' &&
     obj !== null &&
@@ -218,217 +299,149 @@ function flattenRoot(obj: any): any {
   return obj;
 }
 
-// Exemple d'utilisation :
-// const xml = '<data><contrat>134985</contrat><effet>2024-01-01</effet></data>';
-// const json = await xmlToJsonAsync(xml);
-// // Résultat : { contrat: 134985, effet: '2024-01-01' }
-//
-// const json2 = xmlToJsonSync(xml);
-// // Résultat identique
-
-
+/* ------------------------------ parseObjectXmlToJson (fast-xml-parser) ------------------------------ */
 interface ParsedJson {
   [key: string]: string | number | boolean | null;
 }
 
 export function parseObjectXmlToJson(xml: string): ParsedJson {
-  const parser = new XMLParser({
-    ignoreAttributes: false,
-    attributeNamePrefix: '@_',
-    allowBooleanAttributes: true,
-    parseAttributeValue: true,
-    trimValues: true
-  });
-
-  const result = parser.parse(xml);
+  const result = fastParser.parse(xml);
 
   if (!result || !result.object || !result.object.param) {
-   // throw new Error("XML invalide ou aucun <param> trouvé.");
-    console.log("XML invalide ou aucun <param> trouvé.")
-    console.log("XML invalide ou aucun <param> trouvé.")
-    return xmlToJsonSync(xml)
-  } 
+    // Fallback : ancienne logique
+    return xmlToJsonSync(xml);
+  }
 
-  const paramNodes = Array.isArray(result.object.param)
+  const params = Array.isArray(result.object.param)
     ? result.object.param
     : [result.object.param];
 
   const output: ParsedJson = {};
 
-  for (const param of paramNodes) {
-    const name = param['@_name'];
-    const type = param['@_type'];
-    const isNull = param['@_is_null'] === true;
-
-    if (isNull) {
-      output[name] = null;
-    } else if (param['@_int_val'] !== undefined) {
-      output[name] = parseInt(param['@_int_val'], 10);
-    } else if (param['@_float_val'] !== undefined) {
-      output[name] = parseFloat(param['@_float_val']);
-    } else if (param['@_bool_val'] !== undefined) {
-      output[name] = param['@_bool_val'] === true;
-    } else {
-      output[name] = param['#text'] ?? '';
-    }
+  for (const p of params) {
+    const { name, value } = extractParamValueFast(p);
+    if (name) output[name] = value;
   }
- // if (result.object['@_typename'] && result.object['@_typename'] !== "object" && result.object['@_typename'] !== "Object") {
-    output.typename = result.object['@_typename'];
-//  } else if(result.object['@_typename'] === "object" || result.object['@_typename'] === "Object"){
-//    output.typename = result.object['tagName'] ??  result.object['@_tagName'] ?? result.object['tag'] ?? result.object.tag}
+
+  // typename (si présent)
+  const tn = pickAttrFast(result.object, 'typename');
+  if (tn) (output as any).typename = tn;
 
   return output;
 }
 
-
+/* ------------------------------ new_parseSoapXmlToJson ------------------------------ */
 export interface new_ParsedJson {
   [key: string]: string | number | boolean | null | new_ParsedJson[] | new_ParsedJson;
 }
 
+export function new_parseSoapXmlToJson<T = any | any[]>(soapXml: string, datanode?: string): T {
+  const dom = new DOMParser();
+  const doc = dom.parseFromString(soapXml, 'application/xml');
 
+  const root: HTMLElement | null = doc?.documentElement as any;
+  if (!root) throw new Error('Aucune racine XML trouvée');
 
-export function new_parseSoapXmlToJson<T = any | any[]>(soapXml: string,datanode?:string): T {
- // Nettoyer les caractères non valides
- //soapXml = soapXml.replace(/[«»]/g, '"');
+  const decoded = root?.textContent
+    ? root.textContent
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/\\</g, '<')
+        .replace(/\\>/g, '>')
+        .replace(/\\\//g, '/')
+        .replace(/\\"/g, '"')
+        .replace(/\\\\/g, '\\')
+    : root.textContent;
 
- const parser = new DOMParser();
- const doc = parser.parseFromString(soapXml, 'application/xml');
+  const objdecoded = dom.parseFromString(decoded ?? '', 'application/xml');
+  const objectsNode = objdecoded.getElementsByTagName('objects')[0];
+  const singleObject = objdecoded.getElementsByTagName('object')[0];
 
- const root:HTMLElement = doc?.documentElement;
-
- if (!root) throw new Error('Aucune racine XML trouvée');
- const decoded =root?.textContent ? root.textContent
- .replace(/&lt;/g, '<')
- .replace(/&gt;/g, '>')
- .replace(/&amp;/g, '&')
- .replace(/\\</g, '<')
- .replace(/\\>/g, '>')
- .replace(/\\\//g, '/')
- .replace(/\\"/g, '"')
- .replace(/\\\\/g, '\\')
- .replace(/&gt;/g, '>')
- .replace(/&lt;/g, '<') : root.textContent
-console.log(" ROOT decoded element ======="+decoded)
- // Cas 1 : <objects><object>...</object></objects>
- const objdecoded = parser.parseFromString(decoded??"", 'application/xml');
- const objectsNode = objdecoded.getElementsByTagName('objects')[0];
- const singleObject = objdecoded.getElementsByTagName('object')[0];
- if (objectsNode) {
-   const objectNodes = Array.from(objectsNode.getElementsByTagName('object'));
-   const results = objectNodes.map(parseXmlObjectNode);
-   return results as T;
- }else if (singleObject) {
-   return parseXmlObjectNode(singleObject) as T;
- } else {return parseSoapEmbeddedXmlToJson(soapXml) as T}
- 
-
- throw new Error('Aucun <object> trouvé dans le XML');
+  if (objectsNode) {
+    const objectNodes = Array.from(objectsNode.getElementsByTagName('object'));
+    const results = objectNodes.map(parseXmlObjectNode);
+    return results as T;
+  } else if (singleObject) {
+    return parseXmlObjectNode(singleObject) as T;
+  } else {
+    return parseSoapEmbeddedXmlToJson(soapXml) as T;
+  }
 }
 
+/* ------------------------------ parseXmlObjectNode (xmldom) ------------------------------ */
 function parseXmlObjectNode(objectNode: Element): new_ParsedJson {
   const result: new_ParsedJson = {};
 
-  // ✅ Extraire typename
   const typename = objectNode.getAttribute('typename');
   if (typename) {
-    result.typename = typename;
+    (result as any).typename = typename;
   }
 
-  // ✅ Extraire <param>
+  // <param .../> direct children
   const paramNodes = Array.from(objectNode.getElementsByTagName('param'));
   for (const param of paramNodes) {
-    const name = param.getAttribute('name');
-    if (!name) continue;
-
-    const isNull = param.getAttribute('is_null') === 'true';
-    const intVal = param.getAttribute('int_val');
-    const floatVal = param.getAttribute('float_val');
-    const boolVal = param.getAttribute('bool_val');
-    const text = param.textContent?.trim();
-
-    if (isNull) {
-      result[name] = null;
-    } else if (intVal !== null) {
-      result[name] = parseInt(intVal, 10);
-    } else if (floatVal !== null) {
-      result[name] = parseFloat(floatVal);
-    } else if (boolVal !== null) {
-      result[name] = boolVal === 'true';
-    } else {
-      result[name] = text || '';
-    }
+    const { name, value } = extractParamValueFromElement(param);
+    if (name) (result as any)[name] = value;
   }
 
-  // ✅ Extraire les sous-sections imbriquées (ex: <qint><objects>...</objects></qint>)
+  // Sous-sections imbriquées (qint, xtlog, etc.)
   const childNodes = Array.from(objectNode.childNodes).filter(
-    (n) => n.nodeType === 1 && n.nodeName !== 'param' // uniquement <qint>, <xtlog>, etc.
+    (n) => n.nodeType === 1 && (n as Element).nodeName !== 'param'
   ) as Element[];
 
   for (const child of childNodes) {
     const sectionName = child.nodeName;
-
     const innerObjects = child.getElementsByTagName('object');
     if (innerObjects.length > 0) {
       const parsedChildren = Array.from(innerObjects).map(parseXmlObjectNode);
-      result[sectionName] = parsedChildren;
+      (result as any)[sectionName] = parsedChildren;
     }
   }
 
   return result;
 }
 
+/* ------------------------------ parseNestedObject / parseFastXmlObject ------------------------------ */
 function parseNestedObject(node: any): new_ParsedJson {
   const output: new_ParsedJson = {};
 
-  // ➤ Extraire les <param>
-  if (node.param) {
+  if (node?.param) {
     const params = Array.isArray(node.param) ? node.param : [node.param];
-    for (const param of params) {
-      const name = param['@_name'];
-      if (!name) continue;
-
-      if (param['@_is_null']) {
-        output[name] = null;
-      } else if (param['@_int_val'] !== undefined) {
-        output[name] = parseInt(param['@_int_val'], 10);
-      } else if (param['@_float_val'] !== undefined) {
-        output[name] = parseFloat(param['@_float_val']);
-      } else if (param['@_bool_val'] !== undefined) {
-        output[name] = param['@_bool_val'] === true || param['@_bool_val'] === 'true';
-      } else if (typeof param['#text'] === 'string') {
-        output[name] = param['#text'];
-      } else {
-        output[name] = '';
-      }
+    for (const p of params) {
+      const { name, value } = extractParamValueFast(p);
+      if (name) (output as any)[name] = value;
     }
   }
 
-  // ➤ Ajouter le typename
-  if (node['@_typename']) {
-    output.typename = node['@_typename'];
+  if (pickAttrFast(node, 'typename')) {
+    (output as any).typename = pickAttrFast(node, 'typename');
   }
 
-  // ➤ Gérer les sous-collections (ex: <qint><objects><object>...</object></objects>)
-  for (const [key, value] of Object.entries(node)) {
-    if (['param', '@_typename'].includes(key)) continue;
+  for (const [key, value] of Object.entries(node || {})) {
+    if (['param', `${FAST_ATTR_PREFIX}typename`, 'typename'].includes(key)) continue;
 
     const sub = value as any;
 
     if (sub?.objects?.object) {
-      const subObjects = Array.isArray(sub.objects.object)
-        ? sub.objects.object
-        : [sub.objects.object];
-
-      output[capitalize(key)] = subObjects.map(parseNestedObject);
+      const subObjects = Array.isArray(sub.objects.object) ? sub.objects.object : [sub.objects.object];
+      (output as any)[capitalize(key)] = subObjects.map(parseNestedObject);
     } else if (sub?.object) {
-      const subObjects = Array.isArray(sub.object)
-        ? sub.object
-        : [sub.object];
-
-      output[capitalize(key)] = subObjects.map(parseNestedObject);
+      const subObjects = Array.isArray(sub.object) ? sub.object : [sub.object];
+      (output as any)[capitalize(key)] = subObjects.map(parseNestedObject);
     }
   }
 
+  return output;
+}
+
+function parseFastXmlObject(obj: any): new_ParsedJson {
+  const output: new_ParsedJson = {};
+  const params = Array.isArray(obj?.param) ? obj.param : [obj?.param].filter(Boolean);
+  for (const p of params) {
+    const { name, value } = extractParamValueFast(p);
+    if (name) (output as any)[name] = value;
+  }
   return output;
 }
 
@@ -436,152 +449,66 @@ function capitalize(key: string): string {
   return key.charAt(0).toUpperCase() + key.slice(1);
 }
 
-
-function parseFastXmlObject(obj: any): new_ParsedJson {
-  const params = Array.isArray(obj.param) ? obj.param : [obj.param];
-  const output: new_ParsedJson = {};
-
-  for (const param of params) {
-    const name = param['@_name'];
-    if (!name) continue;
-
-    if (param['@_is_null'] === true || param['@_is_null'] === 'true') {
-      output[name] = null;
-    } else if (param['@_int_val'] !== undefined) {
-      output[name] = parseInt(param['@_int_val'], 10);
-    } else if (param['@_float_val'] !== undefined) {
-      output[name] = parseFloat(param['@_float_val']);
-    } else if (param['@_bool_val'] !== undefined) {
-      output[name] = param['@_bool_val'] === true || param['@_bool_val'] === 'true';
-    } else if (typeof param['#text'] === 'string') {
-      output[name] = param['#text'];
-    } else {
-      output[name] = '';
-    }
-  }
-
-  return output;
-}
-
-
-function mergeObjectsFromNodes(nodes: Element[]): new_ParsedJson {
-  const result: new_ParsedJson = {};
-  for (const node of nodes) {
-    const parsed = new_parseObjectXmlToJson(serializeXmlElement(node));
-    Object.assign(result, parsed);
-  }
-  return result;
-}
-
+/* ------------------------------ new_parseObjectXmlToJson ------------------------------ */
 function serializeXmlElement(element: Element): string {
   return new XMLSerializer().serializeToString(element);
 }
 
 export function new_parseObjectXmlToJson(xml: string): new_ParsedJson {
-  const parser = new XMLParser({
-    ignoreAttributes: false,
-    attributeNamePrefix: '@_',
-    allowBooleanAttributes: true,
-    parseAttributeValue: true,
-    trimValues: true
-  });
-
-  const parsed = parser.parse(xml);
+  const parsed = fastParser.parse(xml);
   const obj = parsed?.object;
-
-  if (!obj || !obj.param) {
-    return {}; // aucune donnée utile
-  }
-
-  const params = Array.isArray(obj.param) ? obj.param : [obj.param];
+  if (!obj || !obj.param) return {};
 
   const output: new_ParsedJson = {};
+  const params = Array.isArray(obj.param) ? obj.param : [obj.param];
 
-  for (const param of params) {
-    const name = param['@_name'];
-    if (!name) continue;
-
-    if (param['@_is_null'] === true || param['@_is_null'] === 'true') {
-      output[name] = null;
-    } else if (param['@_int_val'] !== undefined) {
-      output[name] = parseInt(param['@_int_val'], 10);
-    } else if (param['@_float_val'] !== undefined) {
-      output[name] = parseFloat(param['@_float_val']);
-    } else if (param['@_bool_val'] !== undefined) {
-      output[name] = param['@_bool_val'] === true || param['@_bool_val'] === 'true';
-    } else if (typeof param['#text'] === 'string') {
-      output[name] = param['#text'];
-    } else {
-      output[name] = '';
-    }
+  for (const p of params) {
+    const { name, value } = extractParamValueFast(p);
+    if (name) (output as any)[name] = value;
   }
 
   return output;
 }
+
+/* ------------------------------ parseProdSoapResponse ------------------------------ */
 export async function parseProdSoapResponse(xmlString: string): Promise<any> {
   const produits: Produit[] = [];
- 
- // console.log('xmlString dans parseSoapResponse=.....'+ xmlString)
+
   const _xmlContent = xmlString
-  .replace(/\\</g, '<')
-  .replace(/\\>/g, '>')
-  .replace(/\\\//g, '/')
-  .replace(/\\"/g, '"')
-  .replace(/\\\\/g, '\\')
-  .replace('&gt;', '>')
-  .replace('&lt;', '<')
-  .replace(/&gt;/g, '>')
-  .replace(/&lt;/g, '<')
-  .replace(/&amp;/g, '&');  
-  console.log('_xmlContent dans parseSoapResponse=.....'+ _xmlContent)  
+    .replace(/\\</g, '<')
+    .replace(/\\>/g, '>')
+    .replace(/\\\//g, '/')
+    .replace(/\\"/g, '"')
+    .replace(/\\\\/g, '\\')
+    .replace(/&gt;/g, '>')
+    .replace(/&lt;/g, '<')
+    .replace(/&amp;/g, '&');
+
   const rawContentMatch = _xmlContent.match(/<prod-rows[^>]*>([\s\S]*?)<\/prod-rows>/);
- //const detail_rawContentMatch = _xmlContent.match(/<produit[^>]*>([\s\S]*?)<\/produit>/);
-  //console.log("rawContentMatch ========"+rawContentMatch)
 
-  if (rawContentMatch ){
-   // console.log("_xmlContent ========"+_xmlContent)
-    //return produits
-//throw new Error('rawContentMatch et detail_rawContentMatch sont inexistant dans la réponse SOAP');
-  return parseprod_content(rawContentMatch[0],produits)
-  }else if(_xmlContent){
-    console.log("Appel de parse_Produit_SoapXml  _xmlContent existe====="+_xmlContent)
-    return await parse_Produit_SoapXml(xmlString)
-    // parseprod_content(detail_rawContentMatch[0],produits)
-  }else {
-    throw new Error('rawContentMatch et detail_rawContentMatch sont inexistant dans la réponse SOAP');
-
-
-  };
-  
-
+  if (rawContentMatch) {
+    return parseprod_content(rawContentMatch[0], produits);
+  } else if (_xmlContent) {
+    return await parse_Produit_SoapXml(xmlString);
+  } else {
+    throw new Error('rawContentMatch introuvable dans la réponse SOAP');
+  }
 }
 
- function parseprod_content(content:string, produits:any){
-
-  const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(content, 'text/xml');
-
+function parseprod_content(content: string, produits: any) {
+  const dom = new DOMParser();
+  const xmlDoc = dom.parseFromString(content, 'text/xml');
   const prodElements = xmlDoc.getElementsByTagName('prod');
-
-console.log(":===============================================================================================================================")
-
-console.log('£££££prodElements.length  =.....'+prodElements.length)
-
 
   for (let i = 0; i < prodElements.length; i++) {
     const prod = prodElements[i];
-    const produit: Produit = get_prod(prod)
-console.log('Produit extrait et reconstituee  =.....'+produit.codeprod)
+    const produit: Produit = get_prod(prod);
     produits.push(produit);
   }
-if(produits.length > 1){
-   return produits as Produit[];
-}else {
-  return produits[0] as Produit
+  return produits.length > 1 ? (produits as Produit[]) : (produits[0] as Produit);
 }
- 
-}
-function get_prod(prod:Element){
+
+function get_prod(prod: Element) {
   const getTagValue = (tagName: string): any => {
     const el = prod.getElementsByTagName(tagName)[0];
     return el?.textContent?.trim() ?? '';
@@ -606,14 +533,16 @@ function get_prod(prod:Element){
     typarro: getTagValue('b_typarro'),
     fvahom: getTagValue('b_fvahom'),
   };
-
 }
+
+/* ------------------------------ parse_Produit_SoapXml (xml2js) ------------------------------ */
 export async function parse_Produit_SoapXml(xml: string): Promise<any> {
   try {
     const parsed = await parseStringPromise(xml, {
       explicitArray: false,
       mergeAttrs: true,
       tagNameProcessors: [name => name.replace(/^.*:/, '')],
+      trim: true,
     });
 
     const dataXml = parsed.Envelope?.Body?.BasActionResult?.Data;
@@ -621,11 +550,11 @@ export async function parse_Produit_SoapXml(xml: string): Promise<any> {
 
     if (typeof dataXml === 'string') {
       embeddedXml = dataXml.trim();
-    } else if (typeof dataXml === 'object' && typeof dataXml._ === 'string') {
-      embeddedXml = dataXml._.trim();
+    } else if (typeof dataXml === 'object' && typeof (dataXml as any)._ === 'string') {
+      embeddedXml = (dataXml as any)._.trim();
     } else {
-      const firstKey = Object.keys(dataXml || {}).find(k => typeof dataXml[k] === 'string');
-      if (firstKey) embeddedXml = dataXml[firstKey].trim();
+      const firstKey = Object.keys(dataXml || {}).find(k => typeof (dataXml as any)[k] === 'string');
+      if (firstKey) embeddedXml = (dataXml as any)[firstKey].trim();
     }
 
     if (!embeddedXml) {
@@ -637,22 +566,21 @@ export async function parse_Produit_SoapXml(xml: string): Promise<any> {
       innerParsed = await parseStringPromise(embeddedXml, {
         explicitArray: false,
         mergeAttrs: true,
+        trim: true,
       });
-    } catch (innerError) {
-      console.warn('Failed to parse embedded XML strictly. Attempting fallback...');
-
-      // Fallback: remove problematic characters/entities manually
+    } catch {
       const cleaned = embeddedXml
         .replace(/&gt;/g, '>')
         .replace(/&lt;/g, '<')
         .replace(/&amp;/g, '&')
         .replace(/\r|\n|\t/g, '')
-        .replace(/="/g, '=\"')
+        .replace(/="/g, '="')
         .replace(/"\s*</g, '"<');
 
       innerParsed = await parseStringPromise(cleaned, {
         explicitArray: false,
         mergeAttrs: true,
+        trim: true,
       });
     }
 
@@ -665,16 +593,41 @@ export async function parse_Produit_SoapXml(xml: string): Promise<any> {
     const paramArray = Array.isArray(params) ? params : [params];
 
     for (const param of paramArray) {
+      const typeNorm = (param.type ?? '').toLowerCase();
+
+      // 0) Si type string => toujours contenu textuel, même s'il ressemble à un nombre
+      if (typeNorm === 'ptstring' || typeNorm === 'string') {
+        result[param.name] = toStringSafe(param._);
+        continue;
+      }
+
+      // 1) Dates
+      if (param.date_val !== undefined) {
+        result[param.name] = String(param.date_val).trim();
+        continue;
+      }
+      if (param.datetime_val !== undefined) {
+        result[param.name] = String(param.datetime_val).trim();
+        continue;
+      }
+      if (param.time_val !== undefined) {
+        result[param.name] = String(param.time_val).trim();
+        continue;
+      }
+
+      // 2) Booléen / Int / Float
       if (param.is_null === 'true') {
         result[param.name] = null;
       } else if (param.bool_val !== undefined) {
         result[param.name] = param.bool_val === 'true';
       } else if (param.int_val !== undefined) {
-        result[param.name] = parseInt(param.int_val, 10);
+        result[param.name] = toInt(param.int_val);
       } else if (param.float_val !== undefined) {
-        result[param.name] = parseFloat(param.float_val);
-      } else if (typeof param._ === 'string') {
-        result[param.name] = param._.trim();
+        result[param.name] = toFloatStrict(param.float_val); // support "0.0000E+0000"
+      } else if (param._ !== undefined) {
+        // 3) Contenu textuel générique
+        // S'il n'y a pas de type explicite, on renvoie la valeur telle quelle (string) trimée
+        result[param.name] = toStringSafe(param._);
       } else {
         result[param.name] = '';
       }
@@ -682,151 +635,119 @@ export async function parse_Produit_SoapXml(xml: string): Promise<any> {
 
     return result as any;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('SOAP XML parsing failed:', error);
     throw new Error('Invalid SOAP response or unexpected structure');
   }
 }
 
-
-
-
+/* ------------------------------ parseTabRowsXml ------------------------------ */
 export async function parseTabRowsXml(xml: string): Promise<any> {
   try {
-    
-  
-  console.log("debut parseTabRowsXml ,,,,,::::!!!")
-  const decoded = xml
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&amp;/g, '&')
-    .replace(/\\</g, '<')
-    .replace(/\\>/g, '>')
-    .replace(/\\\//g, '/')
-    .replace(/\\"/g, '"')
-    .replace(/\\\\/g, '\\')
-    .replace(/&gt;/g, '>')
-    .replace(/&lt;/g, '<');
-    //console.log(decoded)
+    const decoded = xml
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/\\</g, '<')
+      .replace(/\\>/g, '>')
+      .replace(/\\\//g, '/')
+      .replace(/\\"/g, '"')
+      .replace(/\\\\/g, '\\');
+
     const parsed = await parseStringPromise(decoded, {
       explicitArray: false,
       tagNameProcessors: [name => name.replace(/^.*:/, '')],
       mergeAttrs: true,
       trim: true,
     });
-  
+
     const BasActionResult = parsed.Envelope?.Body?.BasActionResult;
-    // Le champ Data est déjà un objet JS contenant 'tab-rows'
     const data = BasActionResult?.Data;
-    // selon le log, le chemin est Data['tab-rows'].tab (tableau)
     const tabs = data?.['tab-rows']?.tab;
-    if (!tabs) throw new Error("No <tab> array found in <tab-rows>");
-  
-    // Toujours transformer en tableau (s'il n'y a qu'un seul <tab>)
+    if (!tabs) throw new Error('No <tab> array found in <tab-rows>');
+
     const tabArray = Array.isArray(tabs) ? tabs : [tabs];
-  
-    // Retourne le format souhaité :
+
     return tabArray.map((tab: any) => ({
-      value: tab._ ?? "", // le texte du tab (clé ou label)
-      type: tab.type ?? "",
-      align: tab.align ?? "",
+      value: tab._ ?? '',
+      type: tab.type ?? '',
+      align: tab.align ?? '',
       size: tab.size ? Number(tab.size) : undefined,
     }));
-} catch (error:any) {
-  console.log(error.message)
-    throw new Error(error.message);
-    
+  } catch (error: any) {
+    throw new Error(error?.message ?? 'parseTabRowsXml failed');
+  }
 }
-}
+
+/* ------------------------------ extractDataXml / ensureArray ------------------------------ */
 function extractDataXml(BasActionResult: any): string | undefined {
   const data = BasActionResult?.Data;
-  console.log("data, { depth: 10 }"); // DEBUG
-  console.dir(data, { depth: 10 }); // DEBUG
   if (!data) return undefined;
-  // 1. Direct string
-  if (typeof data === "string") return data.trim();
-  // 2. Object with _ property
-  if (typeof data._ === "string") return data._.trim();
-  // 3. Array with object(s)
+
+  if (typeof data === 'string') return data.trim();
+  if (typeof (data as any)._ === 'string') return (data as any)._.trim();
+
   if (Array.isArray(data)) {
     for (const d of data) {
-      if (typeof d === "string" && d.trim()) return d.trim();
-      if (typeof d._ === "string" && d._.trim()) return d._.trim();
+      if (typeof d === 'string' && d.trim()) return d.trim();
+      if (typeof (d as any)?._ === 'string' && (d as any)._.trim()) return (d as any)._.trim();
     }
   }
-  // 4. Object with $ and _
-  if (typeof data === "object" && data._) return (data._ + '').trim();
+  if (typeof data === 'object' && (data as any)._)
+    return String((data as any)._).trim();
   return undefined;
 }
 
-// Exemple d'utilisation :
-// const arr = await parseTabRowsXml(VOTRE_XML);
-// console.log(arr);
-
-
-
-/**
- * Utilitaire pour forcer toute propriété donnée à être un tableau.
- * @param value - une propriété d'objet issue de xml2js
- */
 function ensureArray<T>(value: T | T[] | undefined): T[] {
   if (value === undefined) return [];
   return Array.isArray(value) ? value : [value];
 }
 
-/**
- * Nettoie et extrait le XML embedded du champ Data dans un XML SOAP.
- */
+/* ------------------------------ extractAndCleanEmbeddedXml ------------------------------ */
+/** Nettoie et extrait le XML embedded du champ Data dans un XML SOAP. */
 function extractAndCleanEmbeddedXml(parsedSoap: any): string {
-  // Navigation safe vers Data
   let dataXml = parsedSoap?.Envelope?.Body?.BasActionResult?.Data;
   if (!dataXml) throw new Error('No <Data> field found in SOAP XML');
 
   let embeddedXml = '';
   if (typeof dataXml === 'string') {
     embeddedXml = dataXml.trim();
-  } else if (typeof dataXml === 'object' && typeof dataXml._ === 'string') {
-    embeddedXml = dataXml._.trim();
+  } else if (typeof dataXml === 'object' && typeof (dataXml as any)._ === 'string') {
+    embeddedXml = (dataXml as any)._.trim();
   } else {
-    // Recherche dans les props, si besoin
-    const firstKey = Object.keys(dataXml || {}).find(k => typeof dataXml[k] === 'string');
-    if (firstKey) embeddedXml = dataXml[firstKey].trim();
+    const firstKey = Object.keys(dataXml || {}).find(k => typeof (dataXml as any)[k] === 'string');
+    if (firstKey) embeddedXml = (dataXml as any)[firstKey].trim();
   }
 
   if (!embeddedXml) throw new Error('No embedded XML in <Data> field');
 
-  // Décodage minimal des entités HTML pour <, >, &
   embeddedXml = embeddedXml
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&amp;/g, '&')
     .replace(/&#x27;/g, "'")
-    .replace(/&#34;/g, '"');
-
-  // Supprime l'entête XML s'il existe et gêne le parsing
-  embeddedXml = embeddedXml.replace(/<\?xml.*?\?>/g, '').trim();
+    .replace(/&#34;/g, '"')
+    .replace(/<\?xml.*?\?>/g, '')
+    .trim();
 
   return embeddedXml;
 }
 
+/* ------------------------------ parseSoapEmbeddedXmlToJson ------------------------------ */
 /**
  * Parse le XML SOAP, extrait et nettoie le XML embedded, puis le parse en JSON.
- * Forçage des sous-tableaux (clé passée en paramètre) à être TOUJOURS un tableau.
- *
- * @param xmlString - la chaîne XML SOAP complète
- * @param forceArrayKey - si fourni, force cette clé à être toujours un tableau même si 1 seul élément
+ * Forçage d'une clé à être TOUJOURS un tableau via `forceArrayKey` (optionnel).
  */
 export async function parseSoapEmbeddedXmlToJson(xmlString: string, forceArrayKey?: string): Promise<any> {
-  // Parse le SOAP
   const parsedSoap = await parseStringPromise(xmlString, {
     explicitArray: false,
     mergeAttrs: true,
-    tagNameProcessors: [name => name.replace(/^.*:/, '')], // retire le namespace
+    tagNameProcessors: [name => name.replace(/^.*:/, '')],
+    trim: true,
   });
 
-  // Extrait/Nettoie l'XML embedded
   const embeddedXml = extractAndCleanEmbeddedXml(parsedSoap);
 
-  // Parse l'XML embedded
   const result = await parseStringPromise(embeddedXml, {
     explicitArray: false,
     mergeAttrs: true,
@@ -835,9 +756,7 @@ export async function parseSoapEmbeddedXmlToJson(xmlString: string, forceArrayKe
     trim: true,
   });
 
-  // Optionnel: force la clé demandée à TOUJOURS être un tableau
   if (forceArrayKey) {
-    // Recherche récursive de la clé dans tout l'objet
     function forceKeyAsArray(obj: any) {
       if (!obj || typeof obj !== 'object') return obj;
       Object.keys(obj).forEach(key => {
@@ -851,19 +770,5 @@ export async function parseSoapEmbeddedXmlToJson(xmlString: string, forceArrayKe
     forceKeyAsArray(result);
   }
 
-  // Retourne uniquement la racine utile (évite les objets inutiles avec "_")
   return result;
 }
-
-/*
-Exemple d’utilisation :
-
-import { parseSoapEmbeddedXmlToJson } from './soap-utils';
-
-(async () => {
-  const res = await parseSoapEmbeddedXmlToJson(xmlString, 'offer');
-  console.log(JSON.stringify(res, null, 2));
-})();
-
-*/
-

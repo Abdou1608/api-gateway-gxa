@@ -36,8 +36,14 @@ async function Risk_Create(req, res) {
     if (req.body.piece) {
         params.AddInt("piece", req.body.piece);
     }
-    if (req.body.dateEntree) {
+    if (req.body.dateEntree && typeof req.body.dateEntree !== 'string') {
         params.AddDateTime("dateEntree", req.body.dateEntree);
+    }
+    else if (req.body.dateEntree && typeof req.body.dateEntree === 'string') {
+        params.AddStrDate("dateEntree", req.body.dateEntree);
+    }
+    else {
+        params.AddDateTime("dateEntree", new Date());
     }
     params.AddString("datanode", "Risk");
     // const soapBody = {reference,dppname,typetiers,codp,datenais}
@@ -60,8 +66,15 @@ async function Risk_Update(req, res) {
     if (req.body.adhesion) {
         params.AddInt("adhesion", req.body.adhesion);
     }
-    if (req.body.dateEntree) {
-        params.AddInt("dateEntree", req.body.dateEntree);
+    if (req.body.dateEntree && typeof req.body.dateEntree !== 'string') {
+        //  params.AddInt("dateEntree",req.body.dateEntree ) }
+        params.AddDateTime("dateEntree", req.body.dateEntree);
+    }
+    else if (req.body.dateEntree && typeof req.body.dateEntree === 'string') {
+        params.AddStrDate("dateEntree", req.body.dateEntree);
+    }
+    else {
+        params.AddDateTime("dateEntree", new Date());
     }
     params.AddString("datanode", "Risk");
     // const soapBody = {reference,dppname,typetiers,codp,datenais}

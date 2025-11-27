@@ -1,6 +1,7 @@
 import { BasParams } from "../../Model/BasSoapObject/BasParams";
 import { BasSecurityContext } from "../../Model/BasSoapObject/BasSecurityContext";
 import { Tier } from "../../Model/tier.model";
+import { tiers_details } from "../detail_tier/tiers_details.service";
 import { sendSoapRequest } from "../soap.service";
 import { tierModelToXml } from './tier_to_xml.service';
 
@@ -26,5 +27,6 @@ export async function tiers_create(
 	//	params.AddStr("data",tierModelToXml(data))	}
   
 	const result = await sendSoapRequest(params, "Tiers_Create", basec, "tiers", data, ctx);
-  return result;
+	const resp= await tiers_details(basec, result.Numtiers, true, true, ctx);
+  return resp;
 }

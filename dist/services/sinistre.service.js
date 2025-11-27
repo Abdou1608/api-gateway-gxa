@@ -30,6 +30,7 @@ async function sinistreListItems(body, auth) {
             params.AddInt('contrat', contraId);
     }
     const result = await (0, soap_service_1.sendSoapRequest)(params, 'Sin_Listitems', ctx, 'sins', null, { userId: auth.userId, domain: body?.domain });
+    console.log("!!!!result sinistreListItems:", result);
     return (0, groupByTypename_1.default)(result, { keepUnknown: false });
 }
 async function sinistreDetail(body, auth) {
