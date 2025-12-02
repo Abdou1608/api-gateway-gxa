@@ -72,7 +72,8 @@ async function authGlobalPreValidation(request, reply) {
         url.startsWith('/docs') ||
         url.startsWith('/debug') ||
         url === '/api/login' ||
-        url.startsWith('/api/admin')) {
+        url.startsWith('/api/admin') ||
+        (process.env.BYPASS_EXPORT_CONVERT_AUTH === '1' && url.startsWith('/api/tools/convert/'))) {
         return; // skip auth
     }
     return authPreHandler(request, reply);

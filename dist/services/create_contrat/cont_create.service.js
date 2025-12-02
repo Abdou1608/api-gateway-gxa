@@ -23,7 +23,7 @@ async function cont_create(dossier, produit, effet, data, BasSecurityContext, ct
             return { error: "No data in response" };
         }
         const contCreateResult = await (0, cont_details_service_1.cont_details)({ contrat: resultData.contrat }, BasSecurityContext);
-        console.log("$$$$$$$$$ RESULT DATA CREATE CONTRAT  contCreateResult===" + JSON.stringify(contCreateResult));
+        // console.log("$$$$$$$$$ RESULT DATA CREATE CONTRAT  contCreateResult==="+JSON.stringify(contCreateResult))
         return contCreateResult;
         //  const grouped = groupByTypename(contCreateResult, { keepUnknown: true });
         //  return grouped;
