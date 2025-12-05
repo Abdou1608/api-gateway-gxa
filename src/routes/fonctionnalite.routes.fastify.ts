@@ -750,7 +750,7 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
     const ctx = new BasSecurityContext();
     ctx.IsAuthenticated = true as any;
     ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
-
+    let liste_quit: any[] = []
     const dossier = body.dossier ?? body.Dossier ?? null;
     const contrat = body.contrat ?? body.Contrat ?? null;
     const result = await quittance_listitems(
@@ -759,8 +759,12 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
       ctx,
       { userId: (request as any).user?.sub, domain: body?.domain }
     );
-    const grouped = groupByTypename(result, { keepUnknown: true });
-    return reply.send(grouped);
+   // const grouped = groupByTypename(result, { keepUnknown: true });
+   if (Array.isArray(result)){
+    liste_quit.push(...result)
+   } else { liste_quit.push(result) }
+   
+   return reply.send(liste_quit);
   });
 
   // Fastify-native /api/detail_contrat

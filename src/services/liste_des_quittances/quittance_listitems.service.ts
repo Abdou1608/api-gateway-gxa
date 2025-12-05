@@ -19,12 +19,12 @@ if(dossier){
  
 //   disponible ?  params.AddBool("disponible",disponible) :null
 
-   params.AddString("datanode","quit")
+   params.AddString("datanode","quit-rows")
   const result = await sendSoapRequest(
     params,
     "Quittance_ListItems",
     BasSecurityContext,
-    undefined,
+    "quit-rows",
     undefined,
     ctx
   );

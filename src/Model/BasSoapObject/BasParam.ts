@@ -85,8 +85,36 @@ export class BasParam {
         return new BasParam(name, "basParamFloat", value);
     }
 
+    private static normalizeDateTime(value: any): string | null {
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof Date) {
+            return Number.isNaN(value.getTime()) ? null : value.toISOString();
+        }
+
+        if (typeof value === "number") {
+            const dateValue = new Date(value);
+            return Number.isNaN(dateValue.getTime()) ? null : dateValue.toISOString();
+        }
+
+        if (typeof value === "string") {
+            return value;
+        }
+
+        if (typeof value?.toISOString === "function") {
+            const isoValue = value.toISOString();
+            if (typeof isoValue === "string" && isoValue.length > 0) {
+                return isoValue;
+            }
+        }
+
+        return String(value);
+    }
+
     public static CreateDateTime(name: string, value: any): any {
-        return new BasParam(name, "basParamDateTime", value);
+        return new BasParam(name, "basParamDateTime", BasParam.normalizeDateTime(value));
     }
 
     public static CreateDateTimeFmt(name: string, format: string, value: any): any {
