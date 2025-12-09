@@ -1096,7 +1096,7 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
     ctx.IsAuthenticated = true as any;
     ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
     const { cont_clause_create } = await import('../services/Cont_clause_create.service');
-    const result = await cont_clause_create( body.data, ctx, { userId: (request as any).user?.sub, domain: body?.domain });
+    const result = await cont_clause_create(ctx, body.data,  { userId: (request as any).user?.sub, domain: body?.domain });
     return reply.send(result);
   });
 
