@@ -68,8 +68,30 @@ class BasParam {
     static CreateFloat(name, value) {
         return new BasParam(name, "basParamFloat", value);
     }
+    static normalizeDateTime(value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof Date) {
+            return Number.isNaN(value.getTime()) ? null : value.toISOString();
+        }
+        if (typeof value === "number") {
+            const dateValue = new Date(value);
+            return Number.isNaN(dateValue.getTime()) ? null : dateValue.toISOString();
+        }
+        if (typeof value === "string") {
+            return value;
+        }
+        if (typeof value?.toISOString === "function") {
+            const isoValue = value.toISOString();
+            if (typeof isoValue === "string" && isoValue.length > 0) {
+                return isoValue;
+            }
+        }
+        return String(value);
+    }
     static CreateDateTime(name, value) {
-        return new BasParam(name, "basParamDateTime", value);
+        return new BasParam(name, "basParamDateTime", BasParam.normalizeDateTime(value));
     }
     static CreateDateTimeFmt(name, format, value) {
         /*      let d = new DatePipe();

@@ -59,7 +59,6 @@ const api_liste_des_contratsValidator_1 = require("../validators/api_liste_des_c
 const cont_search_service_1 = require("../services/liste_des_contrats/cont_search.service");
 const api_liste_des_produitsValidator_1 = require("../validators/api_liste_des_produitsValidator");
 const produit_listitems_service_1 = require("../services/liste_des_produits/produit_listitems.service");
-const groupByTypename_1 = __importDefault(require("../utils/groupByTypename"));
 const api_liste_des_quittancesValidator_1 = require("../validators/api_liste_des_quittancesValidator");
 const quittance_listitems_service_1 = require("../services/liste_des_quittances/quittance_listitems.service");
 const api_detail_contratValidator_1 = require("../validators/api_detail_contratValidator");
@@ -697,7 +696,7 @@ const registerRoutes = async (app) => {
         const ctx = new BasSecurityContext_1.BasSecurityContext();
         ctx.IsAuthenticated = true;
         ctx.SessionId = request.auth?.sid ?? body?.BasSecurityContext?._SessionId;
-        const result = await (0, cont_newpiece_service_1.cont_newpiece)(body.contrat, body.produit, body.effet, body.data, ctx, { userId: request.user?.sub, domain: body?.domain });
+        const result = await (0, cont_newpiece_service_1.cont_newpiece)(body.contrat ?? body.Contrat, body.produit ?? body.Produit, body.effet ?? body.Effet ?? body.datedebut ?? body.DateDebut ?? body.dateeffet ?? body.DateEffet, body.data, body.FinEffet ?? body.finEffet ?? undefined, body.Datefin ?? body.datefin ?? undefined, ctx, { userId: request.user?.sub, domain: body?.domain });
         return reply.send(result);
     });
     // Fastify-native /api/liste_des_contrats
@@ -741,11 +740,18 @@ const registerRoutes = async (app) => {
         const ctx = new BasSecurityContext_1.BasSecurityContext();
         ctx.IsAuthenticated = true;
         ctx.SessionId = request.auth?.sid ?? body?.BasSecurityContext?._SessionId;
+        let liste_quit = [];
         const dossier = body.dossier ?? body.Dossier ?? null;
         const contrat = body.contrat ?? body.Contrat ?? null;
         const result = await (0, quittance_listitems_service_1.quittance_listitems)(dossier, contrat, ctx, { userId: request.user?.sub, domain: body?.domain });
-        const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
-        return reply.send(grouped);
+        // const grouped = groupByTypename(result, { keepUnknown: true });
+        if (Array.isArray(result)) {
+            liste_quit.push(...result);
+        }
+        else {
+            liste_quit.push(result);
+        }
+        return reply.send(liste_quit);
     });
     // Fastify-native /api/detail_contrat
     app.post('/api/detail_contrat', {
@@ -987,7 +993,7 @@ const registerRoutes = async (app) => {
         ctx.IsAuthenticated = true;
         ctx.SessionId = request.auth?.sid ?? body?.BasSecurityContext?._SessionId;
         const { cont_clause_create } = await Promise.resolve().then(() => __importStar(require('../services/Cont_clause_create.service')));
-        const result = await cont_clause_create(body.data, ctx, { userId: request.user?.sub, domain: body?.domain });
+        const result = await cont_clause_create(ctx, body.data, { userId: request.user?.sub, domain: body?.domain });
         return reply.send(result);
     });
     app.post('/api/Cont_CalculTarif', { preHandler: auth_fastify_1.authPreHandler }, async (request, reply) => {

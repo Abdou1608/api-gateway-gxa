@@ -13,15 +13,19 @@ export interface ErrorDetails {
 
 export class BaseAppError<T extends ErrorDetails = ErrorDetails> extends Error {
   public readonly type: ErrorType;
+  public readonly errorType: ErrorType;
   public readonly code: string;
   public readonly details?: T;
   public readonly cause?: unknown;
+  public readonly statusCode: number;
   constructor(type: ErrorType, code: string, message: string, details?: T, cause?: unknown) {
     super(message);
     this.type = type;
+    this.errorType = type;
     this.code = code;
     this.details = details;
     this.cause = cause;
+    this.statusCode = errorHttpStatus(this);
   }
 }
 

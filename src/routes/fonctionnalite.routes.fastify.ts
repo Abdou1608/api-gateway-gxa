@@ -679,10 +679,12 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
     ctx.IsAuthenticated = true as any;
     ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
     const result = await cont_newpiece(
-      body.contrat,
-      body.produit,
-      body.effet,
+      body.contrat ?? body.Contrat ,
+      body.produit ?? body.Produit ,
+      body.effet ?? body.Effet ?? body.datedebut ?? body.DateDebut ?? body.dateeffet ?? body.DateEffet,
       body.data,
+      body.FinEffet ?? body.finEffet ?? undefined,
+      body.Datefin ?? body.datefin ?? undefined,
       ctx,
       { userId: (request as any).user?.sub, domain: body?.domain }
     );

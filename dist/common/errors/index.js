@@ -6,9 +6,11 @@ class BaseAppError extends Error {
     constructor(type, code, message, details, cause) {
         super(message);
         this.type = type;
+        this.errorType = type;
         this.code = code;
         this.details = details;
         this.cause = cause;
+        this.statusCode = errorHttpStatus(this);
     }
 }
 exports.BaseAppError = BaseAppError;

@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">10% </span>
+                <span class="strong">30% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/20</span>
+                <span class='fraction'>6/20</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">16.66% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/12</span>
+                <span class='fraction'>2/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">10% </span>
+                <span class="strong">30% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>2/20</span>
+                <span class='fraction'>6/20</span>
             </div>
         
             
@@ -116,14 +116,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -131,9 +131,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -146,9 +143,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -156,8 +150,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -165,21 +165,21 @@
 &nbsp;
 export class SessionStorage {
 &nbsp;
-    private <span class="cstat-no" title="statement not covered" >_SESSION_ID_TOKEN: string = "SessionId";</span>
+    private _SESSION_ID_TOKEN: string = "SessionId";
 <span class="fstat-no" title="function not covered" >    public get S</span>ESSION_ID_TOKEN(): string {
 <span class="cstat-no" title="statement not covered" >        return this._SESSION_ID_TOKEN;</span>
     }
 <span class="fstat-no" title="function not covered" >    public set S</span>ESSION_ID_TOKEN(value: string) {
 <span class="cstat-no" title="statement not covered" >        this._SESSION_ID_TOKEN = value;</span>
     }
-    private <span class="cstat-no" title="statement not covered" >_SESSION_AUTHENTICATED: string = "IsAuthenticated";</span>
+    private _SESSION_AUTHENTICATED: string = "IsAuthenticated";
 <span class="fstat-no" title="function not covered" >    public get S</span>ESSION_AUTHENTICATED(): string {
 <span class="cstat-no" title="statement not covered" >        return this._SESSION_AUTHENTICATED;</span>
     }
 <span class="fstat-no" title="function not covered" >    public set S</span>ESSION_AUTHENTICATED(value: string) {
 <span class="cstat-no" title="statement not covered" >        this._SESSION_AUTHENTICATED = value;</span>
     }
-<span class="fstat-no" title="function not covered" >    constructor() { }</span>
+    constructor() { }
     
     public <span class="fstat-no" title="function not covered" >Set(</span>key: string, value: string) {
 <span class="cstat-no" title="statement not covered" >        sessionStorage.setItem(key, value);</span>
@@ -204,9 +204,9 @@ export class SessionStorage {
 <span class="cstat-no" title="statement not covered" >        sessionStorage.setItem(this._SESSION_AUTHENTICATED, String(basSecurityContext.GetIsAuthenticated()));</span>
     }
 &nbsp;
-    public <span class="fstat-no" title="function not covered" >GetContext(</span>): BasSecurityContext {
-        let basSecurityContext: BasSecurityContext = <span class="cstat-no" title="statement not covered" >new BasSecurityContext();</span>
-<span class="cstat-no" title="statement not covered" >        basSecurityContext.SessionId = String(sessionStorage.getItem(this._SESSION_ID_TOKEN));</span>
+    public GetContext(): BasSecurityContext {
+        let basSecurityContext: BasSecurityContext = new BasSecurityContext();
+        basSecurityContext.SessionId = String(sessionStorage.getItem(this._SESSION_ID_TOKEN));
 <span class="cstat-no" title="statement not covered" >        basSecurityContext.IsAuthenticated = Boolean(sessionStorage.getItem(this._SESSION_AUTHENTICATED));</span>
 <span class="cstat-no" title="statement not covered" >        return basSecurityContext;</span>
     }
@@ -217,7 +217,7 @@ export class SessionStorage {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-29T08:18:28.243Z
+                at 2025-12-10T23:25:12.839Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

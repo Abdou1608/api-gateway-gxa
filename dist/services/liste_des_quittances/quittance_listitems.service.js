@@ -15,7 +15,7 @@ async function quittance_listitems(dossier, contrat, BasSecurityContext, ctx) {
         params.AddInt("dossier", dossierId);
     }
     //   disponible ?  params.AddBool("disponible",disponible) :null
-    params.AddString("datanode", "quit");
-    const result = await (0, soap_service_1.sendSoapRequest)(params, "Quittance_ListItems", BasSecurityContext, undefined, undefined, ctx);
+    params.AddString("datanode", "quit-rows");
+    const result = await (0, soap_service_1.sendSoapRequest)(params, "Quittance_ListItems", BasSecurityContext, "quit-rows", undefined, ctx);
     return result;
 }

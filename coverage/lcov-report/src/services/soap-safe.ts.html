@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">14.7% </span>
+                <span class="strong">88.23% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/34</span>
+                <span class='fraction'>30/34</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">32.14% </span>
+                <span class="strong">78.57% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>9/28</span>
+                <span class='fraction'>22/28</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">66.66% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>4/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.12% </span>
+                <span class="strong">93.54% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/31</span>
+                <span class='fraction'>29/31</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -133,43 +133,43 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -190,43 +190,43 @@ const TIMEOUT_MS = Number(process.env.SOAP_TIMEOUT_MS || '15000') || <span class
 const RETRIES = Number(process.env.SOAP_RETRIES || '2') || <span class="branch-1 cbranch-no" title="branch not covered" >2;</span>
 const BACKOFF_MS = Number(process.env.SOAP_BACKOFF_MS || '400') || <span class="branch-1 cbranch-no" title="branch not covered" >400;</span>
 &nbsp;
-function <span class="fstat-no" title="function not covered" >sleep(</span>ms: number) { <span class="cstat-no" title="statement not covered" >return new Promise(<span class="fstat-no" title="function not covered" >(r</span>) =&gt; <span class="cstat-no" title="statement not covered" >setTimeout(r, ms))</span>; </span>}
+function sleep(ms: number) { return new Promise((r) =&gt; setTimeout(r, ms)); }
 &nbsp;
-export async function <span class="fstat-no" title="function not covered" >callSoapWithResilience&lt;</span>T&gt;(
+export async function callSoapWithResilience&lt;T&gt;(
   client: BasSoapClient,
   action: () =&gt; Promise&lt;T&gt;,
   options?: SoapResilienceOptions
 ): Promise&lt;T&gt; {
-  const timeoutMs = <span class="cstat-no" title="statement not covered" >options?.timeoutMs ?? TIMEOUT_MS;</span>
-  const retries = <span class="cstat-no" title="statement not covered" >options?.retries ?? RETRIES;</span>
-  const backoffMs = <span class="cstat-no" title="statement not covered" >options?.backoffMs ?? BACKOFF_MS;</span>
+  const timeoutMs = options?.timeoutMs ?? TIMEOUT_MS;
+  const retries = options?.retries ?? RETRIES;
+  const backoffMs = options?.backoffMs ?? BACKOFF_MS;
 &nbsp;
-  let attempt = <span class="cstat-no" title="statement not covered" >0;</span>
-  let lastErr: any = <span class="cstat-no" title="statement not covered" >null;</span>
+  let attempt = 0;
+  let lastErr: any = null;
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  while (attempt &lt;= retries) {</span>
-    const controller = <span class="cstat-no" title="statement not covered" >new AbortController();</span>
-    const timer = <span class="cstat-no" title="statement not covered" >setTimeout(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >controller.abort(),</span> timeoutMs);</span>
-<span class="cstat-no" title="statement not covered" >    try {</span>
+  while (attempt &lt;= retries) {
+    const controller = new AbortController();
+    const timer = setTimeout(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >controller.abort(),</span> timeoutMs);
+    try {
       // Note: BasSoapClient doesn't support signal directly; rely on timeouts via Promise race
-      const result = <span class="cstat-no" title="statement not covered" >await Promise.race([</span>
+      const result = await Promise.race([
         action(),
-        new Promise&lt;never&gt;(<span class="fstat-no" title="function not covered" >(_</span>, reject) =&gt; <span class="cstat-no" title="statement not covered" >setTimeout(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >reject(new UpstreamTimeoutError('SOAP_TIMEOUT')),</span> timeoutMs))</span>,
+        new Promise&lt;never&gt;((_, reject) =&gt; setTimeout(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >reject(new UpstreamTimeoutError('SOAP_TIMEOUT')),</span> timeoutMs)),
       ]);
-<span class="cstat-no" title="statement not covered" >      clearTimeout(timer);</span>
-<span class="cstat-no" title="statement not covered" >      return result as T;</span>
+      clearTimeout(timer);
+      return result as T;
     } catch (e: any) {
-<span class="cstat-no" title="statement not covered" >      clearTimeout(timer);</span>
-<span class="cstat-no" title="statement not covered" >      lastErr = e;</span>
-      const msg = <span class="cstat-no" title="statement not covered" >String(e?.message || '').toLowerCase();</span>
-      const isTimeout = <span class="cstat-no" title="statement not covered" >msg.includes('soap_timeout') || msg.includes('timeout');</span>
-      const isSessionMissing = <span class="cstat-no" title="statement not covered" >msg.includes('session not found');</span>
+      clearTimeout(timer);
+      lastErr = e;
+      const msg = String(e?.message || <span class="branch-1 cbranch-no" title="branch not covered" >'')</span>.toLowerCase();
+      const isTimeout = msg.includes('soap_timeout') || msg.includes('timeout');
+      const isSessionMissing = msg.includes('session not found');
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      <span class="missing-if-branch" title="if path not taken" >I</span>if (attempt &lt; retries &amp;&amp; (isTimeout || isSessionMissing)) {</span>
-        const delay = <span class="cstat-no" title="statement not covered" >backoffMs * Math.pow(2, attempt);</span>
-<span class="cstat-no" title="statement not covered" >        await sleep(delay);</span>
-<span class="cstat-no" title="statement not covered" >        attempt++;</span>
-<span class="cstat-no" title="statement not covered" >        continue;</span>
+      if (attempt &lt; retries &amp;&amp; (isTimeout || isSessionMissing)) {
+        const delay = backoffMs * Math.pow(2, attempt);
+        await sleep(delay);
+        attempt++;
+        continue;
       }
 <span class="cstat-no" title="statement not covered" >      throw e;</span>
     }
@@ -241,7 +241,7 @@ export async function <span class="fstat-no" title="function not covered" >callS
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-29T08:18:28.243Z
+                at 2025-12-10T23:25:12.839Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

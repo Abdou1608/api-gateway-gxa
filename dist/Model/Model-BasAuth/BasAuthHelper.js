@@ -69,5 +69,24 @@ class AuthenticationHelper {
             return false;
         }
     }
+    async CheckSession(ctx) {
+        // let _basSecurityContext: BasSecurityContext = this.sessionStorage.GetContext();
+        if (ctx.GetIsAuthenticated()) {
+            try {
+                let result = await this.basAuth.CheckSession(ctx);
+                return result;
+            }
+            catch (error) {
+                // this.sessionStorage.Clear();
+                console.log("Erreur dans CheckSession BasAuthHelper==" + JSON.stringify(error));
+                return false;
+            }
+        }
+        else {
+            // this.sessionStorage.Clear();
+            console.log("Erreur dans CheckSession BasAuthHelper== itulisateurs non connecté");
+            return false;
+        }
+    }
 }
 exports.AuthenticationHelper = AuthenticationHelper;

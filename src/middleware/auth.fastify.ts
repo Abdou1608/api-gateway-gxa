@@ -1,9 +1,29 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import AuthService from '../auth/auth.service';
 import env from '../config/env';
+import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 
 const BEARER = /^Bearer\s+(.+)$/i;
 const authService = new AuthService();
+
+type CheckSessionFn = (ctx: BasSecurityContext) => Promise<any>;
+let checkSessionInvoker: CheckSessionFn | null = null;
+
+export function __setCheckSessionInvoker(fn?: CheckSessionFn) {
+  checkSessionInvoker = fn ?? null;
+}
+
+async function getCheckSessionInvoker(): Promise<CheckSessionFn> {
+  if (checkSessionInvoker) {
+    return checkSessionInvoker;
+  }
+  const mod = await import('../services/check_session/checksession_.service');
+  if (typeof mod.checksession_ !== 'function') {
+    throw new Error('checksession_ service must export a function');
+  }
+  checkSessionInvoker = mod.checksession_;
+  return checkSessionInvoker;
+}
 
 function extractToken(headers: Record<string, any>, query: any): string | undefined {
   const h = headers['authorization'] || headers['Authorization'];
@@ -21,7 +41,7 @@ export async function authPreHandler(request: FastifyRequest, reply: FastifyRepl
   try {
     const token = extractToken(request.headers as any, (request as any).query);
     if (!token) {
-      return reply.code(401).send({ error: 'Unauthorized, Authentication needed to process' });
+      return reply.code(401).send({ error: 'Non autorisé, authentification requise pour traiter' });
     }
     const key = process.env.JWS_KEY ?? env.jwtSecret ?? '';
     if (!key) {
@@ -31,8 +51,17 @@ export async function authPreHandler(request: FastifyRequest, reply: FastifyRepl
     const sid = await authService.get_SID(token, key);
     console.warn('=====--------Voici le SID du Auth.fastify:', sid);
     if (!sid) {
-      return reply.code(401).send({ error: 'Unauthorized, Authentication needed to process' });
+      return reply.code(401).send({ error: 'Non autorisé, authentification requise pour traiter' });
     }
+     const ctx = new BasSecurityContext();
+        ctx.IsAuthenticated = true as any;
+        ctx.SessionId = sid;
+    const runCheckSession = await getCheckSessionInvoker();
+    const result = await runCheckSession(ctx);
+    if (!result) {
+      return reply.code(402).send({ error: 'Non autorisé, Session invalide ou expirée' });
+    }
+
     (request as any).auth = { sid, token };
 
     // Map into body for legacy validators: enforce authoritative SID
@@ -49,8 +78,8 @@ export async function authPreHandler(request: FastifyRequest, reply: FastifyRepl
       request.body = body;
     }
   } catch (err) {
-    request.log.warn({ err }, '[authPreHandler] token invalid');
-    return reply.code(401).send({ error: { detail: 'Unauthorized, Authentication needed to process', message: err instanceof Error ? err.message : String(err) } });
+    request.log.warn({ err }, '[authPreHandler] Erreur lors de la validation du jeton');
+    return reply.code(401).send({ error: { detail: 'Non autorisé, Erreur lors de la validation de votre session', message: err instanceof Error ? err.message : String(err) } });
   }
 }
 

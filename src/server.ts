@@ -94,18 +94,19 @@ async function setupApp() {
   // --- Health ---
   app.get('/health', async () => ({ ok: true }));
 
-  // --- Routes applicatives (converties) ---
-  await app.register(registerRoutes, { prefix: '' });
-
   // --- 404 & erreurs globales ---
   const { setNotFound, setError } = buildErrorHandlers();
   app.setNotFoundHandler(setNotFound);
   app.setErrorHandler(setError);
+
+  // --- Routes applicatives (converties) ---
+  await app.register(registerRoutes, { prefix: '' });
 }
 
 // Exporte l'instance Fastify pour les tests et une promesse de ready
 export const ready = (async () => {
   await setupApp();
+  await app.ready();
   return app;
 })();
 

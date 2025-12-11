@@ -54,12 +54,13 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
     
       }else if(sid==="risk"){
     xmldata = riskModelToEscapedStrVal(data, sid);}
+   
   else{
     const xmlPropre = objectToCustomXML(data, sid);        // <data><input><objects>…</objects></input></data>
 const strValXML = objectToCustomXMLForStrVal(data, sid);
       xmldata = strValXML
-       console.log("----------------------------xmldata = objectToCustomXML(data)-------------------------------------------")
-        //console.log("Data envoyé="+xmldata)
+     
+           //console.log("Data envoyé="+xmldata)
         //console.log("_____________________________________________________________________")
     
       }

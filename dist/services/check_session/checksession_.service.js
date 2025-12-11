@@ -1,11 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checksession_ = checksession_;
-const BasParams_1 = require("../../Model/BasSoapObject/BasParams");
-const soap_service_1 = require("../soap.service");
+const BasAuthHelper_1 = require("../../Model/Model-BasAuth/BasAuthHelper");
+const BasSoapClient_1 = require("../../Model/Model-BasSoapClient/BasSoapClient");
+const SessionStorage_1 = require("../../Model/Model-SessionStorage/SessionStorage");
+const app_config_service_1 = require("../AppConfigService/app-config.service");
 async function checksession_(bassecuritycontext) {
-    const params = new BasParams_1.BasParams();
-    bassecuritycontext ? params.AddStr("BasSecurityContext", bassecuritycontext.ToSoapVar()) : null;
-    const result = await (0, soap_service_1.sendSoapRequest)(params, "CheckSession", bassecuritycontext);
+    let sessionStorage = new SessionStorage_1.SessionStorage();
+    const basSoapClient = new BasSoapClient_1.BasSoapClient();
+    const appc = new app_config_service_1.AppConfigService();
+    const auth = new BasAuthHelper_1.AuthenticationHelper(sessionStorage, basSoapClient, appc);
+    const result = await auth.CheckSession(bassecuritycontext);
+    console.log("!!!!!!!!Result CheckSession  service==" + JSON.stringify(result));
     return result;
 }

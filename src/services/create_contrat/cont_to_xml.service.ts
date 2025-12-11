@@ -115,6 +115,7 @@ export function contModelToXml(model: any): string {
   const objectNodes: any[] = [];
   if (model?.CONT) objectNodes.push(objectToXmlNode('CONT', model.CONT));
   if (model?.PIEC) objectNodes.push(objectToXmlNode('PIEC', model.PIEC));
+   if (model?.piec) objectNodes.push(objectToXmlNode('PIEC', model.piec));
   if (model?.poli) objectNodes.push(objectToXmlNode('poli', model.poli));
 
   const root = {

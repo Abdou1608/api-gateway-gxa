@@ -131,16 +131,17 @@ async function setupApp() {
     }
     // --- Health ---
     exports.app.get('/health', async () => ({ ok: true }));
-    // --- Routes applicatives (converties) ---
-    await exports.app.register(fonctionnalite_routes_fastify_1.registerRoutes, { prefix: '' });
     // --- 404 & erreurs globales ---
     const { setNotFound, setError } = (0, error_handler_fastify_1.buildErrorHandlers)();
     exports.app.setNotFoundHandler(setNotFound);
     exports.app.setErrorHandler(setError);
+    // --- Routes applicatives (converties) ---
+    await exports.app.register(fonctionnalite_routes_fastify_1.registerRoutes, { prefix: '' });
 }
 // Exporte l'instance Fastify pour les tests et une promesse de ready
 exports.ready = (async () => {
     await setupApp();
+    await exports.app.ready();
     return exports.app;
 })();
 exports.default = exports.app;

@@ -56,7 +56,6 @@ async function sendSoapRequest(params, actionName, basSecurityContext, _sid, dat
                 const xmlPropre = (0, xml_parser_1.objectToCustomXML)(data, sid); // <data><input><objects>…</objects></input></data>
                 const strValXML = (0, xml_parser_1.objectToCustomXMLForStrVal)(data, sid);
                 xmldata = strValXML;
-                console.log("----------------------------xmldata = objectToCustomXML(data)-------------------------------------------");
                 //console.log("Data envoyé="+xmldata)
                 //console.log("_____________________________________________________________________")
             }
