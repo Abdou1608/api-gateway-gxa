@@ -104,7 +104,7 @@ async function invalidateToken(token) {
     // We only need partial decode (no need for verified claims for jti/exp usage if already validated upstream)
     const keyMaterial = await safeDecode(token);
     const { key, exp } = tokenKey(token, keyMaterial?.payload || {});
-    const effectiveExp = exp ?? Math.floor(now / 1000) + 900; // 5 minutes fallback
+    const effectiveExp = exp ?? Math.floor(now / 1000) + (24 * 60 * 60); // 24 hours fallback
     const r = await getRedis();
     if (r) {
         const ttl = effectiveExp - Math.floor(now / 1000);

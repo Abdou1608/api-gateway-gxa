@@ -1,15 +1,15 @@
 import { z } from "zod";
+import { BasSecurityContextQuerySchema } from './basSecurityContext.query';
+import { zQueryBooleanOptional, zQueryNumber } from './zod.query';
 
 export const api_detail_quittanceValidator = z.object({
-  quittance: z.number(),
-  details: z.boolean().optional(),
-  garanties: z.boolean().optional(),
-  addinfospqg: z.boolean().optional(),
-  intervenants: z.boolean().optional(),
-  addinfosqint: z.boolean().optional(),
-
-  BasSecurityContext:z.object({
-    _SessionId:z.string().min(1, "champ SessionId est requis"),
-     })
+  quittance: zQueryNumber(),
+  details: zQueryBooleanOptional(),
+  garanties: zQueryBooleanOptional(),
+  addinfospqg: zQueryBooleanOptional(),
+  intervenants: zQueryBooleanOptional(),
+  addinfosqint: zQueryBooleanOptional(),
+  BasSecurityContext: BasSecurityContextQuerySchema,
+  domain: z.string().optional(),
 });
 

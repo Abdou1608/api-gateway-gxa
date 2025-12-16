@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { BasSecurityContextQuerySchema } from './basSecurityContext.query';
+import { zQueryBooleanOptional, zQueryNumberOptional } from './zod.query';
 
 export const api_tiers_searchValidator = z.object({
   reference: z.string().min(1, "champ requis"),
@@ -6,7 +8,7 @@ export const api_tiers_searchValidator = z.object({
     v => v === undefined || v.length > 0,
     { message: "doit être non vide si présent" }
   ),
-  typetiers: z.number().optional(),
+  typetiers: zQueryNumberOptional(),
   codp: z.string().optional().refine(
     v => v === undefined || v.length > 0,
     { message: "doit être non vide si présent" }
@@ -15,10 +17,8 @@ export const api_tiers_searchValidator = z.object({
     v => v === undefined || v.length > 0,
     { message: "doit être non vide si présent" }
   ),
-  detailorigine: z.boolean().optional(),
-
-  BasSecurityContext:z.object({
-    _SessionId:z.string().min(1, "champ SessionId est requis"),
-     })
+  detailorigine: zQueryBooleanOptional(),
+  BasSecurityContext: BasSecurityContextQuerySchema,
+  domain: z.string().optional(),
 });
 

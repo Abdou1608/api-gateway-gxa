@@ -1,11 +1,12 @@
 import { z } from "zod";
+import { BasSecurityContextQuerySchema } from './basSecurityContext.query';
+import { zQueryBooleanOptional } from './zod.query';
 
 export const api_detail_tierValidator = z.object({
   Dossier: z.any(),
-  Composition: z.boolean().optional(),
+  Composition: zQueryBooleanOptional(),
   ListeEntites: z.string().optional().refine(v => v === undefined || v.length > 0, "doit être non vide si présent"),
-  Extensions: z.boolean().optional(),
-  BasSecurityContext:z.object({
-    _SessionId:z.string().optional(),
-     }).optional(),
+  Extensions: zQueryBooleanOptional(),
+  BasSecurityContext: BasSecurityContextQuerySchema,
+  domain: z.string().optional(),
 });

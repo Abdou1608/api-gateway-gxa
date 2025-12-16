@@ -13,11 +13,11 @@ const BasSecurityContext_1 = require("../Model/BasSoapObject/BasSecurityContext"
 const BasParams_1 = require("../Model/BasSoapObject/BasParams");
 const groupByTypename_1 = __importDefault(require("../utils/groupByTypename"));
 // Fastify-native pure-return helpers
-async function sinistreListItems(body, auth) {
+async function sinistreListItems(body, ctx, auth) {
     const params = new BasParams_1.BasParams();
-    const ctx = new BasSecurityContext_1.BasSecurityContext();
-    ctx.IsAuthenticated = true;
-    ctx.SessionId = auth.sid;
+    //  const ctx = new BasSecurityContext();
+    // ctx.IsAuthenticated = true as any;
+    //  ctx.SessionId = auth.sid;
     params.AddStr('BasSecurityContext', ctx.ToSoapVar());
     if (body.dossier) {
         const dossierId = typeof body.dossier === 'string' ? Number(body.dossier) : body.dossier;
@@ -33,11 +33,11 @@ async function sinistreListItems(body, auth) {
     console.log("!!!!result sinistreListItems:", result);
     return (0, groupByTypename_1.default)(result, { keepUnknown: false });
 }
-async function sinistreDetail(body, auth) {
+async function sinistreDetail(body, ctx, auth) {
     const params = new BasParams_1.BasParams();
-    const ctx = new BasSecurityContext_1.BasSecurityContext();
-    ctx.SessionId = auth.sid;
-    ctx.IsAuthenticated = true;
+    // const ctx = new BasSecurityContext();
+    // ctx.SessionId = auth.sid;
+    // ctx.IsAuthenticated = true as any;
     params.AddStr('BasSecurityContext', ctx.ToSoapVar());
     const sinistre = body.sinistre ?? 0;
     if (sinistre && sinistre > 0)

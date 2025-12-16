@@ -17,7 +17,7 @@ export async function produit_listitems(
   BasSecurityContext ? params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar()) :null
   typeecran ? params.AddString("typeecran",typeecran) :null
    branche? params.AddString("branche",branche):null
-   disponible ?  params.AddBool("disponible",disponible) :null
+  disponible !== undefined ?  params.AddBool("disponible",disponible) :null
 
    params.AddString("datanode","prod")
   const result = await sendSoapRequest(

@@ -10,7 +10,7 @@ import { adh_details } from '../services/detail_adhesion/adh_details.service';
 import * as Risk from '../services/risk.service';
 import { updateTier as updateTierService } from '../services/update_tier.fastify.service';
 import { authPreHandler } from '../middleware/auth.fastify';
-import { validateBodyFastify } from '../middleware/zod.fastify';
+import { validateBodyFastify, validateQueryFastify } from '../middleware/zod.fastify';
 import { api_loginValidator } from '../validators/api_loginValidator';
 import { api_logoutValidator } from '../validators/api_logoutValidator';
 import AuthService from '../auth/auth.service';
@@ -49,6 +49,10 @@ import { catal_listitems } from '../services/catal_listitems.service';
 import toolsConvertRoutes from './tools.convert.routes';
 import { Qbor_Listitems } from '../services/Qbor_Listitems.service';
 import { Cont_CalculTarif } from '../services/create_contrat/Cont_CalculTarif.service';
+import { cont_garanti_create } from '../services/Cont_garanti_create.service';
+import { BasSecurityContextQuerySchema } from '../validators/basSecurityContext.query';
+import { zQueryNumberOptional, zQueryStringOptional } from '../validators/zod.query';
+import { api_detail_adhesionValidator } from '../validators/api_detail_adhesionValidator';
 
 export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
   // TODO: migrate existing Express routes to Fastify here.
@@ -691,21 +695,37 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
     return reply.send(result);
   });
 
-  // Fastify-native /api/liste_des_contrats
-  app.post('/api/liste_des_contrats', {
-    preHandler: authPreHandler,
-    preValidation: validateBodyFastify(api_liste_des_contratsValidator),
-  }, async (request, reply) => {
-    const body = request.body as any;
+  function buildBasSecurityContext(request: any, input: any): BasSecurityContext {
     const ctx = new BasSecurityContext();
     ctx.IsAuthenticated = true as any;
-    ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
+    const bsc = input?.BasSecurityContext;
+    const sid: string | undefined =
+      request?.auth?.sid ??
+      bsc?._SessionId ??
+      bsc?.SessionId ??
+      input?.SessionId;
+    ctx.SessionId = sid as any;
+    return ctx;
+  }
 
-    const reference = body.reference ?? '';
-    const detailorigine = body.detailorigine;
-    const origine = body.origine;
-    const codefic = body.codefic ?? '';
-    const nomchamp = body.nomchamp ?? '';
+  // Curl examples (GET + query string)
+  // curl -H "Authorization: Bearer $TOKEN" "http://localhost:3000/api/liste_des_produits?typeecran=CLI&branche=AUTO&disponible=false"
+  // curl -H "Authorization: Bearer $TOKEN" "http://localhost:3000/api/detail_contrat?contrat=123&Garanties=true"
+  // curl -H "Authorization: Bearer $TOKEN" "http://localhost:3000/api/liste_des_contrats?reference=ABC&BasSecurityContext=%7B%22_SessionId%22%3A%22SID%22%7D"
+
+  // Fastify-native /api/liste_des_contrats
+  app.get('/api/liste_des_contrats', {
+    preHandler: authPreHandler,
+    preValidation: validateQueryFastify(api_liste_des_contratsValidator),
+  }, async (request, reply) => {
+    const query = request.query as any;
+    const ctx = buildBasSecurityContext(request as any, query);
+
+    const reference = query.reference ?? '';
+    const detailorigine = query.detailorigine;
+    const origine = query.origine;
+    const codefic = query.codefic ?? '';
+    const nomchamp = query.nomchamp ?? '';
 
     const result = await cont_search(
       reference,
@@ -714,52 +734,48 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
       codefic,
       nomchamp,
       ctx,
-      { userId: (request as any).user?.sub, domain: body?.domain }
+      { userId: (request as any).user?.sub, domain: query?.domain }
     );
     return reply.send(result);
   });
 
   // Fastify-native /api/liste_des_produits
-  app.post('/api/liste_des_produits', {
+  app.get('/api/liste_des_produits', {
     preHandler: authPreHandler,
-    preValidation: validateBodyFastify(api_liste_des_produitsValidator),
+    preValidation: validateQueryFastify(api_liste_des_produitsValidator),
   }, async (request, reply) => {
-    const body = request.body as any;
-    const ctx = new BasSecurityContext();
-    ctx.IsAuthenticated = true as any;
-    ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
+    const query = request.query as any;
+    const ctx = buildBasSecurityContext(request as any, query);
 
-    const typeecran = body.typeecran ?? null;
-    const branche = body.branche ?? null;
-    const disponible = body.disponible ?? true;
+    const typeecran = query.typeecran ?? null;
+    const branche = query.branche ?? null;
+    const disponible = query.disponible ?? true;
 
     const result = await produit_listitems(
       typeecran,
       branche,
       disponible,
       ctx,
-      { userId: (request as any).user?.sub, domain: body?.domain }
+      { userId: (request as any).user?.sub, domain: query?.domain }
     );
     return reply.send(result);
   });
 
   // Fastify-native /api/liste_des_quittances
-  app.post('/api/liste_des_quittances', {
+  app.get('/api/liste_des_quittances', {
     preHandler: authPreHandler,
-    preValidation: validateBodyFastify(api_liste_des_quittancesValidator),
+    preValidation: validateQueryFastify(api_liste_des_quittancesValidator),
   }, async (request, reply) => {
-    const body = request.body as any;
-    const ctx = new BasSecurityContext();
-    ctx.IsAuthenticated = true as any;
-    ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
+    const query = request.query as any;
+    const ctx = buildBasSecurityContext(request as any, query);
     let liste_quit: any[] = []
-    const dossier = body.dossier ?? body.Dossier ?? null;
-    const contrat = body.contrat ?? body.Contrat ?? null;
+    const dossier = query.dossier ?? query.Dossier ?? null;
+    const contrat = query.contrat ?? query.Contrat ?? null;
     const result = await quittance_listitems(
       dossier,
       contrat,
       ctx,
-      { userId: (request as any).user?.sub, domain: body?.domain }
+      { userId: (request as any).user?.sub, domain: query?.domain }
     );
    // const grouped = groupByTypename(result, { keepUnknown: true });
    if (Array.isArray(result)){
@@ -770,47 +786,65 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
   });
 
   // Fastify-native /api/detail_contrat
-  app.post('/api/detail_contrat', {
+  app.get('/api/detail_contrat', {
     preHandler: authPreHandler,
-    preValidation: validateBodyFastify(api_detail_contratValidator),
+   preValidation: validateQueryFastify(api_detail_contratValidator),
   }, async (request, reply) => {
-    const body = request.body as any;
-    const ctx = new BasSecurityContext();
-    ctx.IsAuthenticated = true as any;
-    ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
+  //  const body = request.body as any;
+    const query = request.query as any;
+    const ctx = buildBasSecurityContext(request as any, query)
+
+    const _contrat = query.contrat ?? query.Contrat;
+    // ?? body?.contrat ?? query.Contrat ?? body?.Contrat;
+    const contrat = typeof _contrat === 'string' ? Number(_contrat) : _contrat;
+
+
+    const Garanties = query.Garanties ?? true;
+    const Extensions = query.Extensions ?? true;
+    const clauses = query.clauses ?? true;
+    const Allpieces = query.Allpieces ?? true;
+    const Detailadh = query.Detailadh ?? true;
+    const infosCieProd = query.infosCieProd ?? true;
     const result = await cont_details(
-      body,
-      ctx,
-      { userId: (request as any).user?.sub, domain: body?.domain }
+      contrat,
+           ctx,
+      Garanties,
+      Extensions,
+      clauses,
+      Allpieces,
+      Detailadh,
+      infosCieProd,
+       
+      { userId: (request as any).user?.sub, domain: query?.domain }
     );
     return reply.send(result);
   });
 
   // Fastify-native /api/projects endpoints
-  app.post('/api/projects/project_listitems', {
+  app.get('/api/projects/project_listitems', {
     preHandler: authPreHandler,
-    preValidation: validateBodyFastify(Validators.api_projects_project_listitemsValidator),
+    preValidation: validateQueryFastify(Validators.api_projects_project_listitemsValidator),
   }, async (request, reply) => {
-    const body = request.body as any;
-    const data = await ProjectService.projectListItems(body, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: body?.domain });
+    const query = request.query as any;
+    const data = await ProjectService.projectListItems(query, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: query?.domain });
     return reply.send(data);
   });
 
-  app.post('/api/projects/Project_OfferListItems', {
+  app.get('/api/projects/Project_OfferListItems', {
     preHandler: authPreHandler,
-    preValidation: validateBodyFastify(Validators.api_projects_project_offerlistitemsValidator),
+    preValidation: validateQueryFastify(Validators.api_projects_project_offerlistitemsValidator),
   }, async (request, reply) => {
-    const body = request.body as any;
-    const data = await ProjectService.projectOfferListItems(body, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: body?.domain });
+    const query = request.query as any;
+    const data = await ProjectService.projectOfferListItems(query, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: query?.domain });
     return reply.send(data);
   });
 
-  app.post('/api/projects/project_detail', {
+  app.get('/api/projects/project_detail', {
     preHandler: authPreHandler,
-    preValidation: validateBodyFastify(Validators.api_projects_project_detailValidator),
+    preValidation: validateQueryFastify(Validators.api_projects_project_detailValidator),
   }, async (request, reply) => {
-    const body = request.body as any;
-    const data = await ProjectService.projectDetail(body, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: body?.domain });
+    const query = request.query as any;
+    const data = await ProjectService.projectDetail(query, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: query?.domain });
     return reply.send(data);
   });
 
@@ -860,171 +894,157 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
   });
 
   // Fastify-native /api/detail_produit
-  app.post('/api/detail_produit', {
+  app.get('/api/detail_produit', {
     preHandler: authPreHandler,
-    preValidation: validateBodyFastify(api_detail_produitValidator),
+    preValidation: validateQueryFastify(api_detail_produitValidator),
   }, async (request, reply) => {
-    const body = request.body as any;
-    const ctx = new BasSecurityContext();
-    ctx.IsAuthenticated = true as any;
-    ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
-    const code = body.code;
-    const options = body.options ?? true;
+    const query = request.query as any;
+    const ctx = buildBasSecurityContext(request as any, query);
+    const code = query.code;
+    const options = query.options ?? true;
     const basecouv =  false;
-    const clauses = body.clauses ?? true;
+    const clauses = query.clauses ?? true;
     const result = await produit_details(
       code,
       ctx,
       options,
       basecouv,
       clauses,
-      { userId: (request as any).user?.sub, domain: body?.domain }
+      { userId: (request as any).user?.sub, domain: query?.domain }
     );
     return reply.send(result);
   });
 
   // Fastify-native /api/detail_tier
-  app.post('/api/detail_tier', {
+  app.get('/api/detail_tier', {
     preHandler: authPreHandler,
-    preValidation: validateBodyFastify(api_detail_tierValidator),
+    preValidation: validateQueryFastify(api_detail_tierValidator),
   }, async (request, reply) => {
-    const body = request.body as any;
-    const ctx = new BasSecurityContext();
-    ctx.IsAuthenticated = true as any;
-    ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
-    const dossier = body.Dossier ?? body.dossier;
-    const comp = body.composition ?? true;
+    const query = request.query as any;
+    const ctx = buildBasSecurityContext(request as any, query);
+    const dossier = query.Dossier ?? query.dossier;
+    const comp = query.composition ?? query.Composition ?? true;
     const ext = false;
     const result = await tiers_details(
       ctx,
       dossier,
       comp,
       ext,
-      { userId: (request as any).user?.sub, domain: body?.domain }
+      { userId: (request as any).user?.sub, domain: query?.domain }
     );
     return reply.send(result);
   });
 
   // Fastify-native /api/liste_des_contrats_d_un_tier
-  app.post('/api/liste_des_contrats_d_un_tier', {
+  app.get('/api/liste_des_contrats_d_un_tier', {
     preHandler: authPreHandler,
-    preValidation: validateBodyFastify(api_liste_des_contrats_d_un_tierValidator),
+    preValidation: validateQueryFastify(api_liste_des_contrats_d_un_tierValidator),
   }, async (request, reply) => {
-    const body = request.body as any;
-    const ctx = new BasSecurityContext();
-    ctx.IsAuthenticated = true as any;
-    ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
-    const dossier = body.dossier ?? body.Dossier;
-    const includeall = body.includeall ?? true;
-    const defaut = body.defaut ?? false;
+    const query = request.query as any;
+    const ctx = buildBasSecurityContext(request as any, query);
+    const dossier = query.dossier ?? query.Dossier;
+    const includeall = query.includeall ?? true;
+    const defaut = query.defaut ?? false;
     const result = await cont_listitems(
       dossier,
       includeall,
       defaut,
       ctx,
-      { userId: (request as any).user?.sub || undefined, domain: body?.domain }
+      { userId: (request as any).user?.sub || undefined, domain: query?.domain }
     );
     return reply.send(result);
   });
 
   // Fastify-native /api/detail_quittance
-  app.post('/api/detail_quittance', {
+  app.get('/api/detail_quittance', {
     preHandler: authPreHandler,
-    preValidation: validateBodyFastify(api_detail_quittanceValidator),
+    preValidation: validateQueryFastify(api_detail_quittanceValidator),
   }, async (request, reply) => {
-    const body = request.body as any;
-    const ctx = new BasSecurityContext();
-    ctx.IsAuthenticated = true as any;
-    ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
+    const query = request.query as any;
+    const ctx = buildBasSecurityContext(request as any, query);
     const result = await quittance_details(
-      body.quittance,
-      body.details ?? true,
-      body.garanties ?? true,
-      body.addinfospqg ?? true,
-      body.intervenants ?? true,
-      body.addinfosqint ?? true,
+      query.quittance,
+      query.details ?? true,
+      query.garanties ?? true,
+      query.addinfospqg ?? true,
+      query.intervenants ?? true,
+      query.addinfosqint ?? true,
       ctx,
-      { userId: (request as any).user?.sub, domain: body?.domain }
+      { userId: (request as any).user?.sub, domain: query?.domain }
     );
     return reply.send(result);
   });
 
   // Fastify-native /api/liste_des_types_ecrans
 
-  app.post('/api/Qbor_Listitems', {
+  const simpleAuthQuerySchema = z.object({
+    BasSecurityContext: BasSecurityContextQuerySchema,
+    domain: z.string().optional(),
+  });
+
+  app.get('/api/Qbor_Listitems', {
     preHandler: authPreHandler,
+    preValidation: validateQueryFastify(simpleAuthQuerySchema),
   }, async (request, reply) => {
-    const body = request.body as any;
-    const ctx = new BasSecurityContext();
-    ctx.IsAuthenticated = true as any;
-    ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
-    const result = await Qbor_Listitems(
-      ctx,
-      { userId: (request as any).user?.sub, domain: body?.domain }
-    );
+    const query = request.query as any;
+    const ctx = buildBasSecurityContext(request as any, query);
+    const result = await Qbor_Listitems(ctx, { userId: (request as any).user?.sub, domain: query?.domain });
     return reply.send(result);
   });
-  app.post('/api/liste_des_types_ecrans', {
+  app.get('/api/liste_des_types_ecrans', {
     preHandler: authPreHandler,
-    preValidation: validateBodyFastify(api_liste_des_bransValidator),
+    preValidation: validateQueryFastify(api_liste_des_bransValidator),
   }, async (request, reply) => {
-    const body = request.body as any;
-    const ctx = new BasSecurityContext();
-    ctx.IsAuthenticated = true as any;
-    ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
+    const query = request.query as any;
+    const ctx = buildBasSecurityContext(request as any, query);
     const result = await bran_listitems(
       ctx,
-      { userId: (request as any).user?.sub, domain: body?.domain }
+      { userId: (request as any).user?.sub, domain: query?.domain }
     );
     return reply.send(result);
   });
-  app.post('/api/catal_ListItems', {
+  app.get('/api/catal_ListItems', {
     preHandler: authPreHandler,
+    preValidation: validateQueryFastify(simpleAuthQuerySchema),
   }, async (request, reply) => {
-    const body = request.body as any;
-    const ctx = new BasSecurityContext();
-    ctx.IsAuthenticated = true as any;
-    ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
+    const query = request.query as any;
+    const ctx = buildBasSecurityContext(request as any, query);
     const result = await catal_listitems(
       ctx,
-      { userId: (request as any).user?.sub, domain: body?.domain }
+      { userId: (request as any).user?.sub, domain: query?.domain }
     );
     return reply.send(result);
   });
   // Fastify-native /api/Tiers_Search
-  app.post('/api/Tiers_Search', {
+  app.get('/api/Tiers_Search', {
     preHandler: authPreHandler,
-    preValidation: validateBodyFastify(api_tiers_searchValidator),
+    preValidation: validateQueryFastify(api_tiers_searchValidator),
   }, async (request, reply) => {
-    const body = request.body as any;
-    const ctx = new BasSecurityContext();
-    ctx.IsAuthenticated = true as any;
-    ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
+    const query = request.query as any;
+    const ctx = buildBasSecurityContext(request as any, query);
     const result = await tiers_search(
       ctx,
-      body.reference ?? '',
-      body.dppname ?? null,
-      body.ntel ?? null,
-      body.datenais ?? null,
-      body.typetiers ?? null,
-      body.rsociale ?? null,
-      { userId: (request as any).user?.sub, domain: body?.domain }
+      query.reference ?? '',
+      query.dppname ?? null,
+      query.ntel ?? null,
+      query.datenais ?? null,
+      query.typetiers ?? null,
+      query.rsociale ?? null,
+      { userId: (request as any).user?.sub, domain: query?.domain }
     );
     return reply.send(result);
   });
 
-  app.post('/api/Contrats_Search', {
+  app.get('/api/Contrats_Search', {
     preHandler: authPreHandler,
-    preValidation: validateBodyFastify(api_contrats_searchValidator),
+    preValidation: validateQueryFastify(api_contrats_searchValidator),
   }, async (request, reply) => {
-    const body = request.body as any;
-    const ctx = new BasSecurityContext();
-    ctx.IsAuthenticated = true as any;
-    ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
+    const query = request.query as any;
+    const ctx = buildBasSecurityContext(request as any, query);
     const result = await contrats_search(
       ctx,
-      body.reference ?? '',
-      { userId: (request as any).user?.sub, domain: body?.domain }
+      query.reference ?? '',
+      { userId: (request as any).user?.sub, domain: query?.domain }
     );
     return reply.send(result);
   });
@@ -1098,11 +1118,30 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
     ctx.IsAuthenticated = true as any;
     ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
     const { cont_clause_create } = await import('../services/Cont_clause_create.service');
-    const result = await cont_clause_create(ctx, body.data,  { userId: (request as any).user?.sub, domain: body?.domain });
+    const result = await cont_clause_create(ctx, body.contrat,
+      body.adhesion,
+      body.piece,
+      body.data,
+      { userId: (request as any).user?.sub, domain: body?.domain });
     return reply.send(result);
   });
 
- 
+   app.post('/api/Cont_garan_create', { preHandler: authPreHandler }, async (request, reply) => {
+    const body = request.body as any;
+    const basCtx = new BasSecurityContext();
+    basCtx.IsAuthenticated = true as any;
+    basCtx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
+    //const { cont_clause_create } = await import('../services/Cont_clause_create.service');
+    const result = await cont_garanti_create(
+      basCtx,
+      body.contrat,
+      body.adhesion,
+      body.piece,
+      body.data,
+      { userId: (request as any).user?.sub, domain: body?.domain }
+    );
+    return reply.send(result);
+  });
 
 
     app.post('/api/Cont_CalculTarif', { preHandler: authPreHandler }, async (request, reply) => {
@@ -1157,27 +1196,38 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
   });
 
   // Fastify-native detail_adhesion
-  app.post('/api/detail_adhesion', { preHandler: authPreHandler }, async (request, reply) => {
-    const body = request.body as any;
-    const ctx = new BasSecurityContext();
-    ctx.IsAuthenticated = true as any;
-    ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
-    const result = await adh_details(body, ctx, { userId: (request as any).user?.sub, domain: body?.domain } as any);
+  app.get('/api/detail_adhesion', {
+    preHandler: authPreHandler,
+    preValidation: validateQueryFastify(api_detail_adhesionValidator),
+  }, async (request, reply) => {
+    const query = request.query as any;
+    const ctx = buildBasSecurityContext(request as any, query);
+    const result = await adh_details(query, ctx, { userId: (request as any).user?.sub, domain: query?.domain } as any);
     return reply.send(result);
   });
 
   // Fastify-native sinistres endpoints
-  app.post('/api/sinistres/sinistre_listitems', { preHandler: authPreHandler }, async (request, reply) => {
-    const body = request.body as any;
+  app.get('/api/sinistres/sinistre_listitems', {
+    preHandler: authPreHandler,
+    preValidation: validateQueryFastify(Validators.api_sinistres_sinistre_listitemsValidator),
+  }, async (request, reply) => {
+    const query = request.query as any;
+    const ctx = buildBasSecurityContext(request as any, query);
+
     const { sinistreListItems } = await import('../services/sinistre.service');
-    const data = await sinistreListItems(body, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: body?.domain });
+    const data = await sinistreListItems(query, ctx, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: query?.domain });
     return reply.send(data);
   });
 
-  app.post('/api/sinistres/sinistre_detail', { preHandler: authPreHandler }, async (request, reply) => {
-    const body = request.body as any;
+  app.get('/api/sinistres/sinistre_detail', {
+    preHandler: authPreHandler,
+    preValidation: validateQueryFastify(Validators.api_sinistres_sinistre_detailValidator),
+  }, async (request, reply) => {
+    const query = request.query as any;
+    const ctx = buildBasSecurityContext(request as any, query);
+
     const { sinistreDetail } = await import('../services/sinistre.service');
-    const data = await sinistreDetail(body, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: body?.domain });
+    const data = await sinistreDetail(query, ctx, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: query?.domain });
     return reply.send(data);
   });
 
@@ -1196,29 +1246,53 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
   });
 
   // Fastify-native tabs endpoints
-  app.post('/api/tabs/Tab_ListItems', { preHandler: authPreHandler }, async (request, reply) => {
-    const body = request.body as any;
+  const tabsListItemsQuerySchema = z.object({
+    filtre: zQueryStringOptional(),
+    BasSecurityContext: BasSecurityContextQuerySchema,
+    domain: z.string().optional(),
+  });
+  const tabsListValuesQuerySchema = z.object({
+    tabcode: z.string().min(1),
+    BasSecurityContext: BasSecurityContextQuerySchema,
+    domain: z.string().optional(),
+  });
+  const tabsGetValueQuerySchema = z.object({
+    tabcode: z.string().min(1),
+    tabref: z.string().min(1),
+    BasSecurityContext: BasSecurityContextQuerySchema,
+    domain: z.string().optional(),
+  });
+
+  app.get('/api/tabs/Tab_ListItems', { preHandler: authPreHandler, preValidation: validateQueryFastify(tabsListItemsQuerySchema) }, async (request, reply) => {
+    const query = request.query as any;
     const { tabListItems } = await import('../services/Tab.services');
-    const data = await tabListItems(body, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: body?.domain });
+    const data = await tabListItems(query, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: query?.domain });
     return reply.send(data);
   });
-  app.post('/api/tabs/Tab_ListValues', { preHandler: authPreHandler }, async (request, reply) => {
-    const body = request.body as any;
+  app.get('/api/tabs/Tab_ListValues', { preHandler: authPreHandler, preValidation: validateQueryFastify(tabsListValuesQuerySchema) }, async (request, reply) => {
+    const query = request.query as any;
     const { tabListValues } = await import('../services/Tab.services');
-    const data = await tabListValues(body, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: body?.domain });
+    const data = await tabListValues(query, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: query?.domain });
     return reply.send(data);
   });
-  app.post('/api/tabs/Tab_GetValue', { preHandler: authPreHandler }, async (request, reply) => {
-    const body = request.body as any;
+  app.get('/api/tabs/Tab_GetValue', { preHandler: authPreHandler, preValidation: validateQueryFastify(tabsGetValueQuerySchema) }, async (request, reply) => {
+    const query = request.query as any;
     const { tabGetValue } = await import('../services/Tab.services');
-    const data = await tabGetValue(body, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: body?.domain });
+    const data = await tabGetValue(query, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: query?.domain });
     return reply.send(data);
   });
 
   // Fastify-native risk endpoints
-  app.post('/api/risk/risk_listitems', { preHandler: authPreHandler }, async (request, reply) => {
-    const body = request.body as any;
-    const data = await Risk.riskListItems(body, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: body?.domain });
+  const riskListItemsQuerySchema = z.object({
+    contrat: zQueryNumberOptional(),
+    piece: zQueryNumberOptional(),
+    BasSecurityContext: BasSecurityContextQuerySchema,
+    domain: z.string().optional(),
+  });
+
+  app.get('/api/risk/risk_listitems', { preHandler: authPreHandler, preValidation: validateQueryFastify(riskListItemsQuerySchema) }, async (request, reply) => {
+    const query = request.query as any;
+    const data = await Risk.riskListItems(query, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: query?.domain });
     return reply.send(data);
   });
   app.post('/api/risk/risk_create', { preHandler: authPreHandler }, async (request, reply) => {

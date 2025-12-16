@@ -1,11 +1,12 @@
 import { z } from "zod";
+import { BasSecurityContextQuerySchema } from './basSecurityContext.query';
+import { zQueryBooleanOptional } from './zod.query';
 
 export const api_liste_des_contratsValidator = z.object({
   reference: z.string().min(1, "champ requis"),
-  detailorigine: z.boolean().optional(),
+  detailorigine: zQueryBooleanOptional(),
   nomchamp: z.any(),
 
-  BasSecurityContext:z.object({
-    _SessionId:z.string().min(1, "champ SessionId est requis"),
-     })
+  BasSecurityContext: BasSecurityContextQuerySchema,
+  domain: z.string().optional(),
 });

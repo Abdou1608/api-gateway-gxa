@@ -15,7 +15,7 @@ async function produit_details(code, BasSecurityContext, options, basecouvs, cla
     params.AddBool("options", options ?? true);
     params.AddBool("basecouv", basecouvs ?? false);
     params.AddBool("clauses", clauses ?? true);
-    console.log("Paramettres du Detail du produit requis===" + JSON.stringify(params));
+    //console.log("Paramettres du Detail du produit requis==="+JSON.stringify(params))
     const result = await (0, soap_service_1.sendSoapRequest)(params, "Produit_Details", BasSecurityContext, "PROD", null, ctx);
     const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
     return grouped;

@@ -143,7 +143,7 @@ export function riskModelToXml(
   let grouped: any | null = null;
   if (Array.isArray(garans) && garans.length > 0) {
     grouped = {
-      '@typename': 'GARAN',
+      '@typename': 'GARANT',
       object: garans.map(g => objectToXmlNode('GARAN', g))
     };
   }

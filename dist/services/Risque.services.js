@@ -78,8 +78,20 @@ async function Risk_Update(req, res) {
     }
     params.AddString("datanode", "Risk");
     // const soapBody = {reference,dppname,typetiers,codp,datenais}
+    const garanties = req.body.data?.Garan ?? req.body.data?.garan;
     const result = await (0, soap_service_1.sendSoapRequest)(params, "Risk_Update", basSecurityContext, "risk", req.body.data, { userId: req.user?.sub, domain: req.body?.domain });
     // res.json(result);
     const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
+    if (garanties) {
+        if (Array.isArray(garanties)) {
+            const crated_garanties = await (0, soap_service_1.sendSoapRequest)(params, "Cont_add_garantis", basSecurityContext, "Garan", garanties, { userId: req.user?.sub, domain: req.body?.domain });
+            grouped.GARANT = (0, groupByTypename_1.default)(crated_garanties, { keepUnknown: true });
+        }
+        else {
+            const garanties_array = [garanties];
+            const crated_garanties = await (0, soap_service_1.sendSoapRequest)(params, "Cont_add_garantis", basSecurityContext, "Garan", garanties_array, { userId: req.user?.sub, domain: req.body?.domain });
+            grouped.GARANT = (0, groupByTypename_1.default)(crated_garanties, { keepUnknown: true });
+        }
+    }
     res.json(grouped);
 }

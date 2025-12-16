@@ -1,9 +1,9 @@
 import { z } from "zod";
+import { BasSecurityContextQuerySchema } from './basSecurityContext.query';
+import { zQueryNumber } from './zod.query';
 
 export const api_projects_project_detailValidator = z.object({
-  idproj: z.number(),
-
-  BasSecurityContext:z.object({
-    _SessionId:z.string().min(1, "champ SessionId est requis"),
-     })
+  idproj: zQueryNumber(),
+  BasSecurityContext: BasSecurityContextQuerySchema,
+  domain: z.string().optional(),
 });

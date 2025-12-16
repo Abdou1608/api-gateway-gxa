@@ -131,7 +131,7 @@ function riskModelToXml(model, rootName = 'risk' // <-- racine par défaut "risk
     let grouped = null;
     if (Array.isArray(garans) && garans.length > 0) {
         grouped = {
-            '@typename': 'GARAN',
+            '@typename': 'GARANT',
             object: garans.map(g => objectToXmlNode('GARAN', g))
         };
     }

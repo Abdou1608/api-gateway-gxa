@@ -9,7 +9,7 @@ async function produit_listitems(typeecran, branche, disponible, BasSecurityCont
     BasSecurityContext ? params.AddStr("BasSecurityContext", BasSecurityContext.ToSoapVar()) : null;
     typeecran ? params.AddString("typeecran", typeecran) : null;
     branche ? params.AddString("branche", branche) : null;
-    disponible ? params.AddBool("disponible", disponible) : null;
+    disponible !== undefined ? params.AddBool("disponible", disponible) : null;
     params.AddString("datanode", "prod");
     const result = await (0, soap_service_1.sendSoapRequest)(params, "Produit_ListItems", BasSecurityContext, "prod", undefined, ctx);
     //const grouped = groupByTypename(result, { keepUnknown: true }); 

@@ -5,11 +5,11 @@ import { BasParams } from '../Model/BasSoapObject/BasParams';
 import groupByTypename from '../utils/groupByTypename';
 
 // Fastify-native pure-return helpers
-export async function sinistreListItems(body: any, auth: { sid: string; userId?: string; domain?: string }) {
+export async function sinistreListItems(body: any,ctx:BasSecurityContext, auth: { sid: string; userId?: string; domain?: string }) {
   const params = new BasParams();
-  const ctx = new BasSecurityContext();
-  ctx.IsAuthenticated = true as any;
-  ctx.SessionId = auth.sid;
+//  const ctx = new BasSecurityContext();
+ // ctx.IsAuthenticated = true as any;
+//  ctx.SessionId = auth.sid;
   params.AddStr('BasSecurityContext', ctx.ToSoapVar());
   if(body.dossier){
     const dossierId = typeof body.dossier === 'string' ? Number(body.dossier) : body.dossier;
@@ -25,11 +25,11 @@ export async function sinistreListItems(body: any, auth: { sid: string; userId?:
   return groupByTypename(result, { keepUnknown: false });
 }
 
-export async function sinistreDetail(body: any, auth: { sid: string; userId?: string; domain?: string }) {
+export async function sinistreDetail(body: any,ctx:BasSecurityContext, auth: { sid: string; userId?: string; domain?: string }) {
   const params = new BasParams();
-  const ctx = new BasSecurityContext();
-  ctx.SessionId = auth.sid;
-  ctx.IsAuthenticated = true as any;
+  // const ctx = new BasSecurityContext();
+  // ctx.SessionId = auth.sid;
+  // ctx.IsAuthenticated = true as any;
   params.AddStr('BasSecurityContext', ctx.ToSoapVar());
   const sinistre = body.sinistre ?? 0;
   if (sinistre && sinistre > 0) params.AddInt('sinistre', sinistre);

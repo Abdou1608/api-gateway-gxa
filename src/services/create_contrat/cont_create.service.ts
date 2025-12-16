@@ -41,7 +41,7 @@ export async function cont_create(
       return { error: "No data in response" };
     }
     const contCreateResult = await cont_details(
-      { contrat: resultData.contrat },
+      typeof resultData.contrat === 'string' ? Number(resultData.contrat) : (resultData.contrat as number),
       BasSecurityContext
     );
    // console.log("$$$$$$$$$ RESULT DATA CREATE CONTRAT  contCreateResult==="+JSON.stringify(contCreateResult))

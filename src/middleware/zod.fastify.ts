@@ -17,3 +17,30 @@ export function validateBodyFastify(schema: ZodTypeAny): preValidationHookHandle
     (request as any).body = result.data;
   };
 }
+
+export function validateQueryFastify(schema: ZodTypeAny): preValidationHookHandler {
+  return async (request: FastifyRequest, reply: FastifyReply) => {
+    const result = schema.safeParse((request as any).query);
+    if (!result.success) {
+      const issues = result.error.issues.map(issue => ({
+        path: issue.path.join('.'),
+        message: issue.message,
+      }));
+      reply.code(400).send(new ValidationError('La query string est invalide.', issues));
+      return;
+    }
+    (request as any).query = result.data;
+  };
+}
+
+export function parseQueryOrThrow<T>(request: FastifyRequest, schema: ZodTypeAny): T {
+  const result = schema.safeParse((request as any).query);
+  if (!result.success) {
+    const issues = result.error.issues.map(issue => ({
+      path: issue.path.join('.'),
+      message: issue.message,
+    }));
+    throw new ValidationError('La query string est invalide.', issues);
+  }
+  return result.data as T;
+}

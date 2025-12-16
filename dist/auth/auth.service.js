@@ -30,7 +30,7 @@ class AuthService {
         }
         const ttl = typeof ttlSeconds === 'number' && ttlSeconds > 0
             ? ttlSeconds
-            : (this.config.defaultTtlSeconds ?? 24 * 60 * 60); // default 1 day
+            : (24 * 60 * 60); // default 1 day
         const secret = this.toSecret(key);
         const jwt = await new jose_1.SignJWT({ sid: SID })
             .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })

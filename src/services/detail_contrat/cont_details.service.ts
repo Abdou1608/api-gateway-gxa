@@ -5,22 +5,31 @@ import { sendSoapRequest } from "../soap.service";
 
 
 export async function cont_details(
-  body: any,
-  bss: BasSecurityContext,
+contrat: number,
+bss: BasSecurityContext,
+Garanties?: boolean,
+Extensions?: boolean,
+clauses?: boolean,
+Allpieces?: boolean,
+Detailadh?: boolean,
+infosCieProd?: boolean,
+  
   ctx?: { userId?: string; domain?: string; password?: string }
 ) {
   const params=new BasParams()
   params.AddStr("BasSecurityContext",bss.ToSoapVar())
-  const contratId = typeof body.contrat === 'string' ? Number(body.contrat) : body.contrat;
-   params.AddInt("contrat",contratId)
-   params.AddBool("allpieces",body.allpieces ?? true) 
- params.AddBool("detailadh",body.detailadh ?? true)
-params.AddBool("garanties",body.garanties ?? true) 
-   params.AddBool("extensions",body.extensions ?? true)
-   params.AddBool("infoscieprod",body.infoscieprod ?? false)
-   params.AddBool("clause",body.clauses ?? true)
-     params.AddBool("clauses",body.clauses ?? true)
-  const result = await sendSoapRequest(params, "Cont_Details", bss, undefined, undefined, ctx);
+//  const contratId = typeof contrat === 'string' ? Number(contrat) : contrat;
+   params.AddInt("contrat",contrat)
+ //  params.AddBool("Allpieces",Allpieces ?? true) 
+ //params.AddBool("Detailadh",Detailadh ?? true)
+//params.AddBool("Garanties",Garanties ?? true) 
+//   params.AddBool("Extensions",Extensions ?? true)
+//   params.AddBool("infosCieProd",infosCieProd ?? false)
+ //  params.AddBool("clauses",clauses ?? true)
+ 
+
+     console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Paramettres du Detail du contrat requis==="+JSON.stringify(params))
+  const result = await sendSoapRequest(params, "Cont_Details", bss, "Cont", null, ctx);
   const grouped = groupByTypename(result, { keepUnknown: true });
   return grouped;
 }
