@@ -58,6 +58,7 @@ const error_handler_fastify_1 = require("./middleware/error-handler.fastify");
 const metrics_fastify_1 = require("./observability/metrics.fastify");
 const fonctionnalite_routes_fastify_1 = require("./routes/fonctionnalite.routes.fastify");
 const auth_fastify_1 = require("./middleware/auth.fastify");
+const e2e_fault_injection_fastify_1 = require("./middleware/e2e-fault-injection.fastify");
 exports.app = (0, fastify_1.default)({
     logger: {
         level: 'info',
@@ -91,6 +92,8 @@ async function setupApp() {
     // --- Auth hook (global) ---
     // Ensure BasSecurityContext is enforced from JWT before any route preValidation
     exports.app.addHook('preValidation', auth_fastify_1.authGlobalPreValidation);
+    // --- E2E-only fault injection (no-op unless E2E_FAULT_INJECTION=1) ---
+    (0, e2e_fault_injection_fastify_1.registerE2eFaultInjection)(exports.app);
     // --- OpenAPI / Swagger UI (lecture YAML existant) ---
     const openapiPathCandidates = [
         path_1.default.join(__dirname, 'middleware', 'openapi.yaml'),

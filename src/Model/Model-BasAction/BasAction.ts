@@ -13,8 +13,11 @@ public http = require('http');
     public async RunAction(actionName: string, basParams: BasParams, basSecurityContext: BasSecurityContext, xmldata?: string, ctx?: { userId?: string; domain?: string; password?: string; } | undefined): Promise<string> {
         let body = "<ns1:RunAction>" + basSecurityContext.ToSoapVar() + `<name xsi:type=\"xsd:string\">${actionName}</name>`;
         //console.log("Dans RunAction xmldata est :====="+xmldata) 
-       // basParams.AddStr("data", xmldata ?? "")
-       basParams.AddString("data", xmldata ?? "")
+       // Some SOAP actions (e.g. Project_AddOffer) are strict about argument count.
+       // Only include the "data" param when we actually have payload XML.
+       if (xmldata && xmldata !== "") {
+           basParams.AddString("data", xmldata);
+       }
         body += basParams.ToSoapVar();
          //body +="<params>"+(xmldata ?? "")+"</params>"
        //  if (xmldata && xmldata !== "") {

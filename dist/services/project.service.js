@@ -35,8 +35,22 @@ async function projectOfferListItems(body, auth) {
     params.AddStr('BasSecurityContext', ctx.ToSoapVar());
     params.AddInt('idproj', body.idproj);
     const result = await (0, soap_service_1.sendSoapRequest)(params, 'Project_OfferListItem', ctx, 'Project', undefined, { userId: auth.userId ?? auth.sid, domain: body?.domain });
-    return (0, groupByTypename_1.default)(result, { keepUnknown: true });
+    let project = result?.project;
+    // let offers =  groupByTypename(project?.offers, { keepUnknown: true }); 
+    const offers = normalizeOffers((0, groupByTypename_1.default)(project?.offers, { keepUnknown: true }));
+    project.offers = offers;
+    return (0, groupByTypename_1.default)(project, { keepUnknown: true });
+    //return project;
 }
+const normalizeOffers = (offers) => {
+    if (Array.isArray(offers)) {
+        return offers;
+    }
+    if (offers && typeof offers === 'object') {
+        return Object.values(offers);
+    }
+    return [];
+};
 async function projectDetail(body, auth) {
     const params = new BasParams_1.BasParams();
     const ctx = new BasSecurityContext_1.BasSecurityContext();
@@ -79,11 +93,9 @@ async function projectAddOffer(body, auth) {
     const ctx = new BasSecurityContext_1.BasSecurityContext();
     ctx.SessionId = auth.sid;
     ctx.IsAuthenticated = true;
-    params.AddStr('BasSecurityContext', ctx.ToSoapVar());
     params.AddInt('idproj', body.idproj);
     params.AddString('produit', body.produit);
-    const result = await (0, soap_service_1.sendSoapRequest)(params, 'Project_AddOffer', ctx, 'offer', undefined, { userId: auth.userId ?? auth.sid, domain: body?.domain });
-    return result;
+    return (0, soap_service_1.sendSoapRequest)(params, 'Project_AddOffer', ctx, 'offer', undefined, { userId: auth.userId ?? auth.sid, domain: body?.domain });
 }
 async function projectDeleteOffer(body, auth) {
     const params = new BasParams_1.BasParams();

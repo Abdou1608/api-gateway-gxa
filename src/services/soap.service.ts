@@ -2,6 +2,7 @@ import { AppConfigService } from './AppConfigService/app-config.service';
 import { BasAction } from '../Model/Model-BasAction/BasAction';
 import { BasSoapClient } from '../Model/Model-BasSoapClient/BasSoapClient';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
+import { BasParams } from '../Model/BasSoapObject/BasParams';
 
 import {  parseProdSoapResponse, parseSoapEmbeddedXmlToJson, parseSoapXmlToJson, parseTabRowsXml } from '../utils/soap-parser.service';
 import { objectToCustomXML, objectToCustomXMLForStrVal, objectToXML } from '../utils/xml-parser';
@@ -90,10 +91,17 @@ const strValXML = objectToCustomXMLForStrVal(data, sid);
     .then(async (response) => {
       if (BasSoapFault.IsBasError(response)) {
         const f = BasSoapFault.ParseBasErrorDetailed(response);
+        const debug = actionName === 'Project_AddOffer'
+          ? {
+              action: actionName,
+              paramCount: params?.Count?.() ?? undefined,
+              paramNames: params?.DebugSnapshot?.().map((p: any) => p?.name) ?? undefined,
+            }
+          : undefined;
         throw new SoapServerError(
           'SOAP.FAULT',
           f.faultstring || 'SOAP Fault',
-          { soapFault: { faultcode: f.faultcode, faultstring: f.faultstring, detail: f.details, state: f.state } }
+          { soapFault: { faultcode: f.faultcode, faultstring: f.faultstring, detail: f.details, state: f.state }, debug }
         );
       }
 
@@ -131,14 +139,32 @@ const strValXML = objectToCustomXMLForStrVal(data, sid);
       } else if (sid === "project-detail" || sid === "cont_listitems") {
         return { success: true, data: parseSoapEmbeddedXmlToJson(response, "Tarc0") };
       } else {
-        console.warn("⚠️ Unhandled SID:", sid);
+        if (process.env.E2E_QUIET !== '1') {
+          console.warn("⚠️ Unhandled SID:", sid);
+        }
        // console.log("⚠️ Response!!!!!!   :", response);
         return { success: true, data: await parseSoapXmlToJson(response, sid) };
       }
     })
     .catch((e) => {
       // Laisser l'erreur typer remonter, sinon rewrap en TransformError
-      if (e instanceof SoapServerError || e instanceof ValidationError) throw e;
+      if (e instanceof SoapServerError) {
+        // Some faults are thrown before our normal response branch (BasSoapClient.handleSoapResponse).
+        // Attach BasParams debug for strict actions like Project_AddOffer.
+        if (actionName === 'Project_AddOffer') {
+          const existingDetails = (e as any).details ?? {};
+          if (!existingDetails?.debug) {
+            const debug = {
+              action: actionName,
+              paramCount: params?.Count?.() ?? undefined,
+              paramNames: params?.DebugSnapshot?.().map((p: any) => p?.name) ?? undefined,
+            };
+            throw new SoapServerError(e.code, e.message, { ...existingDetails, debug }, (e as any).cause ?? e);
+          }
+        }
+        throw e;
+      }
+      if (e instanceof ValidationError) throw e;
       throw new TransformError("Erreur d'extraction des données", { step: 'parse', inputSnippet: (typeof data==='string'? data.slice(0,200): undefined) }, e);
     });
 

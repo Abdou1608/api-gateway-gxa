@@ -8,7 +8,7 @@ export async function produit_details(
   code: string,
   BasSecurityContext: BasSecurityContext,
   options?: boolean,
-  basecouvs?: boolean,
+  basecouv?: boolean,
   clauses?: boolean,
   ctx?: { userId?: string; domain?: string; password?: string }
 ) {
@@ -18,7 +18,7 @@ export async function produit_details(
    params.AddString("code",code)
   // params.AddBool("composition",composition ?? false) 
    params.AddBool("options",options ?? true)
-params.AddBool("basecouv",basecouvs ?? false) 
+params.AddBool("basecouv",basecouv ?? true) 
  params.AddBool("clauses",clauses ?? true)
 //console.log("Paramettres du Detail du produit requis==="+JSON.stringify(params))
   const result = await sendSoapRequest(

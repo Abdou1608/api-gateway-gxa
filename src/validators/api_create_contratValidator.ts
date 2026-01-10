@@ -159,14 +159,44 @@ const contModelSchema = z.object({
   poli: poliObjectSchema.optional().nullable().refine(v => v !== undefined, { message: "Objet poli requis dans data" }),
 });
 
-export const api_create_contratValidator = z.object({
-  dossier: z.number().describe("Le dossier doit être un nombre" ),
-  produit: z.string().min(1, "champ requis"),
-  effet: z.string(),
-  piece: z.any().optional(),
-  data:  z.any(),
-  BasSecurityContext: z.object({
-    _SessionId: z.string().min(1, "champ SessionId est requis"),
-  }),
-});
+export const api_create_contratValidator = z
+  .object({
+    dossier: z.number().describe("Le dossier doit être un nombre"),
+    produit: z.string().min(1, "champ requis"),
+    // Legacy session id keys sometimes sent by the frontend payload builder.
+    SessionID: z.string().optional(),
+    _SessionID: z.string().optional(),
+    sessionId: z.string().optional(),
+    _sessionId: z.string().optional(),
+    // Accept both naming conventions; require at least one.
+    effet: z.string().optional(),
+    Effet: z.string().optional(),
+    piece: z.any().optional(),
+    data: z.any(),
+    BasSecurityContext: z
+      .object({
+        _SessionId: z.string().min(1, "champ SessionId est requis"),
+      })
+      .optional(),
+  })
+  .strict()
+  .superRefine((val, ctx) => {
+    if (!val.effet && !val.Effet) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['effet'], message: 'effet (ou Effet) est requis' });
+    }
+
+    const data: any = val.data;
+    const piece = data?.PIEC ?? data?.piec;
+    if (piece && typeof piece === 'object') {
+      for (const k of ['Contrat', 'Piece', 'Adhprin', 'contrat', 'piece', 'adhprin']) {
+        if (k in piece) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['data', data?.PIEC ? 'PIEC' : 'piec', k],
+            message: `Champ interdit en création: ${k}`,
+          });
+        }
+      }
+    }
+  });
 

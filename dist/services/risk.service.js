@@ -49,12 +49,12 @@ async function riskUpdate(body, auth) {
     ctx.IsAuthenticated = true;
     ctx.SessionId = auth.sid;
     params.AddStr('BasSecurityContext', ctx.ToSoapVar());
-    if (body.contrat)
-        params.AddInt('contrat', body.contrat);
-    if (body.piece)
-        params.AddInt('piece', body.piece);
-    if (body.adhesion)
-        params.AddInt('adhesion', body.adhesion);
+    if (body.contrat || body.Contrat)
+        params.AddInt('contrat', body.contrat ?? body.Contrat);
+    if (body.piece || body.Piece)
+        params.AddInt('piece', body.piece ?? body.Piece);
+    if (body.adhesion || body.Adhesion)
+        params.AddInt('adhesion', body.adhesion ?? body.Adhesion);
     if (body.dateEntree && typeof body.dateEntree === 'string') {
         params.AddStrDate('dateEntree', body.dateEntree);
     }

@@ -45,8 +45,11 @@ class BasAction {
     async RunAction(actionName, basParams, basSecurityContext, xmldata, ctx) {
         let body = "<ns1:RunAction>" + basSecurityContext.ToSoapVar() + `<name xsi:type=\"xsd:string\">${actionName}</name>`;
         //console.log("Dans RunAction xmldata est :====="+xmldata) 
-        // basParams.AddStr("data", xmldata ?? "")
-        basParams.AddString("data", xmldata ?? "");
+        // Some SOAP actions (e.g. Project_AddOffer) are strict about argument count.
+        // Only include the "data" param when we actually have payload XML.
+        if (xmldata && xmldata !== "") {
+            basParams.AddString("data", xmldata);
+        }
         body += basParams.ToSoapVar();
         //body +="<params>"+(xmldata ?? "")+"</params>"
         //  if (xmldata && xmldata !== "") {

@@ -8,12 +8,12 @@ basSecurityContext: BasSecurityContext, contrat: number, piece?: number, adhesio
   //const soapBody = {typtiers,nature,numtiers,numdpp,data}
   const params=new BasParams()
   basSecurityContext ?  params.AddStr("BasSecurityContext",basSecurityContext?.ToSoapVar()) :null
- params.AddInt("contrat",contrat)
+ params.AddInt("Contrat",contrat)
   if(piece){
-	  params.AddInt("piece",piece)
+	  params.AddInt("Piece",piece)
   }	
   if(adhesion){
-	  params.AddInt("adhesion",adhesion)
+	  params.AddInt("Adhesion",adhesion)
   }
 	
 	//if (data) {

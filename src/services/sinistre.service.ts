@@ -1,8 +1,9 @@
-// Express types removed; Fastify-native pure-return helpers only
+﻿// Express types removed; Fastify-native pure-return helpers only
 import { sendSoapRequest } from './soap.service';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 import { BasParams } from '../Model/BasSoapObject/BasParams';
 import groupByTypename from '../utils/groupByTypename';
+import { quietLog } from "../utils/quiet-log";
 
 // Fastify-native pure-return helpers
 export async function sinistreListItems(body: any,ctx:BasSecurityContext, auth: { sid: string; userId?: string; domain?: string }) {
@@ -21,7 +22,7 @@ export async function sinistreListItems(body: any,ctx:BasSecurityContext, auth: 
   }
   
   const result = await sendSoapRequest(params, 'Sin_Listitems', ctx, 'sins', null, { userId: auth.userId, domain: body?.domain });
- console.log("!!!!result sinistreListItems:", result);  
+  quietLog("!!!!result sinistreListItems:", result);
   return groupByTypename(result, { keepUnknown: false });
 }
 

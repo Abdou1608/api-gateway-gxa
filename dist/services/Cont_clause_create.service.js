@@ -7,12 +7,12 @@ async function cont_clause_create(basSecurityContext, contrat, piece, adhesion, 
     //const soapBody = {typtiers,nature,numtiers,numdpp,data}
     const params = new BasParams_1.BasParams();
     basSecurityContext ? params.AddStr("BasSecurityContext", basSecurityContext?.ToSoapVar()) : null;
-    params.AddInt("contrat", contrat);
+    params.AddInt("Contrat", contrat);
     if (piece) {
-        params.AddInt("piece", piece);
+        params.AddInt("Piece", piece);
     }
     if (adhesion) {
-        params.AddInt("adhesion", adhesion);
+        params.AddInt("Adhesion", adhesion);
     }
     //if (data) {
     //	params.AddStr("data",tierModelToXml(data))	}

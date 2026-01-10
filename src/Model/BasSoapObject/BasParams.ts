@@ -8,6 +8,18 @@ export class BasParams {
     {
         this.Items = new Array<BasParam>;
     }
+
+    public Count(): number {
+        return this.Items.length;
+    }
+
+    public DebugSnapshot(): Array<{ name: string; dataType: string; value: unknown }> {
+        return this.Items.map((it) => ({
+            name: it.Name,
+            dataType: it.DataType,
+            value: BasParam.GetValue(it),
+        }));
+    }
     public data(name: string, value: number): void
     {
         this.Items.push(BasParam.CreateInt(name, value));

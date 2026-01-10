@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.cont_details = cont_details;
 const BasParams_1 = require("../../Model/BasSoapObject/BasParams");
 const groupByTypename_1 = __importDefault(require("../../utils/groupByTypename"));
+const quiet_log_1 = require("../../utils/quiet-log");
 const soap_service_1 = require("../soap.service");
 async function cont_details(contrat, bss, Garanties, Extensions, clauses, Allpieces, Detailadh, infosCieProd, ctx) {
     const params = new BasParams_1.BasParams();
@@ -18,7 +19,7 @@ async function cont_details(contrat, bss, Garanties, Extensions, clauses, Allpie
     //   params.AddBool("Extensions",Extensions ?? true)
     //   params.AddBool("infosCieProd",infosCieProd ?? false)
     //  params.AddBool("clauses",clauses ?? true)
-    console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Paramettres du Detail du contrat requis===" + JSON.stringify(params));
+    (0, quiet_log_1.quietWarn)("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Paramettres du Detail du contrat requis===" + JSON.stringify(params));
     const result = await (0, soap_service_1.sendSoapRequest)(params, "Cont_Details", bss, "Cont", null, ctx);
     const grouped = (0, groupByTypename_1.default)(result, { keepUnknown: true });
     return grouped;

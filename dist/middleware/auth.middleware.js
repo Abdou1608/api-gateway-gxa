@@ -36,7 +36,9 @@ async function authMiddleware(req, res, next) {
             return res.status(503).json({ error: 'Server misconfiguration' });
         }
         const sid = await authService.get_SID(token, key);
-        console.warn('=====--------Voici le SID:', sid);
+        if (process.env.E2E_QUIET !== '1') {
+            console.warn('=====--------Voici le SID:', sid);
+        }
         if (!sid) {
             return res.status(401).json({ error: 'Unauthorized, Authentication needed to process' });
         }
@@ -53,6 +55,9 @@ async function authMiddleware(req, res, next) {
             }
             req.body.BasSecurityContext._SessionId = sid;
             console.warn('=====--------Voici le Body de la requete:', req.body);
+            if (process.env.E2E_QUIET !== '1') {
+                console.warn('=====--------Voici le Body de la requete:', req.body);
+            }
         }
         next();
     }

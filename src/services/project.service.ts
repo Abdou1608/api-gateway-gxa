@@ -2,6 +2,7 @@
 import { sendSoapRequest } from './soap.service';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 import { BasParams } from '../Model/BasSoapObject/BasParams';
+import { SoapServerError } from '../common/errors';
 import groupByTypename from '../utils/groupByTypename';
 
 // Fastify-native service wrappers returning data instead of writing to res
@@ -38,8 +39,26 @@ export async function projectOfferListItems(body: any, auth: { sid: string; user
     undefined,
     { userId: auth.userId ?? auth.sid, domain: body?.domain }
   );
-  return groupByTypename(result, { keepUnknown: true });
+  let project = result?.project;
+ // let offers =  groupByTypename(project?.offers, { keepUnknown: true }); 
+ 
+
+  const offers = normalizeOffers(groupByTypename(project?.offers, { keepUnknown: true }));
+
+  project.offers = offers;
+  return groupByTypename(project, { keepUnknown: true });
+ //return project;
 }
+
+ const normalizeOffers = (offers: unknown): unknown[] => {
+    if (Array.isArray(offers)) {
+      return offers;
+    }
+    if (offers && typeof offers === 'object') {
+      return Object.values(offers as Record<string, unknown>);
+    }
+    return [];
+  };
 
 export async function projectDetail(body: any, auth: { sid: string; userId?: string; domain?: string }) {
   const params = new BasParams();
@@ -57,6 +76,7 @@ export async function projectDetail(body: any, auth: { sid: string; userId?: str
     { userId: auth.userId ?? auth.sid, domain: body?.domain }
   );
   return groupByTypename(result, { keepUnknown: true });
+
 }
 
 export async function projectCreate(body: any, auth: { sid: string; userId?: string; domain?: string }) {
@@ -106,10 +126,10 @@ export async function projectAddOffer(body: any, auth: { sid: string; userId?: s
   const ctx = new BasSecurityContext();
   ctx.SessionId = auth.sid;
   ctx.IsAuthenticated = true as any;
-  params.AddStr('BasSecurityContext', ctx.ToSoapVar());
   params.AddInt('idproj', body.idproj);
   params.AddString('produit', body.produit);
-  const result = await sendSoapRequest(
+
+  return sendSoapRequest(
     params,
     'Project_AddOffer',
     ctx,
@@ -117,7 +137,6 @@ export async function projectAddOffer(body: any, auth: { sid: string; userId?: s
     undefined,
     { userId: auth.userId ?? auth.sid, domain: body?.domain }
   );
-  return result;
 }
 
 export async function projectDeleteOffer(body: any, auth: { sid: string; userId?: string; domain?: string }) {

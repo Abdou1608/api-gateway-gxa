@@ -4,7 +4,7 @@ import { xtlog_search } from '../services/profile/xtlog_search.service';
 import { BasSecurityContext } from '../Model/BasSoapObject/BasSecurityContext';
 import { invalidateToken } from '../auth/token-revocation.service';
 import { closesession_ } from '../services/logout/closesession_.service';
-import { AuthError } from '../common/errors';
+import { AuthError, NetworkError, UpstreamTimeoutError } from '../common/errors';
 import { cont_newpiece } from '../services/ajout_piece_au_contrat/cont_newpiece.service';
 import { adh_details } from '../services/detail_adhesion/adh_details.service';
 import * as Risk from '../services/risk.service';
@@ -88,9 +88,18 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
         reply.header('Authorization', `Bearer ${token}`);
         return reply.send({ ...(anyResult || {}), token });
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Unknown error';
-        request.log.error({ err: error }, '[login] Error');
-        throw new InternalError(message);
+        const message = error instanceof Error ? error.message : String(error ?? 'Unknown error');
+        const target = message.match(/\b(?:ETIMEDOUT|ECONNREFUSED|EHOSTUNREACH)\s+([0-9.]+:\d+)\b/i)?.[1];
+        request.log.error({ err: error, message, target }, '[login] Error');
+
+        // Surface infra issues with correct semantics so the UI/E2E can react appropriately.
+        if (/\bETIMEDOUT\b/i.test(message)) {
+          throw new UpstreamTimeoutError(message, target ? { target } : undefined, error);
+        }
+        if (/\b(ECONNREFUSED|EHOSTUNREACH|ENOTFOUND|EAI_AGAIN)\b/i.test(message)) {
+          throw new NetworkError(message, target ? { target } : undefined, error);
+        }
+        throw new InternalError(message, undefined, error);
       }
     } else {
       throw new AuthError('Données manquantes ou non conforme');
@@ -902,7 +911,7 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
     const ctx = buildBasSecurityContext(request as any, query);
     const code = query.code;
     const options = query.options ?? true;
-    const basecouv =  false;
+    const basecouv =  true;
     const clauses = query.clauses ?? true;
     const result = await produit_details(
       code,
@@ -1102,7 +1111,10 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
   });
 
   // Fastify-native create_* routes
-  app.post('/api/create_contrat', { preHandler: authPreHandler }, async (request, reply) => {
+  app.post('/api/create_contrat', {
+    preHandler: authPreHandler,
+    preValidation: validateBodyFastify(Validators.api_create_contratValidator),
+  }, async (request, reply) => {
     const body = request.body as any;
     const ctx = new BasSecurityContext();
     ctx.IsAuthenticated = true as any;
@@ -1115,12 +1127,15 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
    app.post('/api/Cont_clause_create', { preHandler: authPreHandler }, async (request, reply) => {
     const body = request.body as any;
     const ctx = new BasSecurityContext();
+    const contrat = body.contrat ?? body.Contrat;
+    const adhesion = body.adhesion ?? body.Adhesion;
+    const piece = body.piece ?? body.Piece;
     ctx.IsAuthenticated = true as any;
     ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
     const { cont_clause_create } = await import('../services/Cont_clause_create.service');
-    const result = await cont_clause_create(ctx, body.contrat,
-      body.adhesion,
-      body.piece,
+    const result = await cont_clause_create(ctx, contrat,
+      adhesion,
+      piece,
       body.data,
       { userId: (request as any).user?.sub, domain: body?.domain });
     return reply.send(result);
@@ -1303,12 +1318,13 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
   app.post('/api/risk/risk_update', { preHandler: authPreHandler }, async (request, reply) => {
     const body = request.body as any;
     const data = await Risk.riskUpdate(body, { sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: body?.domain });
-   const calc_data = await Cont_CalculTarif(data.contrat, data.piece ?? 1, data.adhesion ?? null,{ sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: body?.domain }).catch(()=>null);
-   if (calc_data){
-   return reply.send({ data, calc_data });
-  } else {
+   //const calc_data = await Cont_CalculTarif(data.contrat, data.piece ?? 1, data.adhesion ?? null,{ sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: body?.domain }).catch(()=>null);
+ //  if (calc_data){
+ //  return reply.send({ data, calc_data });
+ // } else {
    return reply.send({ data });
-  } }
+ // }
+ }
   );
 
   // Fastify-native Tier update endpoint

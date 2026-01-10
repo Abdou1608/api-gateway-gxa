@@ -85,7 +85,6 @@ const contrats_search_service_1 = require("../services/contrats_search.service")
 const catal_listitems_service_1 = require("../services/catal_listitems.service");
 const tools_convert_routes_1 = __importDefault(require("./tools.convert.routes"));
 const Qbor_Listitems_service_1 = require("../services/Qbor_Listitems.service");
-const Cont_CalculTarif_service_1 = require("../services/create_contrat/Cont_CalculTarif.service");
 const Cont_garanti_create_service_1 = require("../services/Cont_garanti_create.service");
 const basSecurityContext_query_1 = require("../validators/basSecurityContext.query");
 const zod_query_1 = require("../validators/zod.query");
@@ -121,9 +120,17 @@ const registerRoutes = async (app) => {
                 return reply.send({ ...(anyResult || {}), token });
             }
             catch (error) {
-                const message = error instanceof Error ? error.message : 'Unknown error';
-                request.log.error({ err: error }, '[login] Error');
-                throw new errors_2.InternalError(message);
+                const message = error instanceof Error ? error.message : String(error ?? 'Unknown error');
+                const target = message.match(/\b(?:ETIMEDOUT|ECONNREFUSED|EHOSTUNREACH)\s+([0-9.]+:\d+)\b/i)?.[1];
+                request.log.error({ err: error, message, target }, '[login] Error');
+                // Surface infra issues with correct semantics so the UI/E2E can react appropriately.
+                if (/\bETIMEDOUT\b/i.test(message)) {
+                    throw new errors_1.UpstreamTimeoutError(message, target ? { target } : undefined, error);
+                }
+                if (/\b(ECONNREFUSED|EHOSTUNREACH|ENOTFOUND|EAI_AGAIN)\b/i.test(message)) {
+                    throw new errors_1.NetworkError(message, target ? { target } : undefined, error);
+                }
+                throw new errors_2.InternalError(message, undefined, error);
             }
         }
         else {
@@ -860,7 +867,7 @@ const registerRoutes = async (app) => {
         const ctx = buildBasSecurityContext(request, query);
         const code = query.code;
         const options = query.options ?? true;
-        const basecouv = false;
+        const basecouv = true;
         const clauses = query.clauses ?? true;
         const result = await (0, produit_details_service_1.produit_details)(code, ctx, options, basecouv, clauses, { userId: request.user?.sub, domain: query?.domain });
         return reply.send(result);
@@ -987,7 +994,10 @@ const registerRoutes = async (app) => {
         return reply.send(result);
     });
     // Fastify-native create_* routes
-    app.post('/api/create_contrat', { preHandler: auth_fastify_1.authPreHandler }, async (request, reply) => {
+    app.post('/api/create_contrat', {
+        preHandler: auth_fastify_1.authPreHandler,
+        preValidation: (0, zod_fastify_1.validateBodyFastify)(Validators.api_create_contratValidator),
+    }, async (request, reply) => {
         const body = request.body;
         const ctx = new BasSecurityContext_1.BasSecurityContext();
         ctx.IsAuthenticated = true;
@@ -999,10 +1009,13 @@ const registerRoutes = async (app) => {
     app.post('/api/Cont_clause_create', { preHandler: auth_fastify_1.authPreHandler }, async (request, reply) => {
         const body = request.body;
         const ctx = new BasSecurityContext_1.BasSecurityContext();
+        const contrat = body.contrat ?? body.Contrat;
+        const adhesion = body.adhesion ?? body.Adhesion;
+        const piece = body.piece ?? body.Piece;
         ctx.IsAuthenticated = true;
         ctx.SessionId = request.auth?.sid ?? body?.BasSecurityContext?._SessionId;
         const { cont_clause_create } = await Promise.resolve().then(() => __importStar(require('../services/Cont_clause_create.service')));
-        const result = await cont_clause_create(ctx, body.contrat, body.adhesion, body.piece, body.data, { userId: request.user?.sub, domain: body?.domain });
+        const result = await cont_clause_create(ctx, contrat, adhesion, piece, body.data, { userId: request.user?.sub, domain: body?.domain });
         return reply.send(result);
     });
     app.post('/api/Cont_garan_create', { preHandler: auth_fastify_1.authPreHandler }, async (request, reply) => {
@@ -1158,13 +1171,12 @@ const registerRoutes = async (app) => {
     app.post('/api/risk/risk_update', { preHandler: auth_fastify_1.authPreHandler }, async (request, reply) => {
         const body = request.body;
         const data = await Risk.riskUpdate(body, { sid: request.auth.sid, userId: request.user?.sub, domain: body?.domain });
-        const calc_data = await (0, Cont_CalculTarif_service_1.Cont_CalculTarif)(data.contrat, data.piece ?? 1, data.adhesion ?? null, { sid: request.auth.sid, userId: request.user?.sub, domain: body?.domain }).catch(() => null);
-        if (calc_data) {
-            return reply.send({ data, calc_data });
-        }
-        else {
-            return reply.send({ data });
-        }
+        //const calc_data = await Cont_CalculTarif(data.contrat, data.piece ?? 1, data.adhesion ?? null,{ sid: (request as any).auth.sid, userId: (request as any).user?.sub, domain: body?.domain }).catch(()=>null);
+        //  if (calc_data){
+        //  return reply.send({ data, calc_data });
+        // } else {
+        return reply.send({ data });
+        // }
     });
     // Fastify-native Tier update endpoint
     app.put('/api/Tiers_Update', { preHandler: auth_fastify_1.authPreHandler }, async (request, reply) => {

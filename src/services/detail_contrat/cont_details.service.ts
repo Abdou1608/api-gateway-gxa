@@ -1,6 +1,7 @@
-import { BasParams } from "../../Model/BasSoapObject/BasParams";
+﻿import { BasParams } from "../../Model/BasSoapObject/BasParams";
 import { BasSecurityContext } from "../../Model/BasSoapObject/BasSecurityContext";
 import groupByTypename from "../../utils/groupByTypename";
+import { quietWarn } from "../../utils/quiet-log";
 import { sendSoapRequest } from "../soap.service";
 
 
@@ -28,7 +29,7 @@ infosCieProd?: boolean,
  //  params.AddBool("clauses",clauses ?? true)
  
 
-     console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Paramettres du Detail du contrat requis==="+JSON.stringify(params))
+  quietWarn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Paramettres du Detail du contrat requis==="+JSON.stringify(params));
   const result = await sendSoapRequest(params, "Cont_Details", bss, "Cont", null, ctx);
   const grouped = groupByTypename(result, { keepUnknown: true });
   return grouped;

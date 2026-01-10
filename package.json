@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev:e2e": "node -r ts-node/register/transpile-only src/server.ts",
     "build": "tsc",
     "start:admin:dev": "cross-env ADMIN_SECRET=UnSecretSolide NODE_ENV=development node dist/server.js",
     "gen:types": "ts-node scripts/generate-openapi-types.ts",

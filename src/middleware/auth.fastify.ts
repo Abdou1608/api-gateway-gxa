@@ -49,7 +49,9 @@ export async function authPreHandler(request: FastifyRequest, reply: FastifyRepl
       return reply.code(503).send({ error: 'Server misconfiguration' });
     }
     const sid = await authService.get_SID(token, key);
-    console.warn('=====--------Voici le SID du Auth.fastify:', sid);
+    if (process.env.E2E_QUIET !== '1') {
+      console.warn('=====--------Voici le SID du Auth.fastify:', sid);
+    }
     if (!sid) {
       return reply.code(401).send({ error: 'Non autorisé, authentification requise pour traiter' });
     }
@@ -74,7 +76,9 @@ export async function authPreHandler(request: FastifyRequest, reply: FastifyRepl
       if (!body.BasSecurityContext) body.BasSecurityContext = {};
       body.BasSecurityContext._SessionId = sid;
       body.BasSecurityContext.SessionId = sid;
-      console.warn('=====--------Voici le Body de la requete de Auth.fastify:', body);
+      if (process.env.E2E_QUIET !== '1') {
+        console.warn('=====--------Voici le Body de la requete de Auth.fastify:', body);
+      }
       request.body = body;
     }
   } catch (err) {

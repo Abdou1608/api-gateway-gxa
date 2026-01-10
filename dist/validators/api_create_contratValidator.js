@@ -154,13 +154,42 @@ const contModelSchema = zod_1.z.object({
     PIEC: piecObjectSchema.optional().nullable().refine(v => v !== undefined, { message: "Objet PIEC requis dans data" }),
     poli: poliObjectSchema.optional().nullable().refine(v => v !== undefined, { message: "Objet poli requis dans data" }),
 });
-exports.api_create_contratValidator = zod_1.z.object({
+exports.api_create_contratValidator = zod_1.z
+    .object({
     dossier: zod_1.z.number().describe("Le dossier doit être un nombre"),
     produit: zod_1.z.string().min(1, "champ requis"),
-    effet: zod_1.z.string(),
+    // Legacy session id keys sometimes sent by the frontend payload builder.
+    SessionID: zod_1.z.string().optional(),
+    _SessionID: zod_1.z.string().optional(),
+    sessionId: zod_1.z.string().optional(),
+    _sessionId: zod_1.z.string().optional(),
+    // Accept both naming conventions; require at least one.
+    effet: zod_1.z.string().optional(),
+    Effet: zod_1.z.string().optional(),
     piece: zod_1.z.any().optional(),
     data: zod_1.z.any(),
-    BasSecurityContext: zod_1.z.object({
+    BasSecurityContext: zod_1.z
+        .object({
         _SessionId: zod_1.z.string().min(1, "champ SessionId est requis"),
-    }),
+    })
+        .optional(),
+})
+    .strict()
+    .superRefine((val, ctx) => {
+    if (!val.effet && !val.Effet) {
+        ctx.addIssue({ code: zod_1.z.ZodIssueCode.custom, path: ['effet'], message: 'effet (ou Effet) est requis' });
+    }
+    const data = val.data;
+    const piece = data?.PIEC ?? data?.piec;
+    if (piece && typeof piece === 'object') {
+        for (const k of ['Contrat', 'Piece', 'Adhprin', 'contrat', 'piece', 'adhprin']) {
+            if (k in piece) {
+                ctx.addIssue({
+                    code: zod_1.z.ZodIssueCode.custom,
+                    path: ['data', data?.PIEC ? 'PIEC' : 'piec', k],
+                    message: `Champ interdit en création: ${k}`,
+                });
+            }
+        }
+    }
 });

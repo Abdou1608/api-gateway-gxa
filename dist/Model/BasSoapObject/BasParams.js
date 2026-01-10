@@ -6,6 +6,16 @@ class BasParams {
     constructor() {
         this.Items = new Array;
     }
+    Count() {
+        return this.Items.length;
+    }
+    DebugSnapshot() {
+        return this.Items.map((it) => ({
+            name: it.Name,
+            dataType: it.DataType,
+            value: BasParam_1.BasParam.GetValue(it),
+        }));
+    }
     data(name, value) {
         this.Items.push(BasParam_1.BasParam.CreateInt(name, value));
     }

@@ -12,6 +12,7 @@ const soap_service_1 = require("./soap.service");
 const BasSecurityContext_1 = require("../Model/BasSoapObject/BasSecurityContext");
 const BasParams_1 = require("../Model/BasSoapObject/BasParams");
 const groupByTypename_1 = __importDefault(require("../utils/groupByTypename"));
+const quiet_log_1 = require("../utils/quiet-log");
 // Fastify-native pure-return helpers
 async function sinistreListItems(body, ctx, auth) {
     const params = new BasParams_1.BasParams();
@@ -30,7 +31,7 @@ async function sinistreListItems(body, ctx, auth) {
             params.AddInt('contrat', contraId);
     }
     const result = await (0, soap_service_1.sendSoapRequest)(params, 'Sin_Listitems', ctx, 'sins', null, { userId: auth.userId, domain: body?.domain });
-    console.log("!!!!result sinistreListItems:", result);
+    (0, quiet_log_1.quietLog)("!!!!result sinistreListItems:", result);
     return (0, groupByTypename_1.default)(result, { keepUnknown: false });
 }
 async function sinistreDetail(body, ctx, auth) {
