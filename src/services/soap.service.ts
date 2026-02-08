@@ -40,7 +40,7 @@ export async function sendSoapRequest(params: any, actionName?: string, basSecur
 
     if (data && data !== ""){
       //console.log("✅ Inside ----------------------------------------------------------------");
-      if ((sid === "cont") && (actionName !== "Cont_NewPiece")){
+      if ((sid === "cont") && (actionName !== "Cont_NewPieces")){
         xmldata = contModelToXml(data)
         //console.log("----------------------------xmldata = contModelToXml(data)-------------------------------------------")
         //console.log("Data envoyé="+xmldata)

@@ -1067,14 +1067,34 @@ export const registerRoutes: FastifyPluginAsync = async (app: FastifyInstance) =
     const ctx = new BasSecurityContext();
     ctx.IsAuthenticated = true as any;
     ctx.SessionId = (request as any).auth?.sid ?? body?.BasSecurityContext?._SessionId;
-    const result = await cont_update(
+    
+    let result = await cont_update(
       body.contrat,
       body.effet,
       body.piece,
       body.data,
       ctx,
       { userId: (request as any).user?.sub, domain: body?.domain }
-    );
+    ).then(async (res) => {
+       if (res && typeof res === 'object' && 'errorCode' in res) {
+        return res; // Return error response directly 
+      } else {
+        // If update is successful, fetch and return updated details
+       console.warn("Voici le contrat mis a jour(res.cont_update.contrat): ", res?.cont_update?.contrat); 
+     // console.warn("Voici le contrat mis a jour(res.Contrat): ", res.Contrat);     
+     //  console.warn("Voici le contrat mis a jour(res): ", JSON.stringify(res)); 
+       return await cont_details(
+        body.contrat,
+          ctx,
+          true,
+          true,
+          true,
+          true,
+          true,true,
+          { userId: (request as any).user?.sub, domain: body?.domain }
+        );
+      }
+    });
     return reply.send(result);
   });
 

@@ -4,7 +4,7 @@ import { sendSoapRequest } from "../soap.service";
 
 
 export async function cont_newpiece(
-  contrat: number,
+  contrat: any,
   produit?: string,
   effet?: any,
   data?: any,
@@ -16,7 +16,7 @@ export async function cont_newpiece(
  const params=new BasParams()
  BasSecurityContext? params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar()):null
  
- params.AddInt("contrat",contrat)
+ params.AddInt("contrat",Number(contrat))
  produit ? params.AddString("produit",produit) : params.AddString("produit",data?.Produit)
  effet ? params.AddDateTime("effet",new Date(effet)) : data?.effet ? params.AddDateTime("effet",new Date(data?.effet)) : null
  FinEffet ? params.AddDateTime("FinEffet",new Date(FinEffet)) :data?.FinEffet ? params.AddDateTime("FinEffet",data?.FinEffet) : datedefin ? params.AddDateTime("FinEffet",new Date(datedefin)) : data?.datefin ? params.AddDateTime("FinEffet",new Date(data?.datefin)) : data?.Finpiece ? params.AddDateTime("FinEffet",new Date(data?.Finpiece)) : null

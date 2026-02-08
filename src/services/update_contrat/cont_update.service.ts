@@ -34,14 +34,14 @@ export async function cont_piece_update(contrat:number,produit:string,
   data?: any,BasSecurityContext?:any, ctx?: { userId?: string; domain?: string; password?: string }) {
     const params=new BasParams()
     params.AddStr("BasSecurityContext",BasSecurityContext.ToSoapVar())
-    params.AddInt("contrat",contrat)
-    if(piece){ params.AddInt("piece",piece)}
+    params.AddInt("contrat",Number(contrat))
+    if(piece){ params.AddInt("piece",Number(piece))}
 
  params.AddString("produit",produit)
  if(Effet){params.AddDateTime("Effet",Effet )}
  
    // effet ? params.AddDateTime("effet",effet) : null
-   data ? params.AddString("data",data) : null
+   //data ? params.AddString("data",data) : null
 
   const result = await sendSoapRequest(
     params,
